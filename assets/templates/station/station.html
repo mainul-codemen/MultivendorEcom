@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Admin | MVEC</title>
+{{ template "head"}}
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        {{ template "admin_navbar"}}
+        {{ template "side_nav"}}
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Station</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/admin/index">Home</a></li>
+                                <li class="breadcrumb-item active"><a href="/admin/station">Station</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#modal-add" onclick="viewStationForm()">Add
+                                        Station
+                                    </button>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body ">
+                                    <table id="example1" class="table table-bordered table-striped table-responsive-lg">
+                                        <thead>
+                                            <tr class="table-secondary">
+                                                <th scope="col">Position</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">District Name</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Created By</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{range .Data}}
+                                            <tr>
+                                                <td>{{.Position}}</td>
+                                                <td>{{.Name}}</td>
+                                                <td>{{.DistrictName}}</td>
+                                                <td style="text-align: center;">
+                                                    {{if eq .Status 1}}
+                                                    <a type="button" class="btn btn-success btn-sm"
+                                                        href="/admin/station/update/status/{{.ID}}">Active</a>
+                                                    {{else}}
+                                                    <a type="button" class="btn btn-info btn-sm"
+                                                        href="/admin/station/update/status/{{.ID}}">Inactive</a>
+                                                    {{end}}
+                                                <td>{{.CreatedBy}}</td>
+                                                <td>
+                                                    <a href="/admin/station/update/{{.ID}}" type="button"
+                                                        class="btn btn-success" data-toggle="modal"
+                                                        data-target="#modal-update" id="{{.ID}}"
+                                                        onclick="viewStationUpdateData(this.id)">
+                                                        Update
+                                                    </a>
+                                                    <a type="button" class="btn  btn-warning" data-toggle="modal"
+                                                        data-target="#modal-view" id="{{.ID}}"
+                                                        onclick="viewStation(this.id)">
+                                                        view
+                                                    </a>
+                                                    <a href="/admin/station/delete/{{.ID}}" type="button"
+                                                        class="btn btn-danger" data-toggle="modal"
+                                                        data-target="#modal-delete" id="{{.ID}}"
+                                                        onclick="deleteStationData(this.id)">
+                                                        Delete
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {{end}}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th scope="col">Position</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">District Name</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Created By</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+                <!--------------------------------------------------- Modal Add --------------------------------------------------->
+                <div class="modal fade" id="modal-add">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#0069D9;">
+                                <h4 class="modal-title" style="color: white;">Add Station</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post" id="saveForm" class="tagForm">
+                                    {{.CSRFField}}
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" name="Name" class="form-control" id="Name"
+                                                placeholder="Enter Station Name" />
+                                            <p style="color: red;" id="Name"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>District</label>
+                                            <div class="form-group">
+                                                <select class="custom-select" id="districtdd" name="DistrictID">
+                                                </select>
+                                                <p style="color: red;" id="DistrictID"></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <div class="form-group">
+                                                <select class="custom-select" name="Status" id="Status">
+                                                    <option value="1">Active</option>
+                                                    <option value="2">InActive</option>
+                                                </select>
+                                                <p style="color: red;" id="Status"></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Position</label>
+                                            <input type="number" name="Position" id="Position" class="form-control" />
+                                            <p style="color: red;" id="Position"></p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!--------------------------------------------------- Modal Update --------------------------------------------------->
+                <div class="modal fade" id="modal-update">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #20ac3e;">
+                                <h4 class="modal-title" style="color: white;">Update Station</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post" id="updateForm" class="tagUpForm">
+                                    {{.CSRFField}}
+                                    <input type="hidden" name="ID" id="UdID">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" name="Name" class="form-control" placeholder="Enter Name"
+                                                required id="UdName" />
+                                            <p style="color: red;" id="NameErr"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>District</label>
+                                            <div class="form-group">
+                                                <select id="districtdd-update" class="custom-select" name="DistrictID">
+                                                </select>
+                                                <p style="color: red;" id="DistrictIDErr"></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <div class="form-group">
+                                                <select class="custom-select" name="Status">
+                                                    <option value="1">Active</option>
+                                                    <option value="2">InActive</option>
+                                                </select>
+                                                <p style="color: red;" id="StatusErr"></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Position</label>
+                                            <input type="number" name="Position" class="form-control" id="UdPosition">
+                                            <p style="color: red;" id="PositionErr"></p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> <!-- /.modal-content -->
+                    </div> <!-- /.modal-dialog -->
+                </div>
+                <!--------------------------------------------------- Modal View --------------------------------------------------->
+                <div class="modal fade" id="modal-view">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#ffa600;">
+                                <h3 class="modal-title" style="color: white;">Station Details</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                            <div class="modal-body">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <tr>
+                                        <td>Name</td>
+                                        <td id="VName"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>District Name</td>
+                                        <td id="VDistrictName"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Position</td>
+                                        <td id="VPosition"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Status</td>
+                                        <td id="VStatus"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div>
+                <!--------------------------------------------------- Modal Delete --------------------------------------------------->
+                <div class="modal fade" id="modal-delete">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #e42525;">
+                                <h4 class="modal-title" style="color: white;">Are you sure you want to delete
+                                    Station
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="deleteStation" action="get">
+                                {{.CSRFField}}
+                                <input type="hidden" name="ID" id="dID" />
+                                <div class="modal-body">
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <tr>
+                                            <td>Name</td>
+                                            <td id="dName"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Position</td>
+                                            <td id="dPosition"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Status</td>
+                                            <td id="dStatus"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </div>
+                            </form>
+                        </div> <!-- /.modal-content -->
+                    </div> <!-- /.modal-dialog -->
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        {{ template "footer"}}
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    <!-- jQuery -->
+    <script src="/static/js/admin-lte/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/static/js/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="/static/js/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/jszip/jszip.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="/static/js/admin-lte/pleugins/pdfmake/vfs_fonts.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="/static/js/admin-lte/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- Toastr -->
+    <script src="/static/js/admin-lte/plugins/toastr/toastr.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/static/js/admin-lte/dist/js/adminlte.min.js"></script>
+    <!-- Station Custom JS -->
+    <script src="/static/js/custom-js/admin-panel-custom-js/station.js"></script>
+    <script>
+        // Data Tables for this table
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+</body>
+
+</html>

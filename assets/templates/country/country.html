@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+    <title>Admin | MVEC</title>
+    {{ template "head"}}
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        {{ template "admin_navbar"}}
+        {{ template "side_nav"}}
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Country</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/admin/index">Home</a></li>
+                                <li class="breadcrumb-item active"><a href="/admin/country">Country</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#modal-add">Add
+                                        Country
+                                    </button>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body ">
+                                    <table id="example1" class="table table-bordered table-striped table-responsive-lg">
+                                        <thead>
+                                            <tr class="table-secondary">
+                                                <th scope="col">Position</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Created By</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{range .Data}}
+                                            <tr>
+                                                <td>{{.Position}}</td>
+                                                <td>{{.Name}}</td>
+                                                <td style="text-align: center;">
+                                                    {{if eq .Status 1}}
+                                                    <a type="button" class="btn btn-success btn-sm"
+                                                        href="/admin/country/update/status/{{.ID}}">Active</a>
+                                                    {{else}}
+                                                    <a type="button" class="btn btn-info btn-sm"
+                                                        href="/admin/country/update/status/{{.ID}}">Inactive</a>
+                                                    {{end}}
+                                                <td>{{.CreatedBy}}</td>
+                                                <td>
+                                                    <a href="/admin/country/{{.ID}}" type="button"
+                                                        class="btn btn-success" data-toggle="modal"
+                                                        data-target="#modal-update" id="{{.ID}}"
+                                                        onclick="viewCountryUpdateData(this.id)">
+                                                        Update
+                                                    </a>
+                                                    <a type="button" class="btn  btn-warning" data-toggle="modal"
+                                                        data-target="#modal-view" id="{{.ID}}"
+                                                        onclick="viewCountry(this.id)">
+                                                        view
+                                                    </a>
+                                                    <a href="/admin/country/delete/{{.ID}}" type="button"
+                                                        class="btn btn-danger" data-toggle="modal"
+                                                        data-target="#modal-delete" id="{{.ID}}"
+                                                        onclick="deleteCountryData(this.id)">
+                                                        Delete
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {{end}}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th scope="col">Position</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Created By</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+                <!--------------------------------------------------- Modal Add --------------------------------------------------->
+                <div class="modal fade" id="modal-add">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#0069D9;">
+                                <h4 class="modal-title" style="color: white;">Add Country</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post" id="saveForm" class="tagForm">
+                                    {{.CSRFField}}
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" name="Name" class="form-control" id="name"
+                                                placeholder="Enter Country Name" />
+                                            <p style="color: red;" id="Name"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <div class="form-group">
+                                                <select class="custom-select" name="Status" id="status">
+                                                    <option value="1">Active</option>
+                                                    <option value="2">InActive</option>
+                                                </select>
+                                                <p style="color: red;" id="Status"></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Position</label>
+                                            <input type="number" name="Position" id="position" class="form-control">
+                                            <p style="color: red;" id="Position"></p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!--------------------------------------------------- Modal Update --------------------------------------------------->
+                <div class="modal fade" id="modal-update">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #20ac3e;">
+                                <h4 class="modal-title" style="color: white;">Update Country</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post" id="updateForm" class="tagUpForm">
+                                    {{.CSRFField}}
+                                    <input type="hidden" name="ID" id="UdID">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" name="Name" class="form-control" placeholder="Enter Name"
+                                                required id="UdName" />
+                                            <p style="color: red;" id="NameErr"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <div class="form-group">
+                                                <select class="custom-select" name="Status">
+                                                    <option value="1">Active</option>
+                                                    <option value="2">InActive</option>
+                                                </select>
+                                                <p style="color: red;" id="StatusErr"></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Position</label>
+                                            <input type="number" name="Position" class="form-control" id="UdPosition">
+                                            <p style="color: red;" id="PositionErr"></p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> <!-- /.modal-content -->
+                    </div> <!-- /.modal-dialog -->
+                </div>
+                <!--------------------------------------------------- Modal View --------------------------------------------------->
+                <div class="modal fade" id="modal-view">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#ffa600;">
+                                <h3 class="modal-title" style="color: white;">Country Details</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                            <div class="modal-body">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <tr>
+                                        <td>Name</td>
+                                        <td id="VName"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Position</td>
+                                        <td id="VPosition"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Status</td>
+                                        <td id="VStatus"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div>
+                <!--------------------------------------------------- Modal Delete --------------------------------------------------->
+                <div class="modal fade" id="modal-delete">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #e42525;">
+                                <h4 class="modal-title" style="color: white;">Are you sure you want to delete
+                                    Country
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="deleteCountry" action="get">
+                                {{.CSRFField}}
+                                <input type="hidden" name="ID" id="dID" />
+                                <div class="modal-body">
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <tr>
+                                            <td>Name</td>
+                                            <td id="dName"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Position</td>
+                                            <td id="dPosition"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Status</td>
+                                            <td id="dStatus"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </div>
+                            </form>
+                        </div> <!-- /.modal-content -->
+                    </div> <!-- /.modal-dialog -->
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        {{ template "footer"}}
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+
+    <!-- ./wrapper -->
+    <!-- jQuery -->
+    <script src="/static/js/admin-lte/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/static/js/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="/static/js/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/jszip/jszip.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="/static/js/admin-lte/pleugins/pdfmake/vfs_fonts.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="/static/js/admin-lte/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- Toastr -->
+    <script src="/static/js/admin-lte/plugins/toastr/toastr.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/static/js/admin-lte/dist/js/adminlte.min.js"></script>
+    <!-- Page specific script -->
+    <script>
+        // create : Country
+        $(document).ready(function () {
+            $('#saveForm').submit(function (e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
+                });
+                $.ajax({
+                    url: "/admin/country/create",
+                    method: 'post',
+                    data: $('form.tagForm').serialize(),
+                    success: function (data) {
+                        var obj = jQuery.parseJSON(data);
+                        var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        if (obj.Status) {
+                            $('#saveForm').trigger("reset");
+                            Toast.fire({
+                                icon: 'success',
+                                title: obj.Message
+                            })
+                            setTimeout(function () { window.location.reload(true); }, 1000);
+                            $('#modal-add').modal('hide');
+                        } else {
+                            $("#Name").empty().append(obj.FormErrors.Name);
+                            $("#Position").empty().append(obj.FormErrors.Position);
+                            $("#Status").empty().append(obj.FormErrors.Status);
+                            Toast.fire({
+                                icon: 'error',
+                                title: "Please Insert All Data Carefully."
+                            })
+                        }
+                    },
+                });
+                // reset all form data after close modal
+                $('#modal-add').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                    $("#Name").empty();
+                    $("#Position").empty();
+                    $("#Status").empty();
+                });
+            });
+        });
+        // view : Country
+        function viewCountry(id) {
+            $.ajax({
+                url: "/admin/country/view/" + id,
+                method: 'get',
+                success: function (data) {
+                    var obj = jQuery.parseJSON(data);
+                    $("#VName").empty().append(obj.Form.Name);
+                    $("#VPosition").empty().append(obj.Form.Position);
+                    $("#VStatus").empty().append(obj.Form.Status);
+                }
+            })
+        }
+        // Update : Country View
+        function viewCountryUpdateData(id) {
+            $.ajax({
+                url: "/admin/country/view/" + id,
+                method: 'get',
+                success: function (data) {
+                    var obj = jQuery.parseJSON(data);
+                    console.log("----", obj)
+                    $("#UdID").empty().val(obj.Form.ID);
+                    $("#UdName").empty().val(obj.Form.Name);
+                    $("#UdPosition").empty().val(obj.Form.Position);
+                    $("#UdStatus").empty().val(obj.Form.Status);
+                }
+            });
+        }
+        // Update : Country Submit
+        $(document).ready(function () {
+            $('#updateForm').submit(function (e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
+                });
+                var id = jQuery('#UdID').val();
+                $.ajax({
+                    url: "/admin/country/update/" + id,
+                    method: 'post',
+                    data: $('form.tagUpForm').serialize(),
+                    success: function (data) {
+                        var obj = jQuery.parseJSON(data);
+                        var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        if (obj.Status) {
+                            $('updateForm').trigger("reset");
+                            Toast.fire({
+                                icon: 'success',
+                                title: obj.Message
+                            })
+                            setTimeout(function () { window.location.reload(true); }, 1000);
+                            $('#modal-update').modal('hide');
+                        } else {
+                            $("#NameErr").empty().append(obj.FormErrors.Name);
+                            $("#PositionErr").empty().append(obj.FormErrors.Position);
+                            $("#StatusErr").empty().append(obj.FormErrors.Status);
+                            Toast.fire({
+                                icon: 'error',
+                                title: "Please Insert All Data Carefully."
+                            })
+                        }
+                    }
+                });
+                // reset all form data after close modal
+                $('#modal-update').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                    $("#NameErr").empty();
+                    $("#DescriptionErr").empty();
+                    $("#PositionErr").empty();
+                    $("#StatusErr").empty();
+                });
+            });
+        });
+        // Delete : Country View
+        function deleteCountryData(id) {
+            $.ajax({
+                url: "/admin/country/view/" + id,
+                method: 'get',
+                success: function (data) {
+                    var obj = jQuery.parseJSON(data);
+                    $("#dID").empty().val(obj.Form.ID);
+                    $("#dName").empty().append(obj.Form.Name);
+                    $("#dPosition").empty().append(obj.Form.Position);
+                    $("#dStatus").empty().append(obj.Form.Status);
+                }
+            })
+        }
+        // delete country
+        $(document).ready(function () {
+            $('#deleteCountry').submit(function (e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
+                });
+                var id = jQuery('#dID').val();
+                $.ajax({
+                    url: "/admin/country/delete/" + id,
+                    method: 'get',
+                    success: function (data) {
+                        var obj = jQuery.parseJSON(data);
+                        var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        if (obj.Status) {
+                            $('deleteCountry').trigger("reset");
+                            Toast.fire({
+                                icon: 'success',
+                                title: obj.Message
+                            })
+                            setTimeout(function () { window.location.reload(true); }, 1000);
+                            $('#modal-delete').modal('hide');
+                        }
+                    }
+                });
+            });
+        });
+        // Data Tables for this table
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+</body>
+
+</html>

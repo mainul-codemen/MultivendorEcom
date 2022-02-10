@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Admin | MVEC</title>
+{{ template "head"}}
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        {{ template "admin_navbar"}}
+        {{ template "side_nav"}}
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Delivery Charge</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/admin/index">Home</a></li>
+                                <li class="breadcrumb-item active"><a href="/admin/delivery-charge">Delivery
+                                        Charge</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#modal-add" onclick="viewDeliveryChargeForm()">Add
+                                        Delivery Charge
+                                    </button>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body ">
+                                    <table id="example1" class="table table-bordered table-striped table-responsive-lg">
+                                        <thead>
+                                            <tr class="table-secondary">
+                                                <th scope="col">Country Name</th>
+                                                <th scope="col">District Name</th>
+                                                <th scope="col">Station Name</th>
+                                                <th scope="col">Min Weight</th>
+                                                <th scope="col">Max Weight</th>
+                                                <th scope="col">Delivery Charge</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{range .Data}}
+                                            <tr>
+                                                <td>{{.CountryName}}</td>
+                                                <td>{{.DistrictName}}</td>
+                                                <td>{{.StationName}}</td>
+                                                <td>{{.MinWeight}}</td>
+                                                <td>{{.MaxWeight}}</td>
+                                                <td>{{.DeliveryCharge}}</td>
+                                                <td style="text-align: center;">
+                                                    {{if eq .Status 1}}
+                                                    <a type="button" class="btn btn-success btn-sm"
+                                                        href="/admin/delivery-charge/update/status/{{.ID}}">Active</a>
+                                                    {{else}}
+                                                    <a type="button" class="btn btn-info btn-sm"
+                                                        href="/admin/delivery-charge/update/status/{{.ID}}">Inactive</a>
+                                                    {{end}}
+                                                <td>{{.CreatedBy}}</td>
+                                                <td>
+                                                    <a href="/admin/delivery-charge/update/{{.ID}}" type="button"
+                                                        class="btn btn-success" data-toggle="modal"
+                                                        data-target="#modal-update" id="{{.ID}}"
+                                                        onclick="viewDeliveryChargeUpdateData(this.id)">
+                                                        Update
+                                                    </a>
+                                                    <a type="button" class="btn  btn-warning" data-toggle="modal"
+                                                        data-target="#modal-view" id="{{.ID}}"
+                                                        onclick="viewDeliveryCharge(this.id)">
+                                                        view
+                                                    </a>
+                                                    <a href="/admin/delivery-charge/delete/{{.ID}}" type="button"
+                                                        class="btn btn-danger" data-toggle="modal"
+                                                        data-target="#modal-delete" id="{{.ID}}"
+                                                        onclick="deleteDeliveryChargeData(this.id)">
+                                                        Delete
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {{end}}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th scope="col">Country Name</th>
+                                                <th scope="col">District Name</th>
+                                                <th scope="col">Station Name</th>
+                                                <th scope="col">Min Weight</th>
+                                                <th scope="col">Max Weight</th>
+                                                <th scope="col">Delivery Charge</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+                <!--------------------------------------------------- Modal Add --------------------------------------------------->
+                <div class="modal fade" id="modal-add">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#0069D9;">
+                                <h4 class="modal-title" style="color: white;">Add Delivery Charge</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post" id="saveForm" class="tag
+                                4Form">
+                                    {{.CSRFField}}
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Country</label>
+                                            <div class="form-group">
+                                                <select class="custom-select" id="countrydd">
+                                                    <option value="">Select country</option>
+                                                </select>
+                                                <p style="color: red;" id="CountryID"></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>District</label>
+                                            <div class="form-group">
+                                                <select class="custom-select" id="districtdd">
+                                                    <option value="">Select District</option>
+                                                </select>
+                                                <p style="color: red;" id="DistrictID"></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Station</label>
+                                            <div class="form-group">
+                                                <select class="custom-select" id="stationdd">
+                                                    <option value="">Select Station</option>
+                                                </select>
+                                                <p style="color: red;" id="StationID"></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Min Weight</label>
+                                                    <input type="text" name="MinWeight" class="form-control"
+                                                        id="delivery-chargeMinWeight" placeholder="Enter MinWeight" />
+                                                    <p style="color: red;" id="MinWeight"></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Max Weight</label>
+                                                    <input type="text" name="MaxWeight" class="form-control"
+                                                        id="delivery-chargeMaxWeight" placeholder="Enter MaxWeight" />
+                                                    <p style="color: red;" id="MaxWeight"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Delivery Charge</label>
+                                                    <input type="text" name="DeliveryCharge" class="form-control"
+                                                        id="delivery-chargeDeliveryCharge"
+                                                        placeholder="Enter DeliveryCharge" />
+                                                    <p style="color: red;" id="DeliveryCharge"></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Status</label>
+                                                    <div class="form-group">
+                                                        <select class="custom-select" name="CompanyStatus" id="status">
+                                                            <option value="1">Active</option>
+                                                            <option value="2">InActive</option>
+                                                        </select>
+                                                        <p style="color: red;" id="Status"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+        </div>
+        <!--------------------------------------------------- Modal Update --------------------------------------------------->
+        <div class="modal fade" id="modal-update">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #20ac3e;">
+                        <h4 class="modal-title" style="color: white;">Update DeliveryCharge</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" method="post" id="updateForm" class="tagUpForm">
+                            {{.CSRFField}}
+                            <input type="hidden" name="ID" id="UdID">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Country</label>
+                                    <div class="form-group">
+                                        <select id="countrydd-update" class="custom-select">
+                                            <option value="">Select Country</option>
+                                        </select>
+                                        <p style="color: red;" id="CountryIDErr"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>District</label>
+                                    <div class="form-group">
+                                        <select id="districtdd-update" class="custom-select">
+                                            <option value="">Select District</option>
+                                        </select>
+                                        <p style="color: red;" id="DistrictIDErr"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Station</label>
+                                    <div class="form-group">
+                                        <select id="stationdd-update" class="custom-select">
+                                            <option value="">Select Station</option>
+                                        </select>
+                                        <p style="color: red;" id="StationIDErr"></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Min Weight</label>
+                                            <input type="text" name="MinWeight" class="form-control"
+                                                id="Uddelivery-chargePhone1" placeholder="Enter Delivery Charge" />
+                                            <p style="color: red;" id="MinWeightErr"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Max Weight</label>
+                                            <input type="text" name="MaxWeight" class="form-control"
+                                                id="Uddelivery-chargePhone1" placeholder="Enter Delivery Charge" />
+                                            <p style="color: red;" id="MaxWeightErr"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Delivery Charge</label>
+                                            <input type="text" name="Delivery Charge" class="form-control"
+                                                id="Uddelivery-chargeEmail" placeholder="Enter Delivery Charge" />
+                                            <p style="color: red;" id="DeliveryChargeErr"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <div class="form-group">
+                                                <select class="custom-select" name="Status">
+                                                    <option value="1">Active</option>
+                                                    <option value="2">InActive</option>
+                                                </select>
+                                                <p style="color: red;" id="StatusErr"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div> <!-- /.modal-content -->
+            </div> <!-- /.modal-dialog -->
+        </div>
+        <!--------------------------------------------------- Modal View --------------------------------------------------->
+        <div class="modal fade" id="modal-view">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#ffa600;">
+                        <h3 class="modal-title" style="color: white;">DeliveryCharge Details</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <tr>
+                                <td>Country Name</td>
+                                <td id="VCountryName"></td>
+                            </tr>
+                            <tr>
+                                <td>District Name</td>
+                                <td id="VDistrictName"></td>
+                            </tr>
+                            <tr>
+                                <td>Station Name</td>
+                                <td id="VStationName"></td>
+                            </tr>
+                            <tr>
+                                <td>Min Weight</td>
+                                <td id="VMinWeight"></td>
+                            </tr>
+                            <tr>
+                                <td>Max Weight</td>
+                                <td id="VMaxWeight"></td>
+                            </tr>
+                            <tr>
+                                <td>Delivery Charge</td>
+                                <td id="viewDeliveryCharge"></td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td id="VStatus"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--------------------------------------------------- Modal Delete --------------------------------------------------->
+        <div class="modal fade" id="modal-delete">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #e42525;">
+                        <h4 class="modal-title" style="color: white;">Are you sure you want to delete
+                            DeliveryCharge
+                        </h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="deleteDeliveryCharge" action="get">
+                        {{.CSRFField}}
+                        <input type="hidden" name="ID" id="dID" />
+                        <div class="modal-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <tr>
+                                    <td>Name</td>
+                                    <td id="dCompanyName"></td>
+                                </tr>
+                                <tr>
+                                    <td>Country Name</td>
+                                    <td id="dCountryName"></td>
+                                </tr>
+                                <tr>
+                                    <td>District Name</td>
+                                    <td id="dDistrictName"></td>
+                                </tr>
+                                <tr>
+                                    <td>Station Name</td>
+                                    <td id="dStationName"></td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td id="dCompanyStatus"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+                    </form>
+                </div> <!-- /.modal-content -->
+            </div> <!-- /.modal-dialog -->
+        </div>
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    {{ template "footer"}}
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    <!-- jQuery -->
+    <script src="/static/js/admin-lte/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/static/js/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="/static/js/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/jszip/jszip.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="/static/js/admin-lte/pleugins/pdfmake/vfs_fonts.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="/static/js/admin-lte/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- Toastr -->
+    <script src="/static/js/admin-lte/plugins/toastr/toastr.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/static/js/admin-lte/dist/js/adminlte.min.js"></script>
+    <!-- Page specific script -->
+    <script src="/static/js/custom-js/admin-panel-custom-js/delivery_charge.js"></script>
+
+    <script>
+        // Data Tables for this table
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+</body>
+
+</html>

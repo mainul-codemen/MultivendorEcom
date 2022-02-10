@@ -1,0 +1,188 @@
+{{ define "side_nav"}}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <!-- Brand Logo -->
+  <a href="/admin/index" class="brand-link">
+    <emmg src="/static/admin-img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+      style="opacity: .8">
+      <span class="brand-text font-weight-light">AdminLTE 3</span>
+  </a>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Sidebar user (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <emmg src="/static/admin-img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+      </div>
+      <div class="info">
+        <a href="#" class="d-block">Alexander Pierce</a>
+      </div>
+    </div>
+
+    <!-- SidebarSearch Form -->
+    <div class="form-inline">
+      <div class="input-group" data-widget="sidebar-search">
+        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-sidebar">
+            <em class="fas fa-search fa-fw"></em>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <!-- Add icons to the links using the .nav-icon class
+             with font-awesome or any other icon font library -->
+        <li class="nav-item menu-open">
+          <a href="/admin/index" class="nav-link active">
+            <em class="nav-icon fas fa-tachometer-alt"></em>
+            <p>
+              Dashboard
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <em class="nav-icon fas fa-tree"></em>
+            <p>
+              Designation
+              <em class="fas fa-angle-left right"></em>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/designation" class="nav-link">
+                <em class="far fa-circle nav-icon"></em>
+                <p>Designation List</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <em class="nav-icon fas fa-tree"></em>
+            <p>
+              Country
+              <em class="fas fa-angle-left right"></em>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/country" class="nav-link">
+                <em class="far fa-circle nav-icon"></em>
+                <p>Country List</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <em class="nav-icon fas fa-tree"></em>
+            <p>
+              District
+              <em class="fas fa-angle-left right"></em>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/district" class="nav-link">
+                <em class="far fa-circle nav-icon"></em>
+                <p>District List</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <em class="nav-icon fas fa-tree"></em>
+            <p>
+              Station
+              <em class="fas fa-angle-left right"></em>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/station" class="nav-link">
+                <em class="far fa-circle nav-icon"></em>
+                <p>Station List</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <em class="nav-icon fas fa-tree"></em>
+            <p>
+              Hub
+              <em class="fas fa-angle-left right"></em>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/hub" class="nav-link">
+                <em class="far fa-circle nav-icon"></em>
+                <p>Hub List</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <em class="nav-icon fas fa-tree"></em>
+            <p>
+              Branch
+              <em class="fas fa-angle-left right"></em>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/branch" class="nav-link">
+                <em class="far fa-circle nav-icon"></em>
+                <p>Branch List</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <em class="nav-icon fas fa-tree"></em>
+            <p>
+              Delivery Company
+              <em class="fas fa-angle-left right"></em>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/delivery-company" class="nav-link">
+                <em class="far fa-circle nav-icon"></em>
+                <p>Delivery Company List</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <em class="nav-icon fas fa-tree"></em>
+            <p>
+              Delivery Charge
+              <em class="fas fa-angle-left right"></em>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/delivery-charge" class="nav-link">
+                <em class="far fa-circle nav-icon"></em>
+                <p>Delivery Charge List</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>
+{{ end }}
