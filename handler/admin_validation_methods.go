@@ -156,13 +156,13 @@ func checkDuplicateDeliveryCompanyEmail(s *Server, email string, id string) vali
 	}
 }
 
-func checkDuplicateDeliveryCompany(s *Server, email string, id string) validation.RuleFunc {
+func checkDuplicateDeliveryCompany(s *Server, dcn, id string) validation.RuleFunc {
 	return func(value interface{}) error {
-		resp, _ := s.st.GetHubBy(context.Background(), email)
+		resp, _ := s.st.GetDeliveryCompanyBy(context.Background(), dcn)
 		if resp == nil || resp.ID == id {
 			return nil
 		}
-		return fmt.Errorf(PhnEx, email)
+		return fmt.Errorf(PhnEx, id)
 	}
 }
 

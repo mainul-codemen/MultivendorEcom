@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"net/http"
 	"regexp"
@@ -22,7 +21,6 @@ type DeliveryCompanyTempData struct {
 	DistrictData []DistrictForm
 	CountryData  []CountryForm
 	StationData  []StationForm
-	FormAction   string
 }
 
 func (s DeliveryCompanyForm) Validate(srv *Server, id string) error {
@@ -34,15 +32,18 @@ func (s DeliveryCompanyForm) Validate(srv *Server, id string) error {
 			validation.By(checkDuplicateDeliveryCompany(srv, s.CompanyName, id)),
 		),
 		validation.Field(&s.Phone,
-			validation.Required.Error("The deliveryCompany phone 1 is required"),
-			validation.Length(3, 11).Error("Please insert name between 3 to 11"),
+			validation.Required.Error("The phone number is required"),
+			validation.Length(11, 11).Error("Please enter exact 11 digit"),
 			validation.Match(regexp.MustCompile("^[0-9_ ]*$")).Error("Must be digit. No alphabet is allowed."),
 			validation.By(checkDuplicateDeliveryCompanyPhone(srv, s.Phone, id)),
 		),
 		validation.Field(&s.Email,
 			validation.Required.Error("The name email is required"),
-			validation.Length(3, 40).Error("Please insert name between 3 to 40"),
+			validation.Length(3, 40).Error("Please insert name between 10 to 40"),
 			validation.By(checkDuplicateDeliveryCompanyEmail(srv, s.Email, id)),
+		),
+		validation.Field(&s.CompanyAddress,
+			validation.Required.Error("The company address is required"),
 		),
 		validation.Field(&s.Position,
 			validation.Required.Error(posReq),
@@ -59,11 +60,11 @@ func (s DeliveryCompanyForm) Validate(srv *Server, id string) error {
 		),
 		validation.Field(&s.CountryID,
 			validation.Required.Error("The country name is required"),
-			validation.By(checkCountryExists(srv, s.DistrictID)),
+			validation.By(checkCountryExists(srv, s.CountryID)),
 		),
 		validation.Field(&s.StationID,
 			validation.Required.Error("The station name is required"),
-			validation.By(checkDuplicateStation(srv, s.StationID, id)),
+			validation.By(checkStationExists(srv, s.StationID)),
 		),
 	)
 }
@@ -96,10 +97,9 @@ func (s *Server) deliveryCompanyFormHandler(w http.ResponseWriter, r *http.Reque
 	logger.Info("deliveryCompany submit")
 	disdata := s.districtList(r, w, true)
 	cntrydata := s.countryList(r, w, true)
-	stndata := s.stationList(r, w,true)
+	stndata := s.stationList(r, w, true)
 	data := DeliveryCompanyTempData{
 		CSRFField:    csrf.TemplateField(r),
-		FormErrors:   map[string]string{},
 		DistrictData: disdata,
 		CountryData:  cntrydata,
 		StationData:  stndata,
@@ -114,13 +114,14 @@ func (s *Server) submitDeliveryCompanyHandler(w http.ResponseWriter, r *http.Req
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
+
 	var form DeliveryCompanyForm
 	err := s.decoder.Decode(&form, r.PostForm)
 	if err != nil {
 		logger.Error(err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
 	}
-	fmt.Print("##############", form)
+
 	if err := form.Validate(s, ""); err != nil {
 		vErrs := map[string]string{}
 		if e, ok := err.(validation.Errors); ok {
@@ -156,6 +157,7 @@ func (s *Server) submitDeliveryCompanyHandler(w http.ResponseWriter, r *http.Req
 		logger.Error(err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
 	}
+
 	json.NewEncoder(w).Encode(msg)
 }
 
@@ -165,7 +167,7 @@ func (s *Server) updateDeliveryCompanyFormHandler(w http.ResponseWriter, r *http
 	id := params["id"]
 	disdata := s.districtList(r, w, true)
 	cntrydata := s.countryList(r, w, true)
-	stndata := s.stationList(r, w,true)
+	stndata := s.stationList(r, w, true)
 	brnFrm := s.getDeliveryCompanyInfo(r, id, w)
 	data := DeliveryCompanyTempData{
 		Form:         brnFrm,
@@ -305,7 +307,7 @@ func (s *Server) getDeliveryCompanyInfo(r *http.Request, id string, w http.Respo
 		logger.Error("error while get deliveryCompany " + err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
-	Form := DeliveryCompanyForm{
+	form := DeliveryCompanyForm{
 		ID:             id,
 		CompanyName:    res.CompanyName,
 		CountryID:      res.CountryID,
@@ -324,7 +326,7 @@ func (s *Server) getDeliveryCompanyInfo(r *http.Request, id string, w http.Respo
 		UpdatedAt:      res.UpdatedAt,
 		UpdatedBy:      res.UpdatedBy,
 	}
-	return Form
+	return form
 }
 
 func (*Server) storageToDCForm(deliveryCompanyList []storage.DeliveryCompany) []DeliveryCompanyForm {

@@ -48,7 +48,6 @@
                                                 <th scope="col">District Name</th>
                                                 <th scope="col">Station Name</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col">Created By</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </thead>
@@ -56,19 +55,18 @@
                                             {{range .Data}}
                                             <tr>
                                                 <td>{{.Position}}</td>
-                                                <td>{{.Name}}</td>
+                                                <td>{{.CompanyName}}</td>
                                                 <td>{{.CountryName}}</td>
                                                 <td>{{.DistrictName}}</td>
                                                 <td>{{.StationName}}</td>
                                                 <td style="text-align: center;">
-                                                    {{if eq .Status 1}}
+                                                    {{if eq .CompanyStatus 1}}
                                                     <a type="button" class="btn btn-success btn-sm"
                                                         href="/admin/delivery-company/update/status/{{.ID}}">Active</a>
                                                     {{else}}
                                                     <a type="button" class="btn btn-info btn-sm"
                                                         href="/admin/delivery-company/update/status/{{.ID}}">Inactive</a>
                                                     {{end}}
-                                                <td>{{.CreatedBy}}</td>
                                                 <td>
                                                     <a href="/admin/delivery-company/update/{{.ID}}" type="button"
                                                         class="btn btn-success" data-toggle="modal"
@@ -99,7 +97,6 @@
                                                 <th scope="col">District Name</th>
                                                 <th scope="col">Station Name</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col">Created By</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </tfoot>
@@ -132,16 +129,14 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Name</label>
-                                                    <input type="text" name="Name" class="form-control" id="name"
-                                                        placeholder="Enter Designation Name"
-                                                        value="{{.Form.CompanyName}}" />
+                                                    <input type="text" name="CompanyName" class="form-control" id="name"
+                                                        placeholder="Enter Designation Name" />
                                                     <p style="color: red;" id="Name"></p>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Country</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" id="countrydd">
-                                                            <option value="">Select country</option>
+                                                        <select class="custom-select" id="countrydd" name="CountryID">
                                                         </select>
                                                         <p style="color: red;" id="CountryID"></p>
                                                     </div>
@@ -149,8 +144,7 @@
                                                 <div class="form-group">
                                                     <label>District</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" id="districtdd">
-                                                            <option value="">Select District</option>
+                                                        <select class="custom-select" id="districtdd" name="DistrictID">
                                                         </select>
                                                         <p style="color: red;" id="DistrictID"></p>
                                                     </div>
@@ -158,8 +152,7 @@
                                                 <div class="form-group">
                                                     <label>Station</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" id="stationdd">
-                                                            <option value="">Select Station</option>
+                                                        <select class="custom-select" id="stationdd" name="StationID">
                                                         </select>
                                                         <p style="color: red;" id="StationID"></p>
                                                     </div>
@@ -181,8 +174,7 @@
                                                 <div class="form-group">
                                                     <label>Address</label>
                                                     <textarea class="form-control" rows="3"
-                                                        placeholder="Enter ..."></textarea>
-                                                    <p style="color: red;" id="HubAddress"></p>
+                                                        placeholder="Enter ..." name="CompanyAddress" id="companyAddress"></textarea>
                                                     <p style="color: red;" id="CompanyAddress"></p>
                                                 </div>
                                                 <div class="form-group">
@@ -315,7 +307,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header" style="background-color:#ffa600;">
-                                <h3 class="modal-title" style="color: white;">DeliveryCompany Details</h4>
+                                <h3 class="modal-title" style="color: white;">Delivery Company Details</h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -339,15 +331,15 @@
                                         <td id="VStationName"></td>
                                     </tr>
                                     <tr>
-                                        <td>DeliveryCompany Phone 1</td>
+                                        <td>Company Phone </td>
                                         <td id="VPhone"></td>
                                     </tr>
                                     <tr>
-                                        <td>DeliveryCompany Email</td>
+                                        <td>Company Email</td>
                                         <td id="VEmail"></td>
                                     </tr>
                                     <tr>
-                                        <td>DeliveryCompany Address</td>
+                                        <td>Company Address</td>
                                         <td id="VCompanyAddress"></td>
                                     </tr>
                                     <tr>

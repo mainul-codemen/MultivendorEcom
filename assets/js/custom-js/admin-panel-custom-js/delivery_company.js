@@ -8,34 +8,39 @@ function viewDeliveryCompanyForm() {
             dcDropdown(obj)
         }
     });
+    resetData();
 }
 
 
 // dropdown
 function dcDropdown(obj) {
-    var districts = obj.DistrictData
-    var dis = $("#districtdd");
-    $(districts).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.DistrictID);
-        dis.append(option);
-    });
     var cntrys = obj.CountryData
-    var cntry = $("#countrydd");
+    var cntrydd = $("#countrydd");
+    $("#countrydd").append('<option>--Select Country--</option>');
     $(cntrys).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.CountryID);
-        cntry.append(option);
+        option.val(this.ID);
+        cntrydd.append(option);
     });
+    var districts = obj.DistrictData
+    var dis = $("#districtdd");
+    $("#districtdd").append('<option>--Select District--</option>');
+    $(districts).each(function () {
+        var option = $("<option />");
+        option.html(this.Name);
+        option.val(this.ID);
+        dis.append(option);
+    });
+    
     var stations = obj.StationData
-    var stn = $("#stationdd");
+    var stndd = $("#stationdd");
+    $("#stationdd").append('<option>--Select Station--</option>');
     $(stations).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.StationID);
-        stn.append(option);
+        option.val(this.ID);
+        stndd.append(option);
     });
 }
 
@@ -83,7 +88,7 @@ $(document).ready(function () {
                     $("#StationID").empty().append(obj.FormErrors.StationID);
                     $("#Phone").empty().append(obj.FormErrors.Phone);
                     $("#Email").empty().append(obj.FormErrors.Email);
-                    $("#CompanyAddress").empty().append(obj.FormErrors.DeliveryCompanyAddress);
+                    $("#CompanyAddress").empty().append(obj.FormErrors.CompanyAddress);
                     $("#Position").empty().append(obj.FormErrors.Position);
                     $("#CompanyStatus").empty().append(obj.FormErrors.CompanyStatus);
                     Toast.fire({
@@ -116,7 +121,7 @@ function viewDeliveryCompany(id) {
         method: 'get',
         success: function (data) {
             var obj = jQuery.parseJSON(data);
-            $("#VCompanyName").empty().append(obj.Form.Name);
+            $("#VCompanyName").empty().append(obj.Form.CompanyName);
             $("#VCountryName").empty().append(obj.Form.CountryName);
             $("#VDistrictName").empty().append(obj.Form.DistrictName);
             $("#VStationName").empty().append(obj.Form.StationName);
@@ -124,7 +129,7 @@ function viewDeliveryCompany(id) {
             $("#VEmail").empty().append(obj.Form.Email);
             $("#VCompanyAddress").empty().append(obj.Form.CompanyAddress);
             $("#VPosition").empty().append(obj.Form.Position);
-            $("#VCompanyStatus").empty().append(obj.Form.CompanyStatus);
+            $("#VStatus").empty().append(obj.Form.CompanyStatus);
         }
     })
 }

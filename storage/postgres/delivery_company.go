@@ -8,7 +8,7 @@ import (
 	"github.com/MultivendorEcom/storage"
 )
 
-const insertdelivery_company = `
+const idcq = `
 INSERT INTO delivery_company(
 	company_name, 
 	company_status,
@@ -37,16 +37,16 @@ INSERT INTO delivery_company(
 	id
 `
 
-func (s *Storage) CreateDeliveryCompany(con context.Context, des storage.DeliveryCompany) (string, error) {
-	logger.Info("create delivery_company db")
-	stmt, err := s.db.PrepareNamed(insertdelivery_company)
+func (s *Storage) CreateDeliveryCompany(con context.Context, dc storage.DeliveryCompany) (string, error) {
+	logger.Info("create delivery company db")
+	stmt, err := s.db.PrepareNamed(idcq)
 	if err != nil {
 		logger.Error(ewpq + err.Error())
 		return "", err
 	}
 
 	var id string
-	if err := stmt.Get(&id, des); err != nil {
+	if err := stmt.Get(&id, dc); err != nil {
 		logger.Error(ewmq + err.Error())
 		return "", err
 	}
@@ -55,29 +55,29 @@ func (s *Storage) CreateDeliveryCompany(con context.Context, des storage.Deliver
 
 const delivery_companylist = `
 SELECT 
-  delivery_company.id,
-  delivery_company.company_name,
-  delivery_company.position,
-  delivery_company.phone,
-  delivery_company.email,
-  delivery_company.company_address,
-  country.name AS country_id,
-  district.name AS district_id,
-  station.name AS station_id,
-  delivery_company.company_status,
-  delivery_company.created_at,
-  delivery_company.created_by,
-  delivery_company.updated_at,
-  delivery_company.updated_by
-FROM delivery_company
+  dc.id,
+  dc.company_name,
+  dc.position,
+  dc.phone,
+  dc.email,
+  dc.company_address,
+  country.name AS country_name,
+  district.name AS district_name,
+  station.name AS station_name,
+  dc.company_status,
+  dc.created_at,
+  dc.created_by,
+  dc.updated_at,
+  dc.updated_by
+FROM delivery_company AS dc
 LEFT JOIN country ON country.id = country_id
 LEFT JOIN district ON district.id = district_id
 LEFT JOIN station ON station.id = station_id
-WHERE delivery_company.deleted_at IS NULL
+WHERE dc.deleted_at IS NULL
 `
 
 func (s *Storage) GetDeliveryCompanyList(ctx context.Context) ([]storage.DeliveryCompany, error) {
-	logger.Info("get all delivery_company")
+	logger.Info("get all delivery company")
 	dc := make([]storage.DeliveryCompany, 0)
 	if err := s.db.Select(&dc, delivery_companylist); err != nil {
 		logger.Error(err.Error())
@@ -86,42 +86,43 @@ func (s *Storage) GetDeliveryCompanyList(ctx context.Context) ([]storage.Deliver
 	return dc, nil
 }
 
-const gdelivery_company = `
+const gdcq = `
 SELECT
-	delivery_company.id,
-	delivery_company.company_name,
-	delivery_company.position,
-	delivery_company.country_id,
-	delivery_company.company_id,
-	delivery_company.station_id,
-	delivery_company.phone,
-	delivery_company.email,
-	delivery_company.company_address,
+	dc.id,
+	dc.company_name,
+	dc.position,
+	dc.country_id,
+	dc.district_id,
+	dc.station_id,
+	dc.phone,
+	dc.email,
+	dc.company_address,
 	country.name AS country_name,
 	district.name AS district_name,
 	station.name AS station_name,
-	delivery_company.company_status,
-	delivery_company.created_at,
-	delivery_company.created_by,
-	delivery_company.updated_at,
-	delivery_company.updated_by
-FROM delivery_company
+	dc.company_status,
+	dc.created_at,
+	dc.created_by,
+	dc.updated_at,
+	dc.updated_by
+FROM delivery_company AS dc
 LEFT JOIN country ON country.id = country_id
-LEFT JOIN district ON delivery_company.id = district_id
+LEFT JOIN district ON district.id = district_id
 LEFT JOIN station ON station.id = station_id
-WHERE (delivery_company.id = $1 OR delivery_company.delivery_company_name = $1 OR delivery_company_phone_1 OR delivery_company_phone_2 OR delivery_company_email) AND  delivery_company.deleted_at IS NULL
+WHERE (dc.id = $1 OR dc.company_name = $1 OR dc.phone=$1 OR dc.email=$1) AND  dc.deleted_at IS NULL
 `
 
-func (s *Storage) GetDeliveryCompanyBy(ctx context.Context, idname string) (*storage.DeliveryCompany, error) {
+func (s *Storage) GetDeliveryCompanyBy(ctx context.Context, data string) (*storage.DeliveryCompany, error) {
 	var dc storage.DeliveryCompany
-	if err := s.db.Get(&dc, gdelivery_company, idname); err != nil {
-		logger.Error("error while get delivery_company data. " + err.Error())
-		return nil, fmt.Errorf("executing delivery_company details: %w", err)
+	if err := s.db.Get(&dc, gdcq, data); err != nil {
+		logger.Error("error while get delivery company data. " + err.Error())
+		return nil, fmt.Errorf("executing delivery company details: %w", err)
 	}
+
 	return &dc, nil
 }
 
-const gtdelivery_companyBypn = `
+const getps = `
 SELECT
 	id,
     company_name, 
@@ -143,9 +144,9 @@ WHERE position = $1 AND deleted_at IS NULL
 
 func (s *Storage) GetDeliveryCompanyByPosition(ctx context.Context, pos int32) (*storage.DeliveryCompany, error) {
 	var dc storage.DeliveryCompany
-	if err := s.db.Get(&dc, gtdelivery_companyBypn, pos); err != nil {
+	if err := s.db.Get(&dc, getps, pos); err != nil {
 		logger.Error("error while get delivery_company data. " + err.Error())
-		return nil, fmt.Errorf("executing delivery_company details: %w", err)
+		return nil, fmt.Errorf("executing delivery company details: %w", err)
 	}
 	return &dc, nil
 }
@@ -186,7 +187,7 @@ const updateDeliveryCompanyStatus = `
 	UPDATE 
 		delivery_company 
 	SET
-		status = :status,
+		company_status = :company_status,
 		updated_at = now(),
 		updated_by = :updated_by
 	WHERE 
