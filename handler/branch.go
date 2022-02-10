@@ -21,7 +21,6 @@ type BranchTempData struct {
 	DistrictData []DistrictForm
 	CountryData  []CountryForm
 	StationData  []StationForm
-	FormAction   string
 }
 
 func (s BranchForm) Validate(srv *Server, id string) error {
@@ -37,12 +36,6 @@ func (s BranchForm) Validate(srv *Server, id string) error {
 			validation.Length(3, 11).Error("Please insert name between 3 to 11"),
 			validation.Match(regexp.MustCompile("^[0-9_ ]*$")).Error("Must be digit. No alphabet is allowed."),
 			validation.By(checkDuplicateBranchPhone(srv, s.BranchPhone1, id)),
-		),
-		validation.Field(&s.BranchPhone2,
-			validation.Required.Error("The branch phone 2 is required"),
-			validation.Length(3, 11).Error("Please insert name between 3 to 11"),
-			validation.Match(regexp.MustCompile("^[0-9_ ]*$")).Error("Must be digit. No alphabet is allowed."),
-			validation.By(checkDuplicateBranchPhone(srv, s.BranchPhone2, id)),
 		),
 		validation.Field(&s.BranchEmail,
 			validation.Required.Error("The name email is required"),
@@ -99,12 +92,11 @@ func (s *Server) branchListHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) branchFormHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("branch submit")
-	disdata := s.districtList(r, w, true)
+	disdata := s.districtList(r, w, true) // status = active
 	cntrydata := s.countryList(r, w, true)
-	stndata := s.stationList(r, w,true)
+	stndata := s.stationList(r, w, true)
 	data := BranchTempData{
 		CSRFField:    csrf.TemplateField(r),
-		FormErrors:   map[string]string{},
 		DistrictData: disdata,
 		CountryData:  cntrydata,
 		StationData:  stndata,
@@ -170,7 +162,7 @@ func (s *Server) updateBranchFormHandler(w http.ResponseWriter, r *http.Request)
 	id := params["id"]
 	disdata := s.districtList(r, w, true)
 	cntrydata := s.countryList(r, w, true)
-	stndata := s.stationList(r, w,true)
+	stndata := s.stationList(r, w, true)
 	brnFrm := s.getBranchInfo(r, id, w)
 	data := BranchTempData{
 		Form:         brnFrm,

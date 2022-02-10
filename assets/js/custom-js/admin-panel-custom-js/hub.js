@@ -4,17 +4,17 @@ function viewHubForm() {
         url: '/admin/hub/create',
         method: 'get',
         success: function (data) {
-            var obj = jQuery.parseJSON(data);
-            var cntrys = obj.CountryData
-            var cntry = $("#countrydd");
+            var obj = jQuery.parseJSON(data)
+            var countries = obj.CountryData
+            var cntryDdd = $("#countrydd");
             $("#countrydd").append('<option>--Select Country--</option>');
-            $(cntrys).each(function () {
+            $(countries).each(function () {
                 var option = $("<option />");
                 option.html(this.Name);
                 option.val(this.ID);
-                cntry.append(option);
+                cntryDdd.append(option);
             });
-            
+            console.log("########################")
             var districts = obj.DistrictData
             var dis = $("#districtdd");
             $("#districtdd").append('<option>--Select District--</option>');
@@ -24,7 +24,7 @@ function viewHubForm() {
                 option.val(this.ID);
                 dis.append(option);
             });
-    
+
             var stations = obj.StationData
             var stn = $("#stationdd");
             $("#stationdd").append('<option>--Select Station--</option>');

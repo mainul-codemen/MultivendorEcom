@@ -47,7 +47,6 @@
                                                 <th scope="col">District Name</th>
                                                 <th scope="col">Station Name</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col">Created By</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </thead>
@@ -67,7 +66,6 @@
                                                     <a type="button" class="btn btn-info btn-sm"
                                                         href="/admin/branch/update/status/{{.ID}}">Inactive</a>
                                                     {{end}}
-                                                <td>{{.CreatedBy}}</td>
                                                 <td>
                                                     <a href="/admin/branch/update/{{.ID}}" type="button"
                                                         class="btn btn-success" data-toggle="modal"
@@ -98,7 +96,6 @@
                                                 <th scope="col">District Name</th>
                                                 <th scope="col">Station Name</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col">Created By</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </tfoot>
@@ -132,14 +129,13 @@
                                                 <div class="form-group">
                                                     <label>Name</label>
                                                     <input type="text" name="Name" class="form-control" id="name"
-                                                        placeholder="Enter Designation Name" />
+                                                        placeholder="Enter Branch Name" />
                                                     <p style="color: red;" id="Name"></p>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Country</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" id="countrydd">
-                                                            <option value="">Select country</option>
+                                                        <select class="custom-select" id="countrydd" name="CountryID">
                                                         </select>
                                                         <p style="color: red;" id="CountryID"></p>
                                                     </div>
@@ -147,18 +143,16 @@
                                                 <div class="form-group">
                                                     <label>District</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" id="districtdd">
-                                                            <option value="">Select District</option>
-                                                        </select>
+                                                        <select class="custom-select" id="districtdd"
+                                                            name="DistrictID"></select>
                                                         <p style="color: red;" id="DistrictID"></p>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Station</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" id="stationdd">
-                                                            <option value="">Select Station</option>
-                                                        </select>
+                                                        <select class="custom-select" id="stationdd"
+                                                            name="StationID"></select>
                                                         <p style="color: red;" id="StationID"></p>
                                                     </div>
                                                 </div>
@@ -184,8 +178,8 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Branch Address</label>
-                                                    <textarea class="form-control" rows="3"
-                                                        placeholder="Enter ..."></textarea>
+                                                    <textarea class="form-control" rows="3" placeholder="Enter ..."
+                                                        name="BranchAddress"></textarea>
                                                     <p style="color: red;" id="BranchAddress"></p>
                                                 </div>
                                                 <div class="row">
@@ -205,7 +199,7 @@
                                                         <div class="form-group">
                                                             <label>Position</label>
                                                             <input type="number" name="Position" id="position"
-                                                                class="form-control" value="{{.Form.Position}}">
+                                                                class="form-control">
                                                             <p style="color: red;" id="Position"></p>
                                                         </div>
                                                     </div>

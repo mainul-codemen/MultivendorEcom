@@ -13,30 +13,32 @@ function viewBranchForm() {
 
 // dropdown
 function branchDropdown(obj) {
-    var districts = obj.DistrictData
-    var dis = $("#districtdd");
-    $(districts).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.DistrictID);
-        dis.append(option);
-    });
     var cntrys = obj.CountryData
-    var cntry = $("#countrydd");
+    var cntrydd = $("#countrydd");
+    $("#countrydd").append('<option>--Select Country--</option>');
     $(cntrys).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.CountryID);
-        cntry.append(option);
+        option.val(this.ID);
+        cntrydd.append(option);
     });
-    var stations = obj.StationData
-    var stn = $("#stationdd");
-    $(stations).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.StationID);
-        stn.append(option);
-    });
+    // var districts = obj.DistrictData
+    // var dis = $("#districtdd");
+    // $(districts).each(function () {
+    //     var option = $("<option />");
+    //     option.html(this.Name);
+    //     option.val(this.DistrictID);
+    //     dis.append(option);
+    // });
+    
+    // var stations = obj.StationData
+    // var stn = $("#stationdd");
+    // $(stations).each(function () {
+    //     var option = $("<option />");
+    //     option.html(this.Name);
+    //     option.val(this.StationID);
+    //     stn.append(option);
+    // });
 }
 
 // dropdown Update
