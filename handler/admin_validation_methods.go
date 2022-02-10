@@ -92,7 +92,20 @@ func checkCountryExists(s *Server, cid string) validation.RuleFunc {
 
 	}
 }
+func checkStationExists(s *Server, sid string) validation.RuleFunc {
+	return func(value interface{}) error {
+		str := fmt.Errorf(" Station not exists")
+		res, _ := s.st.GetStationBy(context.Background(), sid)
+		if res == nil {
+			return str
+		}
+		if res != nil || res.ID == sid {
+			return nil
+		}
+		return str
 
+	}
+}
 func checkDuplicateHubPhone(s *Server, phone string, id string) validation.RuleFunc {
 	return func(value interface{}) error {
 		resp, _ := s.st.GetHubBy(context.Background(), phone)

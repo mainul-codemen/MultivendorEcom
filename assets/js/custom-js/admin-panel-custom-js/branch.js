@@ -22,52 +22,27 @@ function branchDropdown(obj) {
         option.val(this.ID);
         cntrydd.append(option);
     });
-    // var districts = obj.DistrictData
-    // var dis = $("#districtdd");
-    // $(districts).each(function () {
-    //     var option = $("<option />");
-    //     option.html(this.Name);
-    //     option.val(this.DistrictID);
-    //     dis.append(option);
-    // });
-    
-    // var stations = obj.StationData
-    // var stn = $("#stationdd");
-    // $(stations).each(function () {
-    //     var option = $("<option />");
-    //     option.html(this.Name);
-    //     option.val(this.StationID);
-    //     stn.append(option);
-    // });
-}
-
-// dropdown Update
-function branchDropdownUpdate(obj) {
     var districts = obj.DistrictData
-    var dis = $("#districtdd-update");
+    var dis = $("#districtdd");
+    $("#districtdd").append('<option>--Select District--</option>');
     $(districts).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.DistrictID);
+        option.val(this.ID);
         dis.append(option);
     });
-    var cntrys = obj.CountryData
-    var cntry = $("#countrydd-update");
-    $(cntrys).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.CountryID);
-        cntry.append(option);
-    });
+    
     var stations = obj.StationData
-    var stn = $("#stationdd-update");
+    var stndd = $("#stationdd");
+    $("#stationdd").append('<option>--Select Station--</option>');
     $(stations).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.StationID);
-        stn.append(option);
+        option.val(this.ID);
+        stndd.append(option);
     });
 }
+
 // reset dropdown data
 function resetData() {
     // reset all form data after close modal
@@ -78,17 +53,6 @@ function resetData() {
         $("#stationdd").empty();
     });
 }
-// reset dropdown data update
-function resetDataUpdate() {
-    // reset all form data after close modal
-    $('#modal-update').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
-        $("#countrydd-update").empty();
-        $("#districtdd-update").empty();
-        $("#stationdd-update").empty();
-    });
-}
-
 // create
 $(document).ready(function () {
     $('#saveForm').submit(function (e) {
@@ -167,11 +131,53 @@ function viewBranch(id) {
             $("#VBranchEmail").empty().append(obj.Form.BranchEmail);
             $("#VBranchAddress").empty().append(obj.Form.BranchAddress);
             $("#VPosition").empty().append(obj.Form.Position);
-            $("#VStatus").empty().append(obj.Form.Status);
+            $("#VStatus").empty().append(obj.Form.BranchStatus);
         }
     })
 }
 
+// dropdown Update
+function branchDropdownUpdate(obj) {
+    var cntrys = obj.CountryData
+    var cntrydd = $("#countrydd-update");
+    $("#countrydd-update").append('<option>--Select Country--</option>');
+    $(cntrys).each(function () {
+        var option = $("<option />");
+        option.html(this.Name);
+        option.val(this.ID);
+        cntrydd.append(option);
+    });
+    var districts = obj.DistrictData
+    var dis = $("#districtdd-update");
+    $("#districtdd-update").append('<option>--Select District--</option>');
+    $(districts).each(function () {
+        var option = $("<option />");
+        option.html(this.Name);
+        option.val(this.ID);
+        dis.append(option);
+    });
+    
+    var stations = obj.StationData
+    var stndd = $("#stationdd-update");
+    $("#stationdd-update").append('<option>--Select Station--</option>');
+    $(stations).each(function () {
+        var option = $("<option />");
+        option.html(this.Name);
+        option.val(this.ID);
+        stndd.append(option);
+    });
+}
+
+// reset dropdown data update
+function resetDataUpdate() {
+    // reset all form data after close modal
+    $('#modal-update').on('hidden.bs.modal', function () {
+        $(this).find('form').trigger('reset');
+        $("#countrydd-update").empty();
+        $("#districtdd-update").empty();
+        $("#stationdd-update").empty();
+    });
+}
 // Update : Branch View
 function viewBranchUpdateData(id) {
     $.ajax({
@@ -186,7 +192,7 @@ function viewBranchUpdateData(id) {
             $("#UdBranchEmail").empty().val(obj.Form.BranchEmail);
             $("#UdBranchAddress").empty().val(obj.Form.BranchAddress);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdStatus").empty().val(obj.Form.Status);
+            $("#UdStatus").empty().val(obj.Form.BranchStatus);
             branchDropdownUpdate(obj)
         }
     });
@@ -267,7 +273,7 @@ function deleteBranchData(id) {
             $("#dDistrictName").empty().append(obj.Form.DistrictName);
             $("#dStationName").empty().append(obj.Form.StationName);
             $("#dPosition").empty().append(obj.Form.Position);
-            $("#dStatus").empty().append(obj.Form.Status);
+            $("#dStatus").empty().append(obj.Form.BranchStatus);
         }
     })
 }

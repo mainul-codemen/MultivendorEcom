@@ -33,14 +33,14 @@ func (s BranchForm) Validate(srv *Server, id string) error {
 		),
 		validation.Field(&s.BranchPhone1,
 			validation.Required.Error("The branch phone 1 is required"),
-			validation.Length(3, 11).Error("Please insert name between 3 to 11"),
+			validation.Length(11, 11).Error("Please insert 11 Number between"),
 			validation.Match(regexp.MustCompile("^[0-9_ ]*$")).Error("Must be digit. No alphabet is allowed."),
 			validation.By(checkDuplicateBranchPhone(srv, s.BranchPhone1, id)),
 		),
 		validation.Field(&s.BranchEmail,
 			validation.Required.Error("The name email is required"),
 			validation.Length(3, 40).Error("Please insert name between 3 to 40"),
-			validation.By(checkDuplicateBranchEmail(srv, s.Name, id)),
+			validation.By(checkDuplicateBranchEmail(srv, s.BranchEmail, id)),
 		),
 		validation.Field(&s.Position,
 			validation.Required.Error(posReq),
@@ -57,11 +57,11 @@ func (s BranchForm) Validate(srv *Server, id string) error {
 		),
 		validation.Field(&s.CountryID,
 			validation.Required.Error("The country name is required"),
-			validation.By(checkCountryExists(srv, s.DistrictID)),
+			validation.By(checkCountryExists(srv, s.CountryID)),
 		),
 		validation.Field(&s.StationID,
 			validation.Required.Error("The station name is required"),
-			validation.By(checkDuplicateStation(srv, s.StationID, id)),
+			validation.By(checkStationExists(srv, s.StationID)),
 		),
 	)
 }
@@ -134,7 +134,7 @@ func (s *Server) submitBranchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	_, err = s.st.CreateBranch(r.Context(), storage.Branch{
-		BranchName:    trim(form.BranchName),
+		BranchName:    trim(form.Name),
 		CountryID:     form.CountryID,
 		DistrictID:    form.DistrictID,
 		StationID:     form.StationID,
@@ -160,7 +160,7 @@ func (s *Server) updateBranchFormHandler(w http.ResponseWriter, r *http.Request)
 	logger.Info("view update branch form")
 	params := mux.Vars(r)
 	id := params["id"]
-	disdata := s.districtList(r, w, true)
+	disdata := s.districtList(r, w, true) // status = active
 	cntrydata := s.countryList(r, w, true)
 	stndata := s.stationList(r, w, true)
 	brnFrm := s.getBranchInfo(r, id, w)
@@ -207,7 +207,7 @@ func (s *Server) updateBranchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	dbdata := storage.Branch{
 		ID:            id,
-		BranchName:    trim(form.BranchName),
+		BranchName:    trim(form.Name),
 		CountryID:     form.CountryID,
 		DistrictID:    form.DistrictID,
 		StationID:     form.StationID,
