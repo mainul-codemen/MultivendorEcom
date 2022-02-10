@@ -94,14 +94,14 @@ func (s *Server) hubListHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) hubFormHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("hub submit")
-	disdata := s.districtList(r, w, true)
 	cntrydata := s.countryList(r, w, true)
+	disdata := s.districtList(r, w, true)
 	stndata := s.stationList(r, w, true)
 	data := HubTempData{
 		CSRFField:    csrf.TemplateField(r),
 		FormErrors:   map[string]string{},
-		DistrictData: disdata,
 		CountryData:  cntrydata,
+		DistrictData: disdata,
 		StationData:  stndata,
 	}
 	json.NewEncoder(w).Encode(data)

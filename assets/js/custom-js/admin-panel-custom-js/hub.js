@@ -5,7 +5,35 @@ function viewHubForm() {
         method: 'get',
         success: function (data) {
             var obj = jQuery.parseJSON(data);
-            hubDropdown(obj)
+            var cntrys = obj.CountryData
+            var cntry = $("#countrydd");
+            $("#countrydd").append('<option>--Select Country--</option>');
+            $(cntrys).each(function () {
+                var option = $("<option />");
+                option.html(this.Name);
+                option.val(this.ID);
+                cntry.append(option);
+            });
+            
+            var districts = obj.DistrictData
+            var dis = $("#districtdd");
+            $("#districtdd").append('<option>--Select District--</option>');
+            $(districts).each(function () {
+                var option = $("<option />");
+                option.html(this.Name);
+                option.val(this.ID);
+                dis.append(option);
+            });
+    
+            var stations = obj.StationData
+            var stn = $("#stationdd");
+            $("#stationdd").append('<option>--Select Station--</option>');
+            $(stations).each(function () {
+                var option = $("<option />");
+                option.html(this.Name);
+                option.val(this.ID);
+                stn.append(option);
+            });
         }
     });
     resetData()
@@ -225,57 +253,33 @@ $(document).ready(function () {
     });
 });
 
-// dropdown
-function hubDropdown(obj) {
-    var districts = obj.DistrictData
-    var dis = $("#districtdd");
-    $(districts).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.DistrictID);
-        dis.append(option);
-    });
-    var cntrys = obj.CountryData
-    var cntry = $("#countrydd");
-    $(cntrys).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.CountryID);
-        cntry.append(option);
-    });
-    var stations = obj.StationData
-    var stn = $("#stationdd");
-    $(stations).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.StationID);
-        stn.append(option);
-    });
-}
 // dropdown Update
 function hubDropdownUpdate(obj) {
     var districts = obj.DistrictData
     var dis = $("#districtdd-update");
+    $("#districtdd-update").append('<option>--Select District--</option>');
     $(districts).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.DistrictID);
+        option.val(this.ID);
         dis.append(option);
     });
     var cntrys = obj.CountryData
     var cntry = $("#countrydd-update");
+    $("#countrydd-update").append('<option>--Select Country--</option>');
     $(cntrys).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.CountryID);
+        option.val(this.ID);
         cntry.append(option);
     });
     var stations = obj.StationData
     var stn = $("#stationdd-update");
+    $("#stationdd-update").append('<option>--Select Station--</option>');
     $(stations).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.StationID);
+        option.val(this.ID);
         stn.append(option);
     });
 }

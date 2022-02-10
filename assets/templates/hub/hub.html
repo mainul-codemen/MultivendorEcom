@@ -134,14 +134,13 @@
                                                 <div class="form-group">
                                                     <label>Name</label>
                                                     <input type="text" name="Name" class="form-control" id="name"
-                                                        placeholder="Enter Designation Name" value="{{.Form.Name}}" />
+                                                        placeholder="Enter Hub Name"/>
                                                     <p style="color: red;" id="Name"></p>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Country</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" id="countrydd">
-                                                            <option value="">Select country</option>
+                                                        <select class="custom-select" id="countrydd" name="CountryID">
                                                         </select>
                                                         <p style="color: red;" id="CountryID"></p>
                                                     </div>
@@ -149,8 +148,7 @@
                                                 <div class="form-group">
                                                     <label>District</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" id="districtdd">
-                                                            <option value="">Select District</option>
+                                                        <select class="custom-select" id="districtdd" name="DistrictID">
                                                         </select>
                                                         <p style="color: red;" id="DistrictID"></p>
                                                     </div>
@@ -158,8 +156,7 @@
                                                 <div class="form-group">
                                                     <label>Station</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" id="stationdd">
-                                                            <option value="">Select Station</option>
+                                                        <select class="custom-select" id="stationdd" name="StationID">
                                                         </select>
                                                         <p style="color: red;" id="StationID"></p>
                                                     </div>
@@ -187,7 +184,7 @@
                                                 <div class="form-group">
                                                     <label>Hub Address</label>
                                                     <textarea class="form-control" rows="3"
-                                                        placeholder="Enter ..."></textarea>
+                                                        placeholder="Enter ..." name="HubAddress"></textarea>
                                                     <p style="color: red;" id="HubAddress"></p>
                                                 </div>
                                                 <div class="row">
@@ -247,14 +244,13 @@
                                                 <div class="form-group">
                                                     <label>Name</label>
                                                     <input type="text" name="Name" class="form-control"
-                                                        placeholder="Enter Name" required id="UdName" />
+                                                        placeholder="Enter Hub Name" required id="UdName" />
                                                     <p style="color: red;" id="NameErr"></p>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Country</label>
                                                     <div class="form-group">
-                                                        <select id="countrydd-update" class="custom-select">
-                                                            <option value="">Select Country</option>
+                                                        <select id="countrydd-update" class="custom-select" name="CountryID">
                                                         </select>
                                                         <p style="color: red;" id="CountryIDErr"></p>
                                                     </div>
@@ -262,8 +258,7 @@
                                                 <div class="form-group">
                                                     <label>District</label>
                                                     <div class="form-group">
-                                                        <select id="districtdd-update" class="custom-select">
-                                                            <option value="">Select District</option>
+                                                        <select id="districtdd-update" class="custom-select" name="DistrictID">
                                                         </select>
                                                         <p style="color: red;" id="DistrictIDErr"></p>
                                                     </div>
@@ -271,8 +266,7 @@
                                                 <div class="form-group">
                                                     <label>Station</label>
                                                     <div class="form-group">
-                                                        <select id="stationdd-update" class="custom-select">
-                                                            <option value="">Select Station</option>
+                                                        <select id="stationdd-update" class="custom-select" name="StationID">
                                                         </select>
                                                         <p style="color: red;" id="StationIDErr"></p>
                                                     </div>
@@ -300,7 +294,7 @@
                                                 <div class="form-group">
                                                     <label>Hub Address</label>
                                                     <textarea class="form-control" rows="3"
-                                                        placeholder="Enter ..."></textarea>
+                                                        placeholder="Enter ..." name="HubAddress"></textarea>
                                                     <p style="color: red;" id="HubAddressErr"></p>
                                                 </div>
                                                 <div class="row">
@@ -487,7 +481,6 @@
     <!-- Hub Custom JS -->
     <script src="/static/js/custom-js/admin-panel-custom-js/hub.js"></script>
     <script>
-
         // Data Tables for this table
         $(function () {
             $("#example1").DataTable({
