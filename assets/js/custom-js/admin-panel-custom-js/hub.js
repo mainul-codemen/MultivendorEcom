@@ -139,10 +139,10 @@ function viewHubUpdateData(id) {
             $("#UdHubAddress").empty().val(obj.Form.HubAddress);
             $("#UdPosition").empty().val(obj.Form.Position);
             $("#UdStatus").empty().val(obj.Form.Status);
-            hubDropdownUpdate(obj)
+            hubDropdownUpdate(obj);
         }
     });
-    resetDataUpdate()
+    resetDataUpdate();
 }
 // Update : Hub Submit
 $(document).ready(function () {
@@ -263,7 +263,6 @@ $(document).ready(function () {
 
 // dropdown Update
 function hubDropdownUpdate(obj) {
-    var obj = jQuery.parseJSON(data)
     var countries = obj.CountryData
     var cntryDdd = $("#countrydd-update");
     $("#countrydd-update").append('<option>--Select Country--</option>');
