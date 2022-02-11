@@ -20,15 +20,14 @@ type DeliveryChargeTempData struct {
 	DistrictData []DistrictForm
 	CountryData  []CountryForm
 	StationData  []StationForm
-	FormAction   string
 }
 
 func (s DeliveryChargeForm) Validate(srv *Server, id string) error {
 	return validation.ValidateStruct(&s,
 		validation.Field(&s.DeliveryChargeStatus,
 			validation.Required.Error("The status is required"),
-			validation.Min(1).Error("DeliveryChargeStatus is Invalid"),
-			validation.Max(2).Error("DeliveryChargeStatus is Invalid"),
+			validation.Min(1).Error("Status is Invalid"),
+			validation.Max(2).Error("Status is Invalid"),
 		),
 		validation.Field(&s.DistrictID,
 			validation.Required.Error("The District name is required"),
@@ -36,11 +35,20 @@ func (s DeliveryChargeForm) Validate(srv *Server, id string) error {
 		),
 		validation.Field(&s.CountryID,
 			validation.Required.Error("The country name is required"),
-			validation.By(checkCountryExists(srv, s.DistrictID)),
+			validation.By(checkCountryExists(srv, s.CountryID)),
+		),
+		validation.Field(&s.WeightMin,
+			validation.Required.Error("The minimum weight is required"),
+		),
+		validation.Field(&s.WeightMax,
+			validation.Required.Error("The maximum weight is required"),
+		),
+		validation.Field(&s.DeliveryCharge,
+			validation.Required.Error("The delivery charge is required"),
 		),
 		validation.Field(&s.StationID,
 			validation.Required.Error("The station name is required"),
-			validation.By(checkDuplicateStation(srv, s.StationID, id)),
+			validation.By(checkStationExists(srv, s.StationID)),
 		),
 	)
 }
@@ -53,15 +61,9 @@ func (s *Server) deliveryChargeListHandler(w http.ResponseWriter, r *http.Reques
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
 
-	deliveryChargeList, err := s.st.GetDeliveryChargeList(r.Context())
-	if err != nil {
-		logger.Error("error while get deliveryCharge : " + err.Error())
-		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
-	}
-
-	deliveryChargeListForm := s.storageToDChargeForm(deliveryChargeList)
+	dcdata := s.deliveryChargeList(r, w)
 	data := DeliveryChargeTempData{
-		Data: deliveryChargeListForm,
+		Data: dcdata,
 	}
 	if err := tmpl.Execute(w, data); err != nil {
 		logger.Error(ewte + err.Error())
@@ -73,10 +75,9 @@ func (s *Server) deliveryChargeFormHandler(w http.ResponseWriter, r *http.Reques
 	logger.Info("deliveryCharge submit")
 	disdata := s.districtList(r, w, true)
 	cntrydata := s.countryList(r, w, true)
-	stndata := s.stationList(r, w,true)
+	stndata := s.stationList(r, w, true)
 	data := DeliveryChargeTempData{
 		CSRFField:    csrf.TemplateField(r),
-		FormErrors:   map[string]string{},
 		DistrictData: disdata,
 		CountryData:  cntrydata,
 		StationData:  stndata,
@@ -114,10 +115,13 @@ func (s *Server) submitDeliveryChargeHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	_, err = s.st.CreateDeliveryCharge(r.Context(), storage.DeliveryCharge{
-		CountryID:  form.CountryID,
-		DistrictID: form.DistrictID,
-		StationID:  form.StationID,
-		Status:     form.DeliveryChargeStatus,
+		CountryID:      form.CountryID,
+		DistrictID:     form.DistrictID,
+		StationID:      form.StationID,
+		Status:         form.DeliveryChargeStatus,
+		WeightMin:      form.WeightMin,
+		WeightMax:      form.WeightMax,
+		DeliveryCharge: form.DeliveryCharge,
 		CRUDTimeDate: storage.CRUDTimeDate{
 			CreatedBy: "123",
 			UpdatedBy: "123",
@@ -136,7 +140,7 @@ func (s *Server) updateDeliveryChargeFormHandler(w http.ResponseWriter, r *http.
 	id := params["id"]
 	disdata := s.districtList(r, w, true)
 	cntrydata := s.countryList(r, w, true)
-	stndata := s.stationList(r, w,true)
+	stndata := s.stationList(r, w, true)
 	brnFrm := s.getDeliveryChargeInfo(r, id, w)
 	data := DeliveryChargeTempData{
 		Form:         brnFrm,
@@ -180,11 +184,14 @@ func (s *Server) updateDeliveryChargeHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	dbdata := storage.DeliveryCharge{
-		ID:         id,
-		CountryID:  form.CountryID,
-		DistrictID: form.DistrictID,
-		StationID:  form.StationID,
-		Status:     form.DeliveryChargeStatus,
+		ID:             id,
+		CountryID:      form.CountryID,
+		DistrictID:     form.DistrictID,
+		StationID:      form.StationID,
+		Status:         form.DeliveryChargeStatus,
+		WeightMin:      form.WeightMin,
+		WeightMax:      form.WeightMax,
+		DeliveryCharge: form.DeliveryCharge,
 		CRUDTimeDate: storage.CRUDTimeDate{
 			UpdatedBy: "123",
 		},
@@ -208,7 +215,7 @@ func (s *Server) viewDeliveryChargeHandler(w http.ResponseWriter, r *http.Reques
 }
 
 func (s *Server) updateDeliveryChargeStatusHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Info("Update deliveryCharge status")
+	logger.Info("Update delivery Charge status")
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -219,7 +226,7 @@ func (s *Server) updateDeliveryChargeStatusHandler(w http.ResponseWriter, r *htt
 
 	res, err := s.st.GetDeliveryChargeBy(r.Context(), id)
 	if err != nil {
-		logger.Error("unable to get deliveryCharge info " + err.Error())
+		logger.Error("unable to get delivery Charge info " + err.Error())
 	}
 	if res.Status == 1 {
 		_, err := s.st.UpdateDeliveryChargeStatus(r.Context(), storage.DeliveryCharge{
@@ -280,6 +287,9 @@ func (s *Server) getDeliveryChargeInfo(r *http.Request, id string, w http.Respon
 		StationID:            res.StationID,
 		StationName:          res.StationName.String,
 		DeliveryChargeStatus: res.Status,
+		WeightMin:            res.WeightMin,
+		WeightMax:            res.WeightMax,
+		DeliveryCharge:       res.DeliveryCharge,
 		CreatedAt:            res.CreatedAt,
 		CreatedBy:            res.CreatedBy,
 		UpdatedAt:            res.UpdatedAt,
@@ -288,24 +298,31 @@ func (s *Server) getDeliveryChargeInfo(r *http.Request, id string, w http.Respon
 	return Form
 }
 
-func (*Server) storageToDChargeForm(deliveryChargeList []storage.DeliveryCharge) []DeliveryChargeForm {
-	deliveryChargeListForm := make([]DeliveryChargeForm, 0)
-	for _, item := range deliveryChargeList {
-		deliveryChargeData := DeliveryChargeForm{
-			ID:                   item.ID,
-			CountryID:            item.CountryID,
-			CountryName:          item.CountryName.String,
-			DistrictID:           item.DistrictID,
-			DistrictName:         item.DistrictName.String,
-			StationID:            item.StationID,
-			StationName:          item.StationName.String,
-			DeliveryChargeStatus: item.Status,
-			CreatedAt:            item.CreatedAt,
-			CreatedBy:            item.CreatedBy,
-			UpdatedAt:            item.UpdatedAt,
-			UpdatedBy:            item.UpdatedBy,
-		}
-		deliveryChargeListForm = append(deliveryChargeListForm, deliveryChargeData)
+func (s *Server) deliveryChargeList(r *http.Request, w http.ResponseWriter) []DeliveryChargeForm {
+	dcList, err := s.st.GetDeliveryChargeList(r.Context())
+	if err != nil {
+		logger.Error("error while get delivery charge : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
-	return deliveryChargeListForm
+	dcdata := make([]DeliveryChargeForm, 0)
+	for _, item := range dcList {
+		dcApnd := DeliveryChargeForm{
+			ID:             item.ID,
+			CountryID:      item.CountryID,
+			CountryName:    item.CountryName.String,
+			DistrictID:     item.DistrictID,
+			DistrictName:   item.DistrictName.String,
+			StationID:      item.StationID,
+			StationName:    item.StationName.String,
+			WeightMin:      item.WeightMin,
+			WeightMax:      item.WeightMax,
+			DeliveryCharge: item.DeliveryCharge,
+			CreatedAt:      item.CreatedAt,
+			CreatedBy:      item.CreatedBy,
+			UpdatedAt:      item.UpdatedAt,
+			UpdatedBy:      item.UpdatedBy,
+		}
+		dcdata = append(dcdata, dcApnd)
+	}
+	return dcdata
 }

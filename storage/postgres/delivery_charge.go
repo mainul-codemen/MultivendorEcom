@@ -16,6 +16,7 @@ INSERT INTO delivery_charge(
 	weight_min,
 	weight_max,
 	delivery_charge,
+	dc_status,
 	created_by,
 	updated_by
 ) VALUES (
@@ -25,6 +26,7 @@ INSERT INTO delivery_charge(
 	:weight_min,
 	:weight_max,
 	:delivery_charge,
+	:dc_status,
 	:created_by,
 	:updated_by
 ) RETURNING
@@ -49,20 +51,21 @@ func (s *Storage) CreateDeliveryCharge(con context.Context, des storage.Delivery
 
 const deliveryChargelist = `
 SELECT 
-  delivery_charge.id,
-  country.name AS country_id,
-  district.name AS district_id,
-  station.name AS station_id,
-  delivery_charge.dc_status,
-  delivery_charge.created_at,
-  delivery_charge.created_by,
-  delivery_charge.updated_at,
-  delivery_charge.updated_by
-FROM delivery_charge
+  dc.id,
+  country.name AS country_name,
+  district.name AS district_name,
+  station.name AS station_name,
+  dc.dc_status,
+  dc.weight_min,
+  dc.weight_max,
+  dc.delivery_charge,
+  dc.created_by,
+  dc.updated_by
+FROM delivery_charge AS dc
 LEFT JOIN country ON country.id = country_id
 LEFT JOIN district ON district.id = district_id
 LEFT JOIN station ON station.id = station_id
-WHERE delivery_charge.deleted_at IS NULL
+WHERE dc.deleted_at IS NULL
 `
 
 func (s *Storage) GetDeliveryChargeList(ctx context.Context) ([]storage.DeliveryCharge, error) {
@@ -77,23 +80,26 @@ func (s *Storage) GetDeliveryChargeList(ctx context.Context) ([]storage.Delivery
 
 const gdc = `
 SELECT
-	delivery_charge.id,
-	delivery_charge.country_id,
-	delivery_charge.district_id,
-	delivery_charge.station_id,
+	dc.id,
+	dc.country_id,
+	dc.district_id,
+	dc.station_id,
 	country.name AS country_name,
 	district.name AS district_name,
 	station.name AS station_name,
-	delivery_charge.dc_status,
-	delivery_charge.created_at,
-	delivery_charge.created_by,
-	delivery_charge.updated_at,
-	delivery_charge.updated_by
-FROM delivery_charge
+	dc.dc_status,
+	dc.weight_min,
+	dc.weight_max,
+	dc.delivery_charge,
+	dc.created_at,
+	dc.created_by,
+	dc.updated_at,
+	dc.updated_by
+FROM delivery_charge AS dc
 LEFT JOIN country ON country.id = country_id
 LEFT JOIN district ON district.id = district_id
 LEFT JOIN station ON station.id = station_id
-WHERE delivery_charge.id = $1 AND  delivery_charge.deleted_at IS NULL
+WHERE dc.id = $1 AND  dc.deleted_at IS NULL
 `
 
 func (s *Storage) GetDeliveryChargeBy(ctx context.Context, idname string) (*storage.DeliveryCharge, error) {
@@ -132,7 +138,7 @@ func (s *Storage) UpdateDeliveryCharge(ctx context.Context, dc storage.DeliveryC
 	return &dc, nil
 }
 
-const updateDeliveryChargeStatus = `
+const udsq = `
 	UPDATE 
 		delivery_charge 
 	SET
@@ -146,7 +152,7 @@ const updateDeliveryChargeStatus = `
 `
 
 func (s *Storage) UpdateDeliveryChargeStatus(ctx context.Context, dc storage.DeliveryCharge) (*storage.DeliveryCharge, error) {
-	stmt, err := s.db.PrepareNamedContext(ctx, updateDeliveryChargeStatus)
+	stmt, err := s.db.PrepareNamedContext(ctx, udsq)
 	if err != nil {
 		return nil, err
 	}

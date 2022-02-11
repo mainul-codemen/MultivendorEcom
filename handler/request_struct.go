@@ -110,6 +110,9 @@ type DeliveryChargeForm struct {
 	StationID            string
 	StationName          string
 	DeliveryChargeStatus int16
+	DeliveryCharge       float64
+	WeightMin            float64
+	WeightMax            float64
 	CreatedAt            time.Time
 	CreatedBy            string
 	UpdatedAt            time.Time

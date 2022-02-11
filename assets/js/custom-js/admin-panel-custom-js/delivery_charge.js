@@ -8,33 +8,38 @@ function viewDeliveryChargeForm() {
             dcDropdown(obj)
         }
     });
+    resetData();
 }
 
 
 // dropdown
 function dcDropdown(obj) {
+    var countries = obj.CountryData
+    var cntryDdd = $("#countrydd");
+    $("#countrydd").append('<option>--Select Country--</option>');
+    $(countries).each(function () {
+        var option = $("<option />");
+        option.html(this.Name);
+        option.val(this.ID);
+        cntryDdd.append(option);
+    });
     var districts = obj.DistrictData
     var dis = $("#districtdd");
+    $("#districtdd").append('<option>--Select District--</option>');
     $(districts).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.DistrictID);
+        option.val(this.ID);
         dis.append(option);
     });
-    var cntrys = obj.CountryData
-    var cntry = $("#countrydd");
-    $(cntrys).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.CountryID);
-        cntry.append(option);
-    });
+
     var stations = obj.StationData
     var stn = $("#stationdd");
+    $("#stationdd").append('<option>--Select Station--</option>');
     $(stations).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.StationID);
+        option.val(this.ID);
         stn.append(option);
     });
 }
@@ -57,7 +62,7 @@ $(document).ready(function () {
             headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
         });
         $.ajax({
-            url: "/admin/delivery-company/create",
+            url: "/admin/delivery-charge/create",
             method: 'post',
             data: $('form.tagForm').serialize(),
             success: function (data) {
@@ -115,10 +120,10 @@ function viewDeliveryCharge(id) {
             $("#VCountryName").empty().append(obj.Form.CountryName);
             $("#VDistrictName").empty().append(obj.Form.DistrictName);
             $("#VStationName").empty().append(obj.Form.StationName);
-            $("#VMinWeight").empty().append(obj.Form.MinWeight);
-            $("#VMaxWeight").empty().append(obj.Form.MaxWeight);
+            $("#VWeightMin").empty().append(obj.Form.WeightMin);
+            $("#VWeightMax").empty().append(obj.Form.WeightMax);
             $("#VDeliveryCharge").empty().append(obj.Form.DeliveryCharge);
-            $("#VDCStatus").empty().append(obj.Form.DCStatus);
+            $("#VDCStatus").empty().append(obj.Form.DeliveryChargeStatus);
         }
     })
 }
@@ -126,16 +131,18 @@ function viewDeliveryCharge(id) {
 // Update : DeliveryCharge View
 function viewDeliveryChargeUpdateData(id) {
     $.ajax({
-        url: "/admin/delivery-company/update/" + id,
+        url: "/admin/delivery-charge/update/" + id,
         method: 'get',
         success: function (data) {
             var obj = jQuery.parseJSON(data);
             $("#UdID").empty().val(obj.Form.ID);
-            $("#UdPhone").empty().val(obj.Form.Phone);
-            $("#UdEmail").empty().val(obj.Form.Email);
-            $("#UdCompanyAddress").empty().val(obj.Form.CompanyAddress);
-            $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdCompanyStatus").empty().val(obj.Form.CompanyStatus);
+            $("#UdCountryName").empty().val(obj.Form.CountryName);
+            $("#UdDistrictName").empty().val(obj.Form.DistrictName);
+            $("#UdStationName").empty().val(obj.Form.StationName);
+            $("#UdWeightMin").empty().val(obj.Form.WeightMin);
+            $("#UdWeightMax").empty().val(obj.Form.WeightMax);
+            $("#UdDeliveryCharge").empty().val(obj.Form.DeliveryCharge);
+            $("#UdDCStatus").empty().val(obj.Form.DeliveryChargeStatus);
             dcDropdownUpdate(obj)
         }
     });
@@ -144,28 +151,32 @@ function viewDeliveryChargeUpdateData(id) {
 
 // dropdown Update
 function dcDropdownUpdate(obj) {
+    var countries = obj.CountryData
+    var cntryDdd = $("#countrydd-update");
+    $("#countrydd").append('<option>--Select Country--</option>');
+    $(countries).each(function () {
+        var option = $("<option />");
+        option.html(this.Name);
+        option.val(this.ID);
+        cntryDdd.append(option);
+    });
     var districts = obj.DistrictData
     var dis = $("#districtdd-update");
+    $("#districtdd").append('<option>--Select District--</option>');
     $(districts).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.DistrictID);
+        option.val(this.ID);
         dis.append(option);
     });
-    var cntrys = obj.CountryData
-    var cntry = $("#countrydd-update");
-    $(cntrys).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.CountryID);
-        cntry.append(option);
-    });
+
     var stations = obj.StationData
     var stn = $("#stationdd-update");
+    $("#stationdd").append('<option>--Select Station--</option>');
     $(stations).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.StationID);
+        option.val(this.ID);
         stn.append(option);
     });
 }
@@ -178,7 +189,7 @@ $(document).ready(function () {
         });
         var id = jQuery('#UdID').val();
         $.ajax({
-            url: "/admin/delivery-company/update/" + id,
+            url: "/admin/delivery-charge/update/" + id,
             method: 'post',
             data: $('form.tagUpForm').serialize(),
             success: function (data) {
@@ -228,16 +239,15 @@ $(document).ready(function () {
 // Delete : Country View
 function deleteDeliveryChargeData(id) {
     $.ajax({
-        url: "/admin/delivery-company/view/" + id,
+        url: "/admin/delivery-charge/view/" + id,
         method: 'get',
         success: function (data) {
             var obj = jQuery.parseJSON(data);
             $("#dID").empty().val(obj.Form.ID);
-            $("#dCompanyName").empty().append(obj.Form.Name);
             $("#dCountryName").empty().append(obj.Form.CountryName);
             $("#dDistrictName").empty().append(obj.Form.DistrictName);
             $("#dStationName").empty().append(obj.Form.StationName);
-            $("#dStatus").empty().append(obj.Form.DCStatus);
+            $("#dStatus").empty().append(obj.Form.DeliveryChargeStatus);
         }
     })
 }
@@ -250,7 +260,7 @@ $(document).ready(function () {
         });
         var id = jQuery('#dID').val();
         $.ajax({
-            url: "/admin/delivery-company/delete/" + id,
+            url: "/admin/delivery-charge/delete/" + id,
             method: 'get',
             success: function (data) {
                 var obj = jQuery.parseJSON(data);

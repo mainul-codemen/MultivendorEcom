@@ -18,8 +18,8 @@
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="/admin/index">Home</a></li>
-                                <li class="breadcrumb-item active"><a href="/admin/delivery-charge">Delivery
-                                        Charge</a></li>
+                                <li class="breadcrumb-item active"><a href="/admin/delivery-charge">Delivery Charge</a>
+                                </li>
                             </ol>
                         </div>
                     </div>
@@ -58,18 +58,17 @@
                                                 <td>{{.CountryName}}</td>
                                                 <td>{{.DistrictName}}</td>
                                                 <td>{{.StationName}}</td>
-                                                <td>{{.MinWeight}}</td>
-                                                <td>{{.MaxWeight}}</td>
+                                                <td>{{.WeightMin}}</td>
+                                                <td>{{.WeightMax}}</td>
                                                 <td>{{.DeliveryCharge}}</td>
                                                 <td style="text-align: center;">
-                                                    {{if eq .Status 1}}
+                                                    {{if eq .DeliveryChargeStatus 1}}
                                                     <a type="button" class="btn btn-success btn-sm"
                                                         href="/admin/delivery-charge/update/status/{{.ID}}">Active</a>
                                                     {{else}}
                                                     <a type="button" class="btn btn-info btn-sm"
                                                         href="/admin/delivery-charge/update/status/{{.ID}}">Inactive</a>
                                                     {{end}}
-                                                <td>{{.CreatedBy}}</td>
                                                 <td>
                                                     <a href="/admin/delivery-charge/update/{{.ID}}" type="button"
                                                         class="btn btn-success" data-toggle="modal"
@@ -126,15 +125,13 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="" method="post" id="saveForm" class="tag
-                                4Form">
+                                <form action="" method="post" id="saveForm" class="tagForm">
                                     {{.CSRFField}}
                                     <div class="card-body">
                                         <div class="form-group">
                                             <label>Country</label>
                                             <div class="form-group">
-                                                <select class="custom-select" id="countrydd">
-                                                    <option value="">Select country</option>
+                                                <select class="custom-select" id="countrydd" name="CountryID">
                                                 </select>
                                                 <p style="color: red;" id="CountryID"></p>
                                             </div>
@@ -142,18 +139,15 @@
                                         <div class="form-group">
                                             <label>District</label>
                                             <div class="form-group">
-                                                <select class="custom-select" id="districtdd">
-                                                    <option value="">Select District</option>
-                                                </select>
+                                                <select class="custom-select" id="districtdd"
+                                                    name="DistrictID"></select>
                                                 <p style="color: red;" id="DistrictID"></p>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label>Station</label>
                                             <div class="form-group">
-                                                <select class="custom-select" id="stationdd">
-                                                    <option value="">Select Station</option>
-                                                </select>
+                                                <select class="custom-select" id="stationdd" name="StationID"></select>
                                                 <p style="color: red;" id="StationID"></p>
                                             </div>
                                         </div>
@@ -161,16 +155,16 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Min Weight</label>
-                                                    <input type="text" name="MinWeight" class="form-control"
-                                                        id="delivery-chargeMinWeight" placeholder="Enter MinWeight" />
+                                                    <input type="number" name="WeightMin" class="form-control"
+                                                        id="dcMinWeight" placeholder="Enter Min Weight" />
                                                     <p style="color: red;" id="MinWeight"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Max Weight</label>
-                                                    <input type="text" name="MaxWeight" class="form-control"
-                                                        id="delivery-chargeMaxWeight" placeholder="Enter MaxWeight" />
+                                                    <input type="number" name="WeightMax" class="form-control"
+                                                        id="dcMaxWeight" placeholder="Enter MaxWeight" />
                                                     <p style="color: red;" id="MaxWeight"></p>
                                                 </div>
                                             </div>
@@ -179,9 +173,8 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Delivery Charge</label>
-                                                    <input type="text" name="DeliveryCharge" class="form-control"
-                                                        id="delivery-chargeDeliveryCharge"
-                                                        placeholder="Enter DeliveryCharge" />
+                                                    <input type="number" name="DeliveryCharge" class="form-control"
+                                                        id="dcDeliveryCharge" placeholder="Enter DeliveryCharge" />
                                                     <p style="color: red;" id="DeliveryCharge"></p>
                                                 </div>
                                             </div>
@@ -189,7 +182,8 @@
                                                 <div class="form-group">
                                                     <label>Status</label>
                                                     <div class="form-group">
-                                                        <select class="custom-select" name="CompanyStatus" id="status">
+                                                        <select class="custom-select" name="DeliveryChargeStatus"
+                                                            id="status">
                                                             <option value="1">Active</option>
                                                             <option value="2">InActive</option>
                                                         </select>
@@ -229,8 +223,7 @@
                                 <div class="form-group">
                                     <label>Country</label>
                                     <div class="form-group">
-                                        <select id="countrydd-update" class="custom-select">
-                                            <option value="">Select Country</option>
+                                        <select id="countrydd-update" class="custom-select" name="CountryID">
                                         </select>
                                         <p style="color: red;" id="CountryIDErr"></p>
                                     </div>
@@ -238,8 +231,7 @@
                                 <div class="form-group">
                                     <label>District</label>
                                     <div class="form-group">
-                                        <select id="districtdd-update" class="custom-select">
-                                            <option value="">Select District</option>
+                                        <select id="districtdd-update" class="custom-select" name="DistrictID">
                                         </select>
                                         <p style="color: red;" id="DistrictIDErr"></p>
                                     </div>
@@ -247,8 +239,7 @@
                                 <div class="form-group">
                                     <label>Station</label>
                                     <div class="form-group">
-                                        <select id="stationdd-update" class="custom-select">
-                                            <option value="">Select Station</option>
+                                        <select id="stationdd-update" class="custom-select" name="StationID">
                                         </select>
                                         <p style="color: red;" id="StationIDErr"></p>
                                     </div>
@@ -258,13 +249,15 @@
                                         <div class="form-group">
                                             <label>Min Weight</label>
                                             <input type="text" name="MinWeight" class="form-control"
-                                                id="Uddelivery-chargePhone1" placeholder="Enter Delivery Charge" />
+                                                id="UdWeightMin" placeholder="Enter Delivery Charge" />
                                             <p style="color: red;" id="MinWeightErr"></p>
                                         </div>
+                                    </div>
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Max Weight</label>
                                             <input type="text" name="MaxWeight" class="form-control"
-                                                id="Uddelivery-chargePhone1" placeholder="Enter Delivery Charge" />
+                                                id="UdWeightMax" placeholder="Enter Delivery Charge" />
                                             <p style="color: red;" id="MaxWeightErr"></p>
                                         </div>
                                     </div>
@@ -274,9 +267,11 @@
                                         <div class="form-group">
                                             <label>Delivery Charge</label>
                                             <input type="text" name="Delivery Charge" class="form-control"
-                                                id="Uddelivery-chargeEmail" placeholder="Enter Delivery Charge" />
+                                                id="UdDeliveryCharge" placeholder="Enter Delivery Charge" />
                                             <p style="color: red;" id="DeliveryChargeErr"></p>
                                         </div>
+                                    </div>
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Status</label>
                                             <div class="form-group">
@@ -290,112 +285,109 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success">Save</button>
-                            </div>
-                        </form>
                     </div>
-                </div> <!-- /.modal-content -->
-            </div> <!-- /.modal-dialog -->
-        </div>
-        <!--------------------------------------------------- Modal View --------------------------------------------------->
-        <div class="modal fade" id="modal-view">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#ffa600;">
-                        <h3 class="modal-title" style="color: white;">DeliveryCharge Details</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Save</button>
                     </div>
+                    </form>
+                </div>
+            </div> <!-- /.modal-content -->
+        </div> <!-- /.modal-dialog -->
+    </div>
+    <!--------------------------------------------------- Modal View --------------------------------------------------->
+    <div class="modal fade" id="modal-view">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#ffa600;">
+                    <h3 class="modal-title" style="color: white;">DeliveryCharge Details</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <tr>
+                            <td>Country Name</td>
+                            <td id="VCountryName"></td>
+                        </tr>
+                        <tr>
+                            <td>District Name</td>
+                            <td id="VDistrictName"></td>
+                        </tr>
+                        <tr>
+                            <td>Station Name</td>
+                            <td id="VStationName"></td>
+                        </tr>
+                        <tr>
+                            <td>Min Weight</td>
+                            <td id="VWeightMin"></td>
+                        </tr>
+                        <tr>
+                            <td>Max Weight</td>
+                            <td id="VWeightMax"></td>
+                        </tr>
+                        <tr>
+                            <td>Delivery Charge</td>
+                            <td id="VDeliveryCharge"></td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td id="VDCStatus"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--------------------------------------------------- Modal Delete --------------------------------------------------->
+    <div class="modal fade" id="modal-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #e42525;">
+                    <h4 class="modal-title" style="color: white;">Are you sure you want to delete?
+                        <br /><b> Delivery Charge </b>
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="deleteDeliveryCharge" action="get">
+                    {{.CSRFField}}
+                    <input type="hidden" name="ID" id="dID" />
                     <div class="modal-body">
                         <table id="example1" class="table table-bordered table-striped">
                             <tr>
                                 <td>Country Name</td>
-                                <td id="VCountryName"></td>
+                                <td id="dCountryName"></td>
                             </tr>
                             <tr>
                                 <td>District Name</td>
-                                <td id="VDistrictName"></td>
+                                <td id="dDistrictName"></td>
                             </tr>
                             <tr>
                                 <td>Station Name</td>
-                                <td id="VStationName"></td>
-                            </tr>
-                            <tr>
-                                <td>Min Weight</td>
-                                <td id="VMinWeight"></td>
-                            </tr>
-                            <tr>
-                                <td>Max Weight</td>
-                                <td id="VMaxWeight"></td>
-                            </tr>
-                            <tr>
-                                <td>Delivery Charge</td>
-                                <td id="viewDeliveryCharge"></td>
+                                <td id="dStationName"></td>
                             </tr>
                             <tr>
                                 <td>Status</td>
-                                <td id="VStatus"></td>
+                                <td id="dStatus"></td>
                             </tr>
                         </table>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
                     </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div>
-        <!--------------------------------------------------- Modal Delete --------------------------------------------------->
-        <div class="modal fade" id="modal-delete">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color: #e42525;">
-                        <h4 class="modal-title" style="color: white;">Are you sure you want to delete
-                            DeliveryCharge
-                        </h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form id="deleteDeliveryCharge" action="get">
-                        {{.CSRFField}}
-                        <input type="hidden" name="ID" id="dID" />
-                        <div class="modal-body">
-                            <table id="example1" class="table table-bordered table-striped">
-                                <tr>
-                                    <td>Name</td>
-                                    <td id="dCompanyName"></td>
-                                </tr>
-                                <tr>
-                                    <td>Country Name</td>
-                                    <td id="dCountryName"></td>
-                                </tr>
-                                <tr>
-                                    <td>District Name</td>
-                                    <td id="dDistrictName"></td>
-                                </tr>
-                                <tr>
-                                    <td>Station Name</td>
-                                    <td id="dStationName"></td>
-                                </tr>
-                                <tr>
-                                    <td>Status</td>
-                                    <td id="dCompanyStatus"></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </div>
-                    </form>
-                </div> <!-- /.modal-content -->
-            </div> <!-- /.modal-dialog -->
-        </div>
-        </section>
-        <!-- /.content -->
+                </form>
+            </div> <!-- /.modal-content -->
+        </div> <!-- /.modal-dialog -->
+    </div>
+    </section>
+    <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
     {{ template "footer"}}

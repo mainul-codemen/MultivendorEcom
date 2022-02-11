@@ -92,6 +92,7 @@ func checkCountryExists(s *Server, cid string) validation.RuleFunc {
 
 	}
 }
+
 func checkStationExists(s *Server, sid string) validation.RuleFunc {
 	return func(value interface{}) error {
 		str := fmt.Errorf(" Station not exists")
