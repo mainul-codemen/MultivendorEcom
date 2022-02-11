@@ -43,7 +43,6 @@ type HubForm struct {
 	DistrictName string
 	StationID    string
 	StationName  string
-	HubName      string
 	HubPhone1    string
 	HubPhone2    string
 	HubEmail     string

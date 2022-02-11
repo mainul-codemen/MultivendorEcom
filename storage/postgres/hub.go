@@ -119,7 +119,7 @@ FROM hub
 LEFT JOIN country ON country.id = country_id
 LEFT JOIN district ON district.id = district_id
 LEFT JOIN station ON station.id = station_id
-WHERE (hub.id = $1 OR hub.hub_name = $1 OR hub_phone_1 OR hub_phone_2 OR hub_email) AND  hub.deleted_at IS NULL
+WHERE (hub.id = $1 OR hub.hub_name = $1 OR hub.hub_phone_1=$1 OR hub.hub_phone_2=$1 OR hub.hub_email=$1) AND  hub.deleted_at IS NULL
 `
 
 func (s *Storage) GetHubBy(ctx context.Context, idname string) (*storage.Hub, error) {
@@ -163,7 +163,7 @@ func (s *Storage) GetHubByPosition(ctx context.Context, pos int32) (*storage.Hub
 
 const updateHub = `
 UPDATE hub SET
-	name = :name,
+	hub_name = :hub_name,
 	status = :status,
 	hub_phone_1 = :hub_phone_1,
 	hub_phone_2 = :hub_phone_2,

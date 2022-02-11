@@ -14,7 +14,6 @@ function viewHubForm() {
                 option.val(this.ID);
                 cntryDdd.append(option);
             });
-            console.log("########################")
             var districts = obj.DistrictData
             var dis = $("#districtdd");
             $("#districtdd").append('<option>--Select District--</option>');
@@ -255,6 +254,16 @@ $(document).ready(function () {
 
 // dropdown Update
 function hubDropdownUpdate(obj) {
+    var obj = jQuery.parseJSON(data)
+    var countries = obj.CountryData
+    var cntryDdd = $("#countrydd-update");
+    $("#countrydd-update").append('<option>--Select Country--</option>');
+    $(countries).each(function () {
+        var option = $("<option />");
+        option.html(this.Name);
+        option.val(this.ID);
+        cntryDdd.append(option);
+    });
     var districts = obj.DistrictData
     var dis = $("#districtdd-update");
     $("#districtdd-update").append('<option>--Select District--</option>');
@@ -264,15 +273,7 @@ function hubDropdownUpdate(obj) {
         option.val(this.ID);
         dis.append(option);
     });
-    var cntrys = obj.CountryData
-    var cntry = $("#countrydd-update");
-    $("#countrydd-update").append('<option>--Select Country--</option>');
-    $(cntrys).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.ID);
-        cntry.append(option);
-    });
+
     var stations = obj.StationData
     var stn = $("#stationdd-update");
     $("#stationdd-update").append('<option>--Select Station--</option>');

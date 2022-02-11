@@ -38,12 +38,6 @@ func (s HubForm) Validate(srv *Server, id string) error {
 			validation.Match(regexp.MustCompile("^[0-9_ ]*$")).Error("Must be digit. No alphabet is allowed."),
 			validation.By(checkDuplicateHubPhone(srv, s.HubPhone1, id)),
 		),
-		validation.Field(&s.HubPhone2,
-			validation.Required.Error("The hub phone 2 is required"),
-			validation.Length(3, 11).Error("Please insert name between 3 to 11"),
-			validation.Match(regexp.MustCompile("^[0-9_ ]*$")).Error("Must be digit. No alphabet is allowed."),
-			validation.By(checkDuplicateHubPhone(srv, s.HubPhone2, id)),
-		),
 		validation.Field(&s.HubEmail,
 			validation.Required.Error("The name email is required"),
 			validation.Length(3, 40).Error("Please insert name between 3 to 40"),
@@ -52,6 +46,9 @@ func (s HubForm) Validate(srv *Server, id string) error {
 		validation.Field(&s.Position,
 			validation.Required.Error(posReq),
 			validation.By(checkHubPosition(srv, s.Position, id)),
+		),
+		validation.Field(&s.HubAddress,
+			validation.Required.Error("The hub address is required"),
 		),
 		validation.Field(&s.Status,
 			validation.Required.Error("The status is required"),
@@ -64,11 +61,11 @@ func (s HubForm) Validate(srv *Server, id string) error {
 		),
 		validation.Field(&s.CountryID,
 			validation.Required.Error("The country name is required"),
-			validation.By(checkCountryExists(srv, s.DistrictID)),
+			validation.By(checkCountryExists(srv, s.CountryID)),
 		),
 		validation.Field(&s.StationID,
 			validation.Required.Error("The station name is required"),
-			validation.By(checkDuplicateStation(srv, s.StationID, id)),
+			validation.By(checkStationExists(srv, s.StationID)),
 		),
 	)
 }
@@ -89,17 +86,16 @@ func (s *Server) hubListHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Error(ewte + err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
-	
+
 }
 
 func (s *Server) hubFormHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Info("hub submit")
+	logger.Info("hub form handler")
 	cntrydata := s.countryList(r, w, true)
 	disdata := s.districtList(r, w, true)
 	stndata := s.stationList(r, w, true)
 	data := HubTempData{
 		CSRFField:    csrf.TemplateField(r),
-		FormErrors:   map[string]string{},
 		CountryData:  cntrydata,
 		DistrictData: disdata,
 		StationData:  stndata,
@@ -108,7 +104,7 @@ func (s *Server) hubFormHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) submitHubHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Info("hub submit")
+	logger.Info("hub submit handler")
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -137,7 +133,7 @@ func (s *Server) submitHubHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	_, err = s.st.CreateHub(r.Context(), storage.Hub{
-		HubName:    trim(form.HubName),
+		HubName:    trim(form.Name),
 		CountryID:  form.CountryID,
 		DistrictID: form.DistrictID,
 		StationID:  form.StationID,
@@ -211,7 +207,7 @@ func (s *Server) updateHubHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	dbdata := storage.Hub{
 		ID:         id,
-		HubName:    trim(form.HubName),
+		HubName:    trim(form.Name),
 		CountryID:  form.CountryID,
 		DistrictID: form.DistrictID,
 		StationID:  form.StationID,
@@ -316,7 +312,6 @@ func (s *Server) strgToHubByID(r *http.Request, id string, w http.ResponseWriter
 		DistrictName: res.DistrictName.String,
 		StationID:    res.StationID,
 		StationName:  res.StationName.String,
-		HubName:      res.HubName,
 		HubPhone1:    res.HubPhone1,
 		HubPhone2:    res.HubPhone2,
 		HubEmail:     res.HubEmail,
@@ -329,32 +324,4 @@ func (s *Server) strgToHubByID(r *http.Request, id string, w http.ResponseWriter
 		UpdatedBy:    res.UpdatedBy,
 	}
 	return Form
-}
-
-func (*Server) hubStrgToHubForm(hubList []storage.Hub) []HubForm {
-	hubListForm := make([]HubForm, 0)
-	for _, item := range hubList {
-		hubData := HubForm{
-			ID:           item.ID,
-			Name:         item.HubName,
-			CountryID:    item.CountryID,
-			CountryName:  item.CountryName.String,
-			DistrictID:   item.DistrictID,
-			DistrictName: item.DistrictName.String,
-			StationID:    item.StationID,
-			StationName:  item.StationName.String,
-			HubPhone1:    item.HubPhone1,
-			HubPhone2:    item.HubPhone2,
-			HubEmail:     item.HubEmail,
-			HubAddress:   item.HubAddress,
-			Status:       item.Status,
-			Position:     item.Position,
-			CreatedAt:    item.CreatedAt,
-			CreatedBy:    item.CreatedBy,
-			UpdatedAt:    item.UpdatedAt,
-			UpdatedBy:    item.UpdatedBy,
-		}
-		hubListForm = append(hubListForm, hubData)
-	}
-	return hubListForm
 }
