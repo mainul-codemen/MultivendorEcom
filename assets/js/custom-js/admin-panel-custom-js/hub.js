@@ -115,7 +115,11 @@ function viewHub(id) {
             $("#VHubEmail").empty().append(obj.Form.HubEmail);
             $("#VHubAddress").empty().append(obj.Form.HubAddress);
             $("#VPosition").empty().append(obj.Form.Position);
-            $("#VStatus").empty().append(obj.Form.Status);
+            if (obj.Form.Status == 1) {
+                $("#VStatus").empty().append("Active");
+            }else{
+                $("#VStatus").empty().append("InActive");
+            }
         }
     })
 }
@@ -216,6 +220,11 @@ function deleteHubData(id) {
             $("#dStationName").empty().append(obj.Form.StationName);
             $("#dPosition").empty().append(obj.Form.Position);
             $("#dStatus").empty().append(obj.Form.Status);
+            if (obj.Form.Status == 1) {
+                $("#dStatus").empty().append("Active");
+            }else{
+                $("#dStatus").empty().append("InActive");
+            }
         }
     })
 }

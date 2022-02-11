@@ -83,6 +83,11 @@ function viewDistrict(id) {
             $("#VCountryName").empty().append(obj.Form.CountryName);
             $("#VPosition").empty().append(obj.Form.Position);
             $("#VStatus").empty().append(obj.Form.Status);
+            if (obj.Form.Status == 1) {
+                $("#VStatus").empty().append("Active");
+            }else{
+                $("#VStatus").empty().append("InActive");
+            }
         }
     })
 }
@@ -175,7 +180,11 @@ function deleteDistrictData(id) {
             $("#dID").empty().val(obj.Form.ID);
             $("#dName").empty().append(obj.Form.Name);
             $("#dPosition").empty().append(obj.Form.Position);
-            $("#dStatus").empty().append(obj.Form.Status);
+            if (obj.Form.Status == 1) {
+                $("#dStatus").empty().append("Active");
+            }else{
+                $("#dStatus").empty().append("InActive");
+            }
         }
     })
 }

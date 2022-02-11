@@ -123,7 +123,11 @@ function viewDeliveryCharge(id) {
             $("#VWeightMin").empty().append(obj.Form.WeightMin);
             $("#VWeightMax").empty().append(obj.Form.WeightMax);
             $("#VDeliveryCharge").empty().append(obj.Form.DeliveryCharge);
-            $("#VDCStatus").empty().append(obj.Form.DeliveryChargeStatus);
+            if (obj.Form.DeliveryChargeStatus == 1) {
+                $("#VDCStatus").empty().append("Active");
+            }else{
+                $("#VDCStatus").empty().append("InActive");
+            }
         }
     })
 }
@@ -247,7 +251,11 @@ function deleteDeliveryChargeData(id) {
             $("#dCountryName").empty().append(obj.Form.CountryName);
             $("#dDistrictName").empty().append(obj.Form.DistrictName);
             $("#dStationName").empty().append(obj.Form.StationName);
-            $("#dStatus").empty().append(obj.Form.DeliveryChargeStatus);
+            if (obj.Form.DeliveryChargeStatus == 1) {
+                $("#dStatus").empty().append("Active");
+            }else{
+                $("#dStatus").empty().append("InActive");
+            }
         }
     })
 }

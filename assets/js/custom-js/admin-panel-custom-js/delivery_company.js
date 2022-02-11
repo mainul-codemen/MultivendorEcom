@@ -128,6 +128,11 @@ function viewDeliveryCompany(id) {
             $("#VCompanyAddress").empty().append(obj.Form.CompanyAddress);
             $("#VPosition").empty().append(obj.Form.Position);
             $("#VStatus").empty().append(obj.Form.CompanyStatus);
+            if (obj.Form.CompanyStatus == 1) {
+                $("#VStatus").empty().append("Active");
+            }else{
+                $("#VStatus").empty().append("InActive");
+            }
         }
     })
 }
@@ -252,12 +257,16 @@ function deleteDeliveryCompanyData(id) {
         success: function (data) {
             var obj = jQuery.parseJSON(data);
             $("#dID").empty().val(obj.Form.ID);
-            $("#dCompanyName").empty().append(obj.Form.Name);
+            $("#dCompanyName").empty().append(obj.Form.CompanyName);
             $("#dCountryName").empty().append(obj.Form.CountryName);
             $("#dDistrictName").empty().append(obj.Form.DistrictName);
             $("#dStationName").empty().append(obj.Form.StationName);
             $("#dPosition").empty().append(obj.Form.Position);
-            $("#dStatus").empty().append(obj.Form.Status);
+            if (obj.Form.CompanyStatus == 1) {
+                $("#dCompanyStatus").empty().append("Active");
+            }else{
+                $("#dCompanyStatus").empty().append("InActive");
+            }
         }
     })
 }

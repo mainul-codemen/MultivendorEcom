@@ -131,7 +131,11 @@ function viewBranch(id) {
             $("#VBranchEmail").empty().append(obj.Form.BranchEmail);
             $("#VBranchAddress").empty().append(obj.Form.BranchAddress);
             $("#VPosition").empty().append(obj.Form.Position);
-            $("#VStatus").empty().append(obj.Form.BranchStatus);
+            if (obj.Form.BranchStatus == 1) {
+                $("#VStatus").empty().append("Active");
+            }else{
+                $("#VStatus").empty().append("InActive");
+            }
         }
     })
 }
@@ -273,7 +277,11 @@ function deleteBranchData(id) {
             $("#dDistrictName").empty().append(obj.Form.DistrictName);
             $("#dStationName").empty().append(obj.Form.StationName);
             $("#dPosition").empty().append(obj.Form.Position);
-            $("#dStatus").empty().append(obj.Form.BranchStatus);
+            if (obj.Form.BranchStatus == 1) {
+                $("#dStatus").empty().append("Active");
+            }else{
+                $("#dStatus").empty().append("InActive");
+            }
         }
     })
 }

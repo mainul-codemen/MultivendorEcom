@@ -1,29 +1,4 @@
-
-// view : Station Form with Dropdown district
-function viewStationForm() {
-    $.ajax({
-        url: '/admin/station/create',
-        method: 'get',
-        success: function (data) {
-            var obj = jQuery.parseJSON(data)
-            var countries = obj.DistrictData
-            var cntryDdd = $("#districtdd");
-            $("#districtdd").append('<option>--Select District--</option>');
-            $(countries).each(function () {
-                var option = $("<option />");
-                option.html(this.Name);
-                option.val(this.ID);
-                cntryDdd.append(option);
-            });
-        }
-    });
-    // reset all form data after close modal
-    $('#modal-add').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
-        $("#districtdd").empty();
-    });
-}
-// create
+// create : Country
 $(document).ready(function () {
     $('#saveForm').submit(function (e) {
         e.preventDefault();
@@ -31,7 +6,7 @@ $(document).ready(function () {
             headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
         });
         $.ajax({
-            url: "/admin/station/create",
+            url: "/admin/country/create",
             method: 'post',
             data: $('form.tagForm').serialize(),
             success: function (data) {
@@ -52,7 +27,6 @@ $(document).ready(function () {
                     $('#modal-add').modal('hide');
                 } else {
                     $("#Name").empty().append(obj.FormErrors.Name);
-                    $("#DistrictID").empty().append(obj.FormErrors.DistrictID);
                     $("#Position").empty().append(obj.FormErrors.Position);
                     $("#Status").empty().append(obj.FormErrors.Status);
                     Toast.fire({
@@ -66,24 +40,20 @@ $(document).ready(function () {
         $('#modal-add').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
             $("#Name").empty();
-            $("#DistrictID").empty();
             $("#Position").empty();
             $("#Status").empty();
         });
     });
 });
-
-// view : Station
-function viewStation(id) {
+// view : Country
+function viewCountry(id) {
     $.ajax({
-        url: "/admin/station/view/" + id,
+        url: "/admin/country/view/" + id,
         method: 'get',
         success: function (data) {
             var obj = jQuery.parseJSON(data);
             $("#VName").empty().append(obj.Form.Name);
-            $("#VDistrictName").empty().append(obj.Form.DistrictName);
             $("#VPosition").empty().append(obj.Form.Position);
-            $("#VStatus").empty().append(obj.Form.Status);
             if (obj.Form.Status == 1) {
                 $("#VStatus").empty().append("Active");
             }else{
@@ -92,11 +62,10 @@ function viewStation(id) {
         }
     })
 }
-
-// Update : Station View
-function viewStationUpdateData(id) {
+// Update : Country View
+function viewCountryUpdateData(id) {
     $.ajax({
-        url: "/admin/station/update/" + id,
+        url: "/admin/country/view/" + id,
         method: 'get',
         success: function (data) {
             var obj = jQuery.parseJSON(data);
@@ -104,24 +73,10 @@ function viewStationUpdateData(id) {
             $("#UdName").empty().val(obj.Form.Name);
             $("#UdPosition").empty().val(obj.Form.Position);
             $("#UdStatus").empty().val(obj.Form.Status);
-            var districts = obj.DistrictData
-            var districtdd = $("#districtdd-update");
-            $("#districtdd-update").append('<option>--Select District--</option>');
-            $(districts).each(function () {
-                var option = $("<option />");
-                option.html(this.Name);
-                option.val(this.ID);
-                districtdd.append(option);
-            });
         }
     });
-    // reset all form data after close modal
-    $('#modal-update').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
-        $("#districtdd-update").empty();
-    });
 }
-// Update : Station Submit
+// Update : Country Submit
 $(document).ready(function () {
     $('#updateForm').submit(function (e) {
         e.preventDefault();
@@ -130,7 +85,7 @@ $(document).ready(function () {
         });
         var id = jQuery('#UdID').val();
         $.ajax({
-            url: "/admin/station/update/" + id,
+            url: "/admin/country/update/" + id,
             method: 'post',
             data: $('form.tagUpForm').serialize(),
             success: function (data) {
@@ -151,7 +106,6 @@ $(document).ready(function () {
                     $('#modal-update').modal('hide');
                 } else {
                     $("#NameErr").empty().append(obj.FormErrors.Name);
-                    $("#DistrictIDErr").empty().append(obj.FormErrors.DistrictID);
                     $("#PositionErr").empty().append(obj.FormErrors.Position);
                     $("#StatusErr").empty().append(obj.FormErrors.Status);
                     Toast.fire({
@@ -165,16 +119,16 @@ $(document).ready(function () {
         $('#modal-update').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');
             $("#NameErr").empty();
-            $("#DistrictErr").empty();
+            $("#DescriptionErr").empty();
             $("#PositionErr").empty();
             $("#StatusErr").empty();
         });
     });
 });
-// Delete : District View
-function deleteStationData(id) {
+// Delete : Country View
+function deleteCountryData(id) {
     $.ajax({
-        url: "/admin/station/view/" + id,
+        url: "/admin/country/view/" + id,
         method: 'get',
         success: function (data) {
             var obj = jQuery.parseJSON(data);
@@ -191,14 +145,14 @@ function deleteStationData(id) {
 }
 // delete country
 $(document).ready(function () {
-    $('#deleteStation').submit(function (e) {
+    $('#deleteCountry').submit(function (e) {
         e.preventDefault();
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
         });
         var id = jQuery('#dID').val();
         $.ajax({
-            url: "/admin/station/delete/" + id,
+            url: "/admin/country/delete/" + id,
             method: 'get',
             success: function (data) {
                 var obj = jQuery.parseJSON(data);
@@ -209,7 +163,7 @@ $(document).ready(function () {
                     timer: 3000
                 });
                 if (obj.Status) {
-                    $('deleteDistrict').trigger("reset");
+                    $('deleteCountry').trigger("reset");
                     Toast.fire({
                         icon: 'success',
                         title: obj.Message
