@@ -162,7 +162,7 @@ func checkDuplicateDeliveryCompany(s *Server, dcn, id string) validation.RuleFun
 		if resp == nil || resp.ID == id {
 			return nil
 		}
-		return fmt.Errorf(PhnEx, id)
+		return fmt.Errorf(" %s Already Exists", dcn)
 	}
 }
 

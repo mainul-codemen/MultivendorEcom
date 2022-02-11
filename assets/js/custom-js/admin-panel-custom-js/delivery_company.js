@@ -10,8 +10,6 @@ function viewDeliveryCompanyForm() {
     });
     resetData();
 }
-
-
 // dropdown
 function dcDropdown(obj) {
     var cntrys = obj.CountryData
@@ -156,31 +154,36 @@ function viewDeliveryCompanyUpdateData(id) {
 
 // dropdown Update
 function dcDropdownUpdate(obj) {
-    var districts = obj.DistrictData
-    var dis = $("#districtdd-update");
-    $(districts).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.DistrictID);
-        dis.append(option);
-    });
     var cntrys = obj.CountryData
-    var cntry = $("#countrydd-update");
+    var cntrydd = $("#countrydd-update");
+    $("#countrydd-update").append('<option>--Select Country--</option>');
     $(cntrys).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.CountryID);
-        cntry.append(option);
+        option.val(this.ID);
+        cntrydd.append(option);
     });
+    var districts = obj.DistrictData
+    var dis = $("#districtdd-update");
+    $("#districtdd-update").append('<option>--Select District--</option>');
+    $(districts).each(function () {
+        var option = $("<option />");
+        option.html(this.Name);
+        option.val(this.ID);
+        dis.append(option);
+    });
+    
     var stations = obj.StationData
-    var stn = $("#stationdd-update");
+    var stndd = $("#stationdd-update");
+    $("#stationdd-update").append('<option>--Select Station--</option>');
     $(stations).each(function () {
         var option = $("<option />");
         option.html(this.Name);
-        option.val(this.StationID);
-        stn.append(option);
+        option.val(this.ID);
+        stndd.append(option);
     });
 }
+
 // Update : DeliveryCompany Submit
 $(document).ready(function () {
     $('#updateForm').submit(function (e) {
@@ -210,15 +213,15 @@ $(document).ready(function () {
                     setTimeout(function () { window.location.reload(true); }, 1000);
                     $('#modal-update').modal('hide');
                 } else {
-                    $("#NameErr").empty().append(obj.FormErrors.Name);
+                    $("#NameErr").empty().append(obj.FormErrors.CompanyName);
                     $("#CountryIDErr").empty().append(obj.FormErrors.CountryID);
                     $("#DistrictIDErr").empty().append(obj.FormErrors.DistrictID);
                     $("#StationIDErr").empty().append(obj.FormErrors.StationID);
                     $("#Phone1Err").empty().append(obj.FormErrors.Phone);
                     $("#EmailErr").empty().append(obj.FormErrors.Email);
-                    $("#AddressErr").empty().append(obj.FormErrors.CompanyAddress);
+                    $("#CompanyAddress").empty().append(obj.FormErrors.CompanyAddress);
                     $("#PositionErr").empty().append(obj.FormErrors.Position);
-                    $("#StatusErr").empty().append(obj.FormErrors.Status);
+                    $("#StatusErr").empty().append(obj.FormErrors.CompanyStatus);
                     Toast.fire({
                         icon: 'error',
                         title: "Please Insert All Data Carefully."
@@ -233,10 +236,9 @@ $(document).ready(function () {
             $("#CountryIDErr").empty();
             $("#DistrictIDErr").empty();
             $("#StationIDErr").empty();
-            $("#Phone1Err").empty();
-            $("#Phone2Err").empty();
+            $("#PhoneErr").empty();
             $("#EmailErr").empty();
-            $("#AddressErr").empty();
+            $("#CompanyAddressErr").empty();
             $("#PositionErr").empty();
             $("#StatusErr").empty();
         });
