@@ -54,7 +54,7 @@ func (s *Server) districtListHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
 
-	disList, err := s.st.GetDistrictList(r.Context(), false)
+	disList, err := s.st.GetDistrictList(r.Context(), false) // false = active + inactive
 	if err != nil {
 		logger.Error("error while get designtion : " + err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)

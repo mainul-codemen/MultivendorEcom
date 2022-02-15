@@ -61,6 +61,7 @@ WHERE district.deleted_at IS NULL
 
 func (s *Storage) GetDistrictList(ctx context.Context, sts bool) ([]storage.District, error) {
 	logger.Info("get all district")
+	fmt.Println(sts)
 	if sts {
 		dislist = dislist + " AND district.status=1"
 	}

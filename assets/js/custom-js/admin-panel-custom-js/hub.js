@@ -219,7 +219,6 @@ function deleteHubData(id) {
             $("#dDistrictName").empty().append(obj.Form.DistrictName);
             $("#dStationName").empty().append(obj.Form.StationName);
             $("#dPosition").empty().append(obj.Form.Position);
-            $("#dStatus").empty().append(obj.Form.Status);
             if (obj.Form.Status == 1) {
                 $("#dStatus").empty().append("Active");
             }else{

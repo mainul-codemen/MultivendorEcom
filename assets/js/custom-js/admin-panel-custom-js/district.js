@@ -85,7 +85,7 @@ function viewDistrict(id) {
             $("#VStatus").empty().append(obj.Form.Status);
             if (obj.Form.Status == 1) {
                 $("#VStatus").empty().append("Active");
-            }else{
+            } else {
                 $("#VStatus").empty().append("InActive");
             }
         }
@@ -102,16 +102,7 @@ function viewDistrictUpdateData(id) {
             $("#UdID").empty().val(obj.Form.ID);
             $("#UdName").empty().val(obj.Form.Name);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdStatus").empty().val(obj.Form.Status);
-            var countries = obj.CountryData
-            var cntdd = $("#countrydd-update");
-            $("#countrydd-update").append('<option value="">--Select Country--</option>');
-            $(countries).each(function () {
-                var option = $("<option />");
-                option.html(this.Name);
-                option.val(this.ID);
-                cntdd.append(option);
-            });
+            statusDd(obj);
         }
     });
     // reset all form data after close modal
@@ -120,6 +111,18 @@ function viewDistrictUpdateData(id) {
         $("#countrydd-update").empty();
     });
 }
+
+function statusDd(obj) {
+    $("#UdStatus").empty().val(obj.Form.Status);
+    if (obj.Form.Status == 1) {
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+    } else {
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+    }
+ }
+ 
 // Update : District Submit
 $(document).ready(function () {
     $('#updateForm').submit(function (e) {
@@ -182,7 +185,7 @@ function deleteDistrictData(id) {
             $("#dPosition").empty().append(obj.Form.Position);
             if (obj.Form.Status == 1) {
                 $("#dStatus").empty().append("Active");
-            }else{
+            } else {
                 $("#dStatus").empty().append("InActive");
             }
         }
