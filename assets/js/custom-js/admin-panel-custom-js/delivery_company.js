@@ -150,13 +150,23 @@ function viewDeliveryCompanyUpdateData(id) {
             $("#UdEmail").empty().val(obj.Form.Email);
             $("#UdCompanyAddress").empty().val(obj.Form.CompanyAddress);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdCompanyStatus").empty().val(obj.Form.CompanyStatus);
+            statusDCD(obj);
             dcDropdownUpdate(obj)
         }
     });
     resetDataUpdate()
 }
 
+function statusDCD(obj) {
+    $("#UdStatus").empty().val(obj.Form.CompanyStatus);
+    if (obj.Form.CompanyStatus == 1) {
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+    } else {
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+    }
+}
 // dropdown Update
 function dcDropdownUpdate(obj) {
     var cntrys = obj.CountryData

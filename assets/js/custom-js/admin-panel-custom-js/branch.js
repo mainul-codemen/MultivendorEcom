@@ -31,7 +31,7 @@ function branchDropdown(obj) {
         option.val(this.ID);
         dis.append(option);
     });
-    
+
     var stations = obj.StationData
     var stndd = $("#stationdd");
     $("#stationdd").append('<option>--Select Station--</option>');
@@ -133,7 +133,7 @@ function viewBranch(id) {
             $("#VPosition").empty().append(obj.Form.Position);
             if (obj.Form.BranchStatus == 1) {
                 $("#VStatus").empty().append("Active");
-            }else{
+            } else {
                 $("#VStatus").empty().append("InActive");
             }
         }
@@ -160,7 +160,7 @@ function branchDropdownUpdate(obj) {
         option.val(this.ID);
         dis.append(option);
     });
-    
+
     var stations = obj.StationData
     var stndd = $("#stationdd-update");
     $("#stationdd-update").append('<option>--Select Station--</option>');
@@ -196,12 +196,24 @@ function viewBranchUpdateData(id) {
             $("#UdBranchEmail").empty().val(obj.Form.BranchEmail);
             $("#UdBranchAddress").empty().val(obj.Form.BranchAddress);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdStatus").empty().val(obj.Form.BranchStatus);
-            branchDropdownUpdate(obj)
+            statusDb(obj);
+            branchDropdownUpdate(obj);
         }
     });
     resetDataUpdate()
 }
+
+function statusDb(obj) {
+    $("#UdStatus").empty().val(obj.Form.BranchStatus);
+    if (obj.Form.BranchStatus == 1) {
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+    } else {
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+    }
+}
+
 // Update : Branch Submit
 $(document).ready(function () {
     $('#updateForm').submit(function (e) {
@@ -279,7 +291,7 @@ function deleteBranchData(id) {
             $("#dPosition").empty().append(obj.Form.Position);
             if (obj.Form.BranchStatus == 1) {
                 $("#dStatus").empty().append("Active");
-            }else{
+            } else {
                 $("#dStatus").empty().append("InActive");
             }
         }

@@ -72,7 +72,7 @@ function viewCountryUpdateData(id) {
             $("#UdID").empty().val(obj.Form.ID);
             $("#UdName").empty().val(obj.Form.Name);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdStatus").empty().val(obj.Form.Status);
+            statusDd(obj);
         }
     });
 }
@@ -175,3 +175,13 @@ $(document).ready(function () {
         });
     });
 });
+function statusDc(obj) {
+    $("#UdStatus").empty().val(obj.Form.Status);
+    if (obj.Form.Status == 1) {
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+    } else {
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+    }
+}

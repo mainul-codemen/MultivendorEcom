@@ -103,7 +103,7 @@ function viewStationUpdateData(id) {
             $("#UdID").empty().val(obj.Form.ID);
             $("#UdName").empty().val(obj.Form.Name);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdStatus").empty().val(obj.Form.Status);
+            statusDd(obj);
             var districts = obj.DistrictData
             var districtdd = $("#districtdd-update");
             $("#districtdd-update").append('<option>--Select District--</option>');
