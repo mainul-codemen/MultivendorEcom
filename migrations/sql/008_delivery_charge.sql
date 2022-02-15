@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS delivery_charge
     updated_by      varchar(100)     NOT NULL DEFAULT  '',
     deleted_at      timestamp        DEFAULT NULL,
     deleted_by      varchar(100)     NOT NULL DEFAULT ''
-)
+);
 -- +goose Down
 -- +goose StatementBegin
 SELECT 'down SQL query';

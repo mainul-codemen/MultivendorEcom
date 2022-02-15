@@ -66,7 +66,7 @@ https://www.postgresqltutorial.com/postgresql-joins/
 
         createdb --username=root --owner=root simpe_bank 
 
-        psql
+        psql simple_bank
 
         dropdb simple_bank
 

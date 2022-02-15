@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS designation
     updated_at  timestamp        DEFAULT current_timestamp,
     updated_by  varchar(100)     NOT NULL DEFAULT  '',
     deleted_at  timestamp        DEFAULT NULL,
-    deleted_by  varchar(100)     NO NULL DEFAULT ''
+    deleted_by  varchar(100)     NOT NULL DEFAULT ''
 );
 -- +goose Down
 -- +goose StatementBegin
