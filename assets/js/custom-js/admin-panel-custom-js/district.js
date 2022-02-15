@@ -102,15 +102,17 @@ function viewDistrictUpdateData(id) {
             $("#UdID").empty().val(obj.Form.ID);
             $("#UdName").empty().val(obj.Form.Name);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdStatus").empty().val(obj.Form.Status);
+            statusDd(obj);
             var countries = obj.CountryData
             var cntdd = $("#countrydd-update");
-            $("#countrydd-update").append('<option>--Select Country--</option>');
+            $("#countrydd-update").append('<option value="'+obj.Form.CountryID+'">'+obj.Form.CountryName+'</option>');
             $(countries).each(function () {
-                var option = $("<option />");
-                option.html(this.Name);
-                option.val(this.ID);
-                cntdd.append(option);
+                if (this.Name != obj.Form.CountryName){
+                    var option = $("<option />");
+                    option.html(this.Name);
+                    option.val(this.ID);
+                    cntdd.append(option);
+                }
             });
         }
     });
@@ -120,6 +122,7 @@ function viewDistrictUpdateData(id) {
         $("#countrydd-update").empty();
     });
 }
+
 // Update : District Submit
 $(document).ready(function () {
     $('#updateForm').submit(function (e) {
@@ -170,6 +173,7 @@ $(document).ready(function () {
         });
     });
 });
+
 // Delete : Country View
 function deleteDistrictData(id) {
     $.ajax({

@@ -138,7 +138,7 @@ function viewHubUpdateData(id) {
             $("#UdHubEmail").empty().val(obj.Form.HubEmail);
             $("#UdHubAddress").empty().val(obj.Form.HubAddress);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdStatus").empty().val(obj.Form.Status);
+            statusDd(obj);
             hubDropdownUpdate(obj);
         }
     });
