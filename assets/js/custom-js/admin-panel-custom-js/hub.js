@@ -7,7 +7,7 @@ function viewHubForm() {
             var obj = jQuery.parseJSON(data)
             var countries = obj.CountryData
             var cntryDdd = $("#countrydd");
-            $("#countrydd").append('<option>--Select Country--</option>');
+            $("#countrydd").append('<option value="">--Select Country--</option>');
             $(countries).each(function () {
                 var option = $("<option />");
                 option.html(this.Name);
@@ -16,7 +16,7 @@ function viewHubForm() {
             });
             var districts = obj.DistrictData
             var dis = $("#districtdd");
-            $("#districtdd").append('<option>--Select District--</option>');
+            $("#districtdd").append('<option value="">--Select District--</option>');
             $(districts).each(function () {
                 var option = $("<option />");
                 option.html(this.Name);
@@ -26,7 +26,7 @@ function viewHubForm() {
 
             var stations = obj.StationData
             var stn = $("#stationdd");
-            $("#stationdd").append('<option>--Select Station--</option>');
+            $("#stationdd").append('<option value="">--Select Station--</option>');
             $(stations).each(function () {
                 var option = $("<option />");
                 option.html(this.Name);
@@ -265,7 +265,7 @@ $(document).ready(function () {
 function hubDropdownUpdate(obj) {
     var countries = obj.CountryData
     var cntryDdd = $("#countrydd-update");
-    $("#countrydd-update").append('<option>--Select Country--</option>');
+    $("#countrydd-update").append('<option value="">--Select Country--</option>');
     $(countries).each(function () {
         var option = $("<option />");
         option.html(this.Name);
@@ -274,7 +274,7 @@ function hubDropdownUpdate(obj) {
     });
     var districts = obj.DistrictData
     var dis = $("#districtdd-update");
-    $("#districtdd-update").append('<option>--Select District--</option>');
+    $("#districtdd-update").append('<option value="">--Select District--</option>');
     $(districts).each(function () {
         var option = $("<option />");
         option.html(this.Name);
@@ -284,7 +284,7 @@ function hubDropdownUpdate(obj) {
 
     var stations = obj.StationData
     var stn = $("#stationdd-update");
-    $("#stationdd-update").append('<option>--Select Station--</option>');
+    $("#stationdd-update").append('<option value="">--Select Station--</option>');
     $(stations).each(function () {
         var option = $("<option />");
         option.html(this.Name);

@@ -15,7 +15,7 @@ function viewBranchForm() {
 function branchDropdown(obj) {
     var cntrys = obj.CountryData
     var cntrydd = $("#countrydd");
-    $("#countrydd").append('<option>--Select Country--</option>');
+    $("#countrydd").append('<option value="">--Select Country--</option>');
     $(cntrys).each(function () {
         var option = $("<option />");
         option.html(this.Name);
@@ -24,7 +24,7 @@ function branchDropdown(obj) {
     });
     var districts = obj.DistrictData
     var dis = $("#districtdd");
-    $("#districtdd").append('<option>--Select District--</option>');
+    $("#districtdd").append('<option value="">--Select District--</option>');
     $(districts).each(function () {
         var option = $("<option />");
         option.html(this.Name);
@@ -34,7 +34,7 @@ function branchDropdown(obj) {
     
     var stations = obj.StationData
     var stndd = $("#stationdd");
-    $("#stationdd").append('<option>--Select Station--</option>');
+    $("#stationdd").append('<option value="">--Select Station--</option>');
     $(stations).each(function () {
         var option = $("<option />");
         option.html(this.Name);
@@ -144,7 +144,7 @@ function viewBranch(id) {
 function branchDropdownUpdate(obj) {
     var cntrys = obj.CountryData
     var cntrydd = $("#countrydd-update");
-    $("#countrydd-update").append('<option>--Select Country--</option>');
+    $("#countrydd-update").append('<option value="">--Select Country--</option>');
     $(cntrys).each(function () {
         var option = $("<option />");
         option.html(this.Name);
@@ -153,7 +153,7 @@ function branchDropdownUpdate(obj) {
     });
     var districts = obj.DistrictData
     var dis = $("#districtdd-update");
-    $("#districtdd-update").append('<option>--Select District--</option>');
+    $("#districtdd-update").append('<option value="">--Select District--</option>');
     $(districts).each(function () {
         var option = $("<option />");
         option.html(this.Name);
@@ -163,7 +163,7 @@ function branchDropdownUpdate(obj) {
     
     var stations = obj.StationData
     var stndd = $("#stationdd-update");
-    $("#stationdd-update").append('<option>--Select Station--</option>');
+    $("#stationdd-update").append('<option value="">--Select Station--</option>');
     $(stations).each(function () {
         var option = $("<option />");
         option.html(this.Name);

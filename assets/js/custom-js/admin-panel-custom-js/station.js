@@ -8,7 +8,7 @@ function viewStationForm() {
             var obj = jQuery.parseJSON(data)
             var countries = obj.DistrictData
             var cntryDdd = $("#districtdd");
-            $("#districtdd").append('<option>--Select District--</option>');
+            $("#districtdd").append('<option value="">--Select District--</option>');
             $(countries).each(function () {
                 var option = $("<option />");
                 option.html(this.Name);
@@ -106,7 +106,7 @@ function viewStationUpdateData(id) {
             $("#UdStatus").empty().val(obj.Form.Status);
             var districts = obj.DistrictData
             var districtdd = $("#districtdd-update");
-            $("#districtdd-update").append('<option>--Select District--</option>');
+            $("#districtdd-update").append('<option value="">--Select District--</option>');
             $(districts).each(function () {
                 var option = $("<option />");
                 option.html(this.Name);
