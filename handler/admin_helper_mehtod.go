@@ -90,7 +90,7 @@ func (s *Server) districtList(r *http.Request, w http.ResponseWriter, sts bool) 
 }
 
 func (s *Server) hubList(r *http.Request, w http.ResponseWriter, sts bool) []HubForm {
-	hubList, err := s.st.GetHubList(r.Context(),sts)
+	hubList, err := s.st.GetHubList(r.Context(), sts)
 	if err != nil {
 		logger.Error("error while get hub : " + err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
@@ -120,4 +120,82 @@ func (s *Server) hubList(r *http.Request, w http.ResponseWriter, sts bool) []Hub
 		hbdata = append(hbdata, disApnd)
 	}
 	return hbdata
+}
+
+func (s *Server) usrList(r *http.Request, w http.ResponseWriter, sts bool) []UserForm {
+	usrList, err := s.st.GetUserList(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get user : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+	usdata := make([]UserForm, 0)
+	for _, item := range usrList {
+		usApnd := UserForm{
+			ID:                      item.ID,
+			DesignationID:           item.DesignationID,
+			UserRole:                item.UserRole,
+			EmployeeRole:            item.EmployeeRole,
+			VerifiedBy:              item.VerifiedBy,
+			JoinBy:                  item.JoinBy,
+			CountryID:               item.CountryID,
+			CountryName:             item.CountryName.String,
+			DistrictID:              item.DistrictID,
+			DistrictName:            item.DistrictName.String,
+			StationID:               item.StationID,
+			StationName:             item.StationName.String,
+			Status:                  item.Status,
+			UserName:                item.UserName,
+			FirstName:               item.FirstName,
+			LastName:                item.LastName,
+			Email:                   item.Email,
+			EmailVerifiedAt:         item.EmailVerifiedAt,
+			Password:                item.Password,
+			Phone1:                  item.Phone1,
+			Phone2:                  item.Phone2,
+			PhoneNumberVerifiedAt:   item.PhoneNumberVerifiedAt,
+			PhoneNumberVerifiedCode: item.PhoneNumberVerifiedCode,
+			DateOfBirth:             item.DateOfBirth,
+			Gender:                  item.Gender,
+			FBID:                    item.FBID,
+			Photo:                   item.Photo,
+			NIDFrontPhoto:           item.NIDFrontPhoto,
+			NIDBackPhoto:            item.NIDBackPhoto,
+			NIDNumber:               item.NIDNumber,
+			CVPDF:                   item.CVPDF,
+			PresentAddress:          item.PresentAddress,
+			PermanentAddress:        item.PermanentAddress,
+			Reference:               item.Reference,
+			RememberToken:           item.RememberToken,
+			CreatedAt:               item.CreatedAt,
+			CreatedBy:               item.CreatedBy,
+			UpdatedAt:               item.UpdatedAt,
+			UpdatedBy:               item.UpdatedBy,
+		}
+		usdata = append(usdata, usApnd)
+	}
+	return usdata
+}
+
+func (s *Server) desList(r *http.Request, w http.ResponseWriter, sts bool) []DesignationForm {
+	desList, err := s.st.GetDesignation(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get designation : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+	desListForm := make([]DesignationForm, 0)
+	for _, item := range desList {
+		desData := DesignationForm{
+			ID:          item.ID,
+			Name:        item.Name,
+			Description: item.Description,
+			Status:      item.Status,
+			Position:    item.Position,
+			CreatedAt:   item.CreatedAt,
+			CreatedBy:   item.CreatedBy,
+			UpdatedAt:   item.UpdatedAt,
+			UpdatedBy:   item.UpdatedBy,
+		}
+		desListForm = append(desListForm, desData)
+	}
+	return desListForm
 }

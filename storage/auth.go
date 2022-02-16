@@ -8,6 +8,7 @@ import (
 type Users struct {
 	ID                      string         `db:"id"`
 	DesignationID           string         `db:"designation_id"`
+	DesignationName         sql.NullString `db:"designation_name,omitempty"`
 	UserRole                int16          `db:"user_role"`
 	EmployeeRole            int16          `db:"employee_role"`
 	VerifiedBy              string         `db:"verified_by"`
@@ -34,7 +35,7 @@ type Users struct {
 	FBID                    string         `db:"fb_id"`
 	Photo                   string         `db:"photo"`
 	NIDFrontPhoto           string         `db:"nid_front_photo"`
-	PhNIDBackPhotooto       string         `db:"nid_back_photo"`
+	NIDBackPhoto            string         `db:"nid_back_photo"`
 	NIDNumber               string         `db:"nid_number"`
 	CVPDF                   string         `db:"cv_pdf"`
 	PresentAddress          string         `db:"present_address"`
