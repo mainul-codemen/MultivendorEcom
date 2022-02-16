@@ -142,33 +142,38 @@ function viewBranch(id) {
 
 // dropdown Update
 function branchDropdownUpdate(obj) {
-    var cntrys = obj.CountryData
-    var cntrydd = $("#countrydd-update");
-    $("#countrydd-update").append('<option>--Select Country--</option>');
-    $(cntrys).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.ID);
-        cntrydd.append(option);
+    var countries = obj.CountryData
+    var cntryDdd = $("#countrydd-update");
+    $("#countrydd-update").append('<option value="' + obj.Form.CountryID + '">' + obj.Form.CountryName + '</option>');
+    $(countries).each(function () {
+        if (this.Name != obj.Form.CountryName) {
+            var option = $("<option />");
+            option.html(this.Name);
+            option.val(this.ID);
+            cntryDdd.append(option);
+        }
     });
     var districts = obj.DistrictData
     var dis = $("#districtdd-update");
-    $("#districtdd-update").append('<option>--Select District--</option>');
+    $("#districtdd-update").append('<option value="' + obj.Form.DistrictID + '">' + obj.Form.DistrictName + '</option>');
     $(districts).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.ID);
-        dis.append(option);
+        if (this.Name != obj.Form.DistrictName) {
+            var option = $("<option />");
+            option.html(this.Name);
+            option.val(this.ID);
+            dis.append(option);
+        }
     });
-
     var stations = obj.StationData
-    var stndd = $("#stationdd-update");
-    $("#stationdd-update").append('<option>--Select Station--</option>');
+    var stn = $("#stationdd-update");
+    $("#stationdd-update").append('<option value="' + obj.Form.StationID + '">' + obj.Form.StationName + '</option>');
     $(stations).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.ID);
-        stndd.append(option);
+        if (this.Name != obj.Form.StationName) {
+            var option = $("<option />");
+            option.html(this.Name);
+            option.val(this.ID);
+            stn.append(option);
+        }
     });
 }
 
@@ -196,8 +201,8 @@ function viewBranchUpdateData(id) {
             $("#UdBranchEmail").empty().val(obj.Form.BranchEmail);
             $("#UdBranchAddress").empty().val(obj.Form.BranchAddress);
             $("#UdPosition").empty().val(obj.Form.Position);
-            statusDb(obj);
             branchDropdownUpdate(obj);
+            statusDb(obj);
         }
     });
     resetDataUpdate()
