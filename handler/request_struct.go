@@ -5,6 +5,66 @@ import (
 	"time"
 )
 
+type UserForm struct {
+	ID                      string
+	DesignationID           string
+	UserRole                int16
+	EmployeeRole            int16
+	DepartmentID            int16
+	HubID                   int32
+	HubName                 string
+	VerifiedBy              string
+	JoinBy                  string
+	CountryID               string
+	CountryName             string
+	DistrictID              string
+	DistrictName            string
+	StationID               string
+	StationName             string
+	Status                  int16
+	UserName                string
+	FirstName               string
+	LastName                string
+	Email                   string
+	EmailVerifiedAt         time.Time
+	Password                string
+	Phone1                  string
+	Phone2                  string
+	PhoneNumberVerifiedAt   time.Time
+	PhoneNumberVerifiedCode string
+	DateOfBirth             time.Time
+	JoinDate                time.Time
+	Gender                  int16
+	FBID                    string
+	Photo                   string
+	NIDFrontPhoto           string
+	NIDBackPhoto            string
+	NIDNumber               string
+	CVPDF                   string
+	PresentAddress          string
+	PermanentAddress        string
+	Reference               string
+	RememberToken           string
+	CreatedAt               time.Time
+	CreatedBy               string
+	UpdatedAt               time.Time
+	UpdatedBy               string
+	DeletedAt               sql.NullTime
+}
+
+type DesignationForm struct {
+	ID          string
+	Name        string
+	Description string
+	Status      int32
+	Position    int32
+	CreatedAt   time.Time
+	CreatedBy   string
+	UpdatedAt   time.Time
+	UpdatedBy   string
+	DeletedAt   sql.NullTime
+}
+
 type DistrictForm struct {
 	ID          string
 	Name        string

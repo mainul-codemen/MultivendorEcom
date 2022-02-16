@@ -29,6 +29,13 @@ type TemplateData struct {
 }
 
 const (
+	// user
+	userListPath         = "/user"
+	createUserPath       = "/user/create"
+	updateUserPath       = "/user/update/{id}"
+	updateUserStatusPath = "/user/update/status/{id}"
+	viewUserPath         = "/user/view/{id}"
+	deleteUserPath       = "/user/delete/{id}"
 	// designation
 	designationListPath         = "/designation"
 	designationCreate           = "/designation/create"
@@ -113,6 +120,15 @@ func New(
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./assets/"))))
 	ar := r.PathPrefix("/admin").Subrouter()
 	ar.HandleFunc("/index", s.adminindex).Methods("GET")
+	// User
+	ar.HandleFunc(userListPath, s.userListHandler).Methods("GET")
+	ar.HandleFunc(createUserPath, s.usrFormHandler).Methods("GET")
+	ar.HandleFunc(createUserPath, s.submitUserHandler).Methods("POST")
+	// ar.HandleFunc(updateUserPath, s.updateUserFormHandler).Methods("GET")
+	ar.HandleFunc(updateUserPath, s.updateUserHandler).Methods("POST")
+	ar.HandleFunc(viewUserPath, s.viewUserHandler).Methods("GET")
+	ar.HandleFunc(updateUserStatusPath, s.updateUserStatusHandler).Methods("GET")
+	ar.HandleFunc(deleteUserPath, s.deleteUserHandler).Methods("GET")
 	// designation
 	ar.HandleFunc(designationCreate, s.submitDesignation).Methods("POST")
 	ar.HandleFunc(updateDesignationPath, s.updateDesignation).Methods("POST")

@@ -136,6 +136,7 @@ FROM users AS u
 LEFT JOIN country ON country.id = country_id
 LEFT JOIN district ON district.id = district_id
 LEFT JOIN station ON station.id = station_id
+LEFT JOIN designation ON designation.id = designation_id
 WHERE u.deleted_at IS NULL
 `
 

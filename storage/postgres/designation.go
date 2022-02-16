@@ -43,12 +43,14 @@ func (s *Storage) CreateDesignation(con context.Context, des storage.Designation
 	return id, nil
 }
 
-const et = `SELECT * from designation WHERE deleted_at IS NULL`
-
-func (s *Storage) GetDesignation(ctx context.Context) ([]storage.Designation, error) {
+func (s *Storage) GetDesignation(ctx context.Context, sts bool) ([]storage.Designation, error) {
 	logger.Info("get all designation")
+	desq := `SELECT * from designation WHERE deleted_at IS NULL`
+	if sts {
+		desq = desq + " AND status=1"
+	}
 	des := make([]storage.Designation, 0)
-	if err := s.db.Select(&des, et); err != nil {
+	if err := s.db.Select(&des, desq); err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
