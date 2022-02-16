@@ -146,8 +146,8 @@ function viewDeliveryChargeUpdateData(id) {
             $("#UdWeightMin").empty().val(obj.Form.WeightMin);
             $("#UdWeightMax").empty().val(obj.Form.WeightMax);
             $("#UdDeliveryCharge").empty().val(obj.Form.DeliveryCharge);
-            $("#UdDCStatus").empty().val(obj.Form.DeliveryChargeStatus);
-            dcDropdownUpdate(obj)
+            statusDelC(obj);
+            dcDropdownUpdate(obj);
         }
     });
     resetDataUpdate()
@@ -301,4 +301,15 @@ function resetDataUpdate() {
         $("#districtdd-update").empty();
         $("#stationdd-update").empty();
     });
+}
+
+function statusDelC(obj) {
+    $("#UdStatus").empty().val(obj.Form.DeliveryChargeStatus);
+    if (obj.Form.DeliveryChargeStatus == 1) {
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+    } else {
+        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
+        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
+    }
 }

@@ -86,7 +86,7 @@ function viewStation(id) {
             $("#VStatus").empty().append(obj.Form.Status);
             if (obj.Form.Status == 1) {
                 $("#VStatus").empty().append("Active");
-            }else{
+            } else {
                 $("#VStatus").empty().append("InActive");
             }
         }
@@ -103,15 +103,17 @@ function viewStationUpdateData(id) {
             $("#UdID").empty().val(obj.Form.ID);
             $("#UdName").empty().val(obj.Form.Name);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdStatus").empty().val(obj.Form.Status);
+            statusDd(obj);
             var districts = obj.DistrictData
             var districtdd = $("#districtdd-update");
-            $("#districtdd-update").append('<option value="">--Select District--</option>');
+            $("#districtdd-update").append('<option value="' + obj.Form.DistrictID + '">' + obj.Form.DistrictName + '</option>');
             $(districts).each(function () {
-                var option = $("<option />");
-                option.html(this.Name);
-                option.val(this.ID);
-                districtdd.append(option);
+                if (this.Name != obj.Form.DistrictName) {
+                    var option = $("<option />");
+                    option.html(this.Name);
+                    option.val(this.ID);
+                    districtdd.append(option);
+                }
             });
         }
     });
@@ -183,7 +185,7 @@ function deleteStationData(id) {
             $("#dPosition").empty().append(obj.Form.Position);
             if (obj.Form.Status == 1) {
                 $("#dStatus").empty().append("Active");
-            }else{
+            } else {
                 $("#dStatus").empty().append("InActive");
             }
         }

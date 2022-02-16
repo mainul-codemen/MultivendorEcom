@@ -1,12 +1,10 @@
 package handler
 
 import (
-	"database/sql"
 	"encoding/json"
 	"html/template"
 	"net/http"
 	"regexp"
-	"time"
 
 	"github.com/MultivendorEcom/serviceutil/logger"
 	"github.com/MultivendorEcom/storage"
@@ -15,18 +13,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type DesignationForm struct {
-	ID          string
-	Name        string
-	Description string
-	Status      int32
-	Position    int32
-	CreatedAt   time.Time
-	CreatedBy   string
-	UpdatedAt   time.Time
-	UpdatedBy   string
-	DeletedAt   sql.NullTime
-}
 type DesignationData struct {
 	CSRFField   template.HTML
 	Form        DesignationForm
@@ -115,15 +101,9 @@ func (s *Server) designationList(w http.ResponseWriter, r *http.Request) {
 		logger.Error(ult)
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
-	deslist, err := s.st.GetDesignation(r.Context())
-	if err != nil {
-		logger.Error("error while get designtion : " + err.Error())
-		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
-	}
-
-	disList := storageTODesListForm(deslist)
+	deslist := s.desList(r, w, false)
 	data := DesignationData{
-		Data: disList,
+		Data: deslist,
 	}
 	if err := tmpl.Execute(w, data); err != nil {
 		logger.Error(ewte + err.Error())
@@ -261,23 +241,4 @@ func (s *Server) updateDesignationStatus(w http.ResponseWriter, r *http.Request)
 		}
 	}
 	http.Redirect(w, r, "/admin/"+designationListPath, http.StatusSeeOther)
-}
-
-func storageTODesListForm(deslist []storage.Designation) []DesignationForm {
-	disList := make([]DesignationForm, 0)
-	for _, item := range deslist {
-		disData := DesignationForm{
-			ID:          item.ID,
-			Name:        item.Name,
-			Description: item.Description,
-			Status:      item.Status,
-			Position:    item.Position,
-			CreatedAt:   item.CreatedAt,
-			CreatedBy:   item.CreatedBy,
-			UpdatedAt:   item.UpdatedAt,
-			UpdatedBy:   item.UpdatedBy,
-		}
-		disList = append(disList, disData)
-	}
-	return disList
 }

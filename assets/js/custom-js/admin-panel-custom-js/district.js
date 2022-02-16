@@ -103,6 +103,17 @@ function viewDistrictUpdateData(id) {
             $("#UdName").empty().val(obj.Form.Name);
             $("#UdPosition").empty().val(obj.Form.Position);
             statusDd(obj);
+            var countries = obj.CountryData
+            var cntdd = $("#countrydd-update");
+            $("#countrydd-update").append('<option value="'+obj.Form.CountryID+'">'+obj.Form.CountryName+'</option>');
+            $(countries).each(function () {
+                if (this.Name != obj.Form.CountryName){
+                    var option = $("<option />");
+                    option.html(this.Name);
+                    option.val(this.ID);
+                    cntdd.append(option);
+                }
+            });
         }
     });
     // reset all form data after close modal
@@ -112,17 +123,6 @@ function viewDistrictUpdateData(id) {
     });
 }
 
-function statusDd(obj) {
-    $("#UdStatus").empty().val(obj.Form.Status);
-    if (obj.Form.Status == 1) {
-        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
-        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
-    } else {
-        $("#UdStatus").append('<option value="' + 2 + '">' + "Inactive" + '</option>');
-        $("#UdStatus").append('<option value="' + 1 + '">' + "Active" + '</option>');
-    }
- }
- 
 // Update : District Submit
 $(document).ready(function () {
     $('#updateForm').submit(function (e) {
@@ -173,6 +173,7 @@ $(document).ready(function () {
         });
     });
 });
+
 // Delete : Country View
 function deleteDistrictData(id) {
     $.ajax({

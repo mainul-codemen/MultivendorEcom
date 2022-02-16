@@ -72,12 +72,12 @@ function viewDesignationUpdateData(id) {
         method: 'get',
         success: function (data) {
             var obj = jQuery.parseJSON(data);
-            console.log("----", obj)
             $("#UdID").empty().val(obj.Form.ID);
             $("#UdName").empty().val(obj.Form.Name);
             $("#UdDescription").empty().val(obj.Form.Description);
             $("#UdPosition").empty().val(obj.Form.Position);
             $("#UdStatus").empty().val(obj.Form.Status);
+            statusDd(obj);
         }
     })
 }

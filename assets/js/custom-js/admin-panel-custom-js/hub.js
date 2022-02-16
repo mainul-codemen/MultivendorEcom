@@ -117,7 +117,7 @@ function viewHub(id) {
             $("#VPosition").empty().append(obj.Form.Position);
             if (obj.Form.Status == 1) {
                 $("#VStatus").empty().append("Active");
-            }else{
+            } else {
                 $("#VStatus").empty().append("InActive");
             }
         }
@@ -138,8 +138,8 @@ function viewHubUpdateData(id) {
             $("#UdHubEmail").empty().val(obj.Form.HubEmail);
             $("#UdHubAddress").empty().val(obj.Form.HubAddress);
             $("#UdPosition").empty().val(obj.Form.Position);
-            $("#UdStatus").empty().val(obj.Form.Status);
             hubDropdownUpdate(obj);
+            statusDd(obj);
         }
     });
     resetDataUpdate();
@@ -221,7 +221,7 @@ function deleteHubData(id) {
             $("#dPosition").empty().append(obj.Form.Position);
             if (obj.Form.Status == 1) {
                 $("#dStatus").empty().append("Active");
-            }else{
+            } else {
                 $("#dStatus").empty().append("InActive");
             }
         }
@@ -264,31 +264,36 @@ $(document).ready(function () {
 function hubDropdownUpdate(obj) {
     var countries = obj.CountryData
     var cntryDdd = $("#countrydd-update");
-    $("#countrydd-update").append('<option value="">--Select Country--</option>');
+    $("#countrydd-update").append('<option value="' + obj.Form.CountryID + '">' + obj.Form.CountryName + '</option>');
     $(countries).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.ID);
-        cntryDdd.append(option);
+        if (this.Name != obj.Form.CountryName) {
+            var option = $("<option />");
+            option.html(this.Name);
+            option.val(this.ID);
+            cntryDdd.append(option);
+        }
     });
     var districts = obj.DistrictData
     var dis = $("#districtdd-update");
-    $("#districtdd-update").append('<option value="">--Select District--</option>');
+    $("#districtdd-update").append('<option value="' + obj.Form.DistrictID + '">' + obj.Form.DistrictName + '</option>');
     $(districts).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.ID);
-        dis.append(option);
+        if (this.Name != obj.Form.DistrictName) {
+            var option = $("<option />");
+            option.html(this.Name);
+            option.val(this.ID);
+            dis.append(option);
+        }
     });
-
     var stations = obj.StationData
     var stn = $("#stationdd-update");
-    $("#stationdd-update").append('<option value="">--Select Station--</option>');
+    $("#stationdd-update").append('<option value="' + obj.Form.StationID + '">' + obj.Form.StationName + '</option>');
     $(stations).each(function () {
-        var option = $("<option />");
-        option.html(this.Name);
-        option.val(this.ID);
-        stn.append(option);
+        if (this.Name != obj.Form.StationName) {
+            var option = $("<option />");
+            option.html(this.Name);
+            option.val(this.ID);
+            stn.append(option);
+        }
     });
 }
 // reset dropdown data
