@@ -247,3 +247,31 @@ func (s *Server) usrRoleList(r *http.Request, w http.ResponseWriter, sts bool) [
 	}
 	return desListForm
 }
+func (s *Server) grdList(r *http.Request, w http.ResponseWriter, sts bool) []GradeForm {
+	desList, err := s.st.GetGrade(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get designation : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+	desListForm := make([]GradeForm, 0)
+	for _, item := range desList {
+		desData := GradeForm{
+			ID:             item.ID,
+			Name:           item.Name,
+			Description:    item.Description,
+			BasicSalary:    item.BasicSalary,
+			LunchAllowance: item.LunchAllowance,
+			RentAllowance:  item.RentAllowance,
+			AbsentPenalty:  item.AbsentPenalty,
+			TotalSalary:    item.TotalSalary,
+			Status:         item.Status,
+			Position:       item.Position,
+			CreatedAt:      item.CreatedAt,
+			CreatedBy:      item.CreatedBy,
+			UpdatedAt:      item.UpdatedAt,
+			UpdatedBy:      item.UpdatedBy,
+		}
+		desListForm = append(desListForm, desData)
+	}
+	return desListForm
+}

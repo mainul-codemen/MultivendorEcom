@@ -76,6 +76,24 @@ type DepartmentForm struct {
 	UpdatedBy   string
 	DeletedAt   sql.NullTime
 }
+type GradeForm struct {
+	ID             string
+	Name           string
+	Description    string
+	BasicSalary    float64
+	LunchAllowance float64
+	Transportation float64
+	RentAllowance  float64
+	AbsentPenalty  float64
+	TotalSalary    float64
+	Status         int32
+	Position       int32
+	CreatedAt      time.Time
+	CreatedBy      string
+	UpdatedAt      time.Time
+	UpdatedBy      string
+	DeletedAt      sql.NullTime
+}
 type UserRoleForm struct {
 	ID          string
 	Name        string

@@ -289,3 +289,23 @@ func checkUserRolePosition(s *Server, position int32, id string) validation.Rule
 		return fmt.Errorf(PosEx, position)
 	}
 }
+
+func checkDuplicateGrade(s *Server, name, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetGradeBy(context.Background(), trim(name))
+		if resp == nil || resp.ID == id {
+			return nil
+		}
+		return errors.New(name + AlrEx)
+	}
+}
+
+func checkGradePosition(s *Server, position int32, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetGradeByPosition(context.Background(), position)
+		if resp == nil || resp.ID == id {
+			return nil
+		}
+		return fmt.Errorf(PosEx, position)
+	}
+}
