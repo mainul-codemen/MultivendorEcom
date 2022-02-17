@@ -43,6 +43,13 @@ const (
 	updateDesignationPath       = "/designation/update/{id}"
 	updateDesignationStatusPath = "/designation/update/status/{id}"
 	viewDesignationPath         = "/designation/view/{id}"
+	// department
+	departmentListPath         = "/department"
+	departmentCreate           = "/department/create"
+	deleteDepartmentPath       = "/department/delete/{id}"
+	updateDepartmentPath       = "/department/update/{id}"
+	updateDepartmentStatusPath = "/department/update/status/{id}"
+	viewDepartmentPath         = "/department/view/{id}"
 	// country
 	countryListPath         = "/country"
 	createCountryPath       = "/country/create"
@@ -129,6 +136,13 @@ func New(
 	ar.HandleFunc(viewUserPath, s.viewUserHandler).Methods("GET")
 	ar.HandleFunc(updateUserStatusPath, s.updateUserStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteUserPath, s.deleteUserHandler).Methods("GET")
+	// department
+	ar.HandleFunc(departmentCreate, s.submitDepartment).Methods("POST")
+	ar.HandleFunc(updateDepartmentPath, s.updateDepartment).Methods("POST")
+	ar.HandleFunc(deleteDepartmentPath, s.deleteDepartment).Methods("GET")
+	ar.HandleFunc(departmentListPath, s.departmentList).Methods("GET")
+	ar.HandleFunc(viewDepartmentPath, s.viewDepartment).Methods("GET")
+	ar.HandleFunc(updateDepartmentStatusPath, s.updateDepartmentStatus).Methods("GET")
 	// designation
 	ar.HandleFunc(designationCreate, s.submitDesignation).Methods("POST")
 	ar.HandleFunc(updateDesignationPath, s.updateDesignation).Methods("POST")

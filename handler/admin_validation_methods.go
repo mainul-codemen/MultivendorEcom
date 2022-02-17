@@ -249,3 +249,23 @@ func checkCountryPosition(s *Server, position int32, id string) validation.RuleF
 		return fmt.Errorf(PosEx, position)
 	}
 }
+
+func checkDuplicateDepartment(s *Server, name, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetDepartmentBy(context.Background(), trim(name))
+		if resp == nil || resp.ID == id {
+			return nil
+		}
+		return errors.New(name + AlrEx)
+	}
+}
+
+func checkDepartmentPosition(s *Server, position int32, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetDepartmentByPosition(context.Background(), position)
+		if resp == nil || resp.ID == id {
+			return nil
+		}
+		return fmt.Errorf(PosEx, position)
+	}
+}
