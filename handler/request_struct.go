@@ -64,6 +64,18 @@ type DesignationForm struct {
 	UpdatedBy   string
 	DeletedAt   sql.NullTime
 }
+type DepartmentForm struct {
+	ID          string
+	Name        string
+	Description string
+	Status      int32
+	Position    int32
+	CreatedAt   time.Time
+	CreatedBy   string
+	UpdatedAt   time.Time
+	UpdatedBy   string
+	DeletedAt   sql.NullTime
+}
 
 type DistrictForm struct {
 	ID          string
