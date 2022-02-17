@@ -269,3 +269,23 @@ func checkDepartmentPosition(s *Server, position int32, id string) validation.Ru
 		return fmt.Errorf(PosEx, position)
 	}
 }
+
+func checkDuplicateUserRole(s *Server, name, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetUserRoleBy(context.Background(), trim(name))
+		if resp == nil || resp.ID == id {
+			return nil
+		}
+		return errors.New(name + AlrEx)
+	}
+}
+
+func checkUserRolePosition(s *Server, position int32, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetUserRoleByPosition(context.Background(), position)
+		if resp == nil || resp.ID == id {
+			return nil
+		}
+		return fmt.Errorf(PosEx, position)
+	}
+}

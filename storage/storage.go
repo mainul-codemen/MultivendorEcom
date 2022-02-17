@@ -32,6 +32,14 @@ type (
 		Position    int32  `db:"position"`
 		CRUDTimeDate
 	}
+	UserRole struct {
+		ID          string `db:"id"`
+		Name        string `db:"name"`
+		Description string `db:"description"`
+		Status      int32  `db:"status"`
+		Position    int32  `db:"position"`
+		CRUDTimeDate
+	}
 
 	Country struct {
 		ID          string `db:"id"`
