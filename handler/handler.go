@@ -36,6 +36,13 @@ const (
 	updateUserStatusPath = "/user/update/status/{id}"
 	viewUserPath         = "/user/view/{id}"
 	deleteUserPath       = "/user/delete/{id}"
+	// user role
+	userRoleListPath         = "/user-role"
+	userRoleCreate           = "/user-role/create"
+	deleteUserRolePath       = "/user-role/delete/{id}"
+	updateUserRolePath       = "/user-role/update/{id}"
+	updateUserRoleStatusPath = "/user-role/update/status/{id}"
+	viewUserRolePath         = "/user-role/view/{id}"
 	// designation
 	designationListPath         = "/designation"
 	designationCreate           = "/designation/create"
@@ -131,6 +138,13 @@ func New(
 	ar.HandleFunc(userListPath, s.userListHandler).Methods("GET")
 	ar.HandleFunc(createUserPath, s.usrFormHandler).Methods("GET")
 	ar.HandleFunc(createUserPath, s.submitUserHandler).Methods("POST")
+	// userRole
+	ar.HandleFunc(userRoleCreate, s.submitUserRole).Methods("POST")
+	ar.HandleFunc(updateUserRolePath, s.updateUserRole).Methods("POST")
+	ar.HandleFunc(deleteUserRolePath, s.deleteUserRole).Methods("GET")
+	ar.HandleFunc(userRoleListPath, s.userRoleList).Methods("GET")
+	ar.HandleFunc(viewUserRolePath, s.viewUserRole).Methods("GET")
+	ar.HandleFunc(updateUserRoleStatusPath, s.updateUserRoleStatus).Methods("GET")
 	// ar.HandleFunc(updateUserPath, s.updateUserFormHandler).Methods("GET")
 	ar.HandleFunc(updateUserPath, s.updateUserHandler).Methods("POST")
 	ar.HandleFunc(viewUserPath, s.viewUserHandler).Methods("GET")

@@ -223,3 +223,27 @@ func (s *Server) dptList(r *http.Request, w http.ResponseWriter, sts bool) []Dep
 	}
 	return desListForm
 }
+
+func (s *Server) usrRoleList(r *http.Request, w http.ResponseWriter, sts bool) []UserRoleForm {
+	desList, err := s.st.GetUserRole(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get user role : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+	desListForm := make([]UserRoleForm, 0)
+	for _, item := range desList {
+		desData := UserRoleForm{
+			ID:          item.ID,
+			Name:        item.Name,
+			Description: item.Description,
+			Status:      item.Status,
+			Position:    item.Position,
+			CreatedAt:   item.CreatedAt,
+			CreatedBy:   item.CreatedBy,
+			UpdatedAt:   item.UpdatedAt,
+			UpdatedBy:   item.UpdatedBy,
+		}
+		desListForm = append(desListForm, desData)
+	}
+	return desListForm
+}
