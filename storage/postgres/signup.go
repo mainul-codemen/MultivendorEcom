@@ -41,6 +41,7 @@ INSERT INTO users(
 	permanent_address,
 	reference,
 	remember_token,
+	join_date,
 	created_by,
 	updated_by
 ) VALUES (
@@ -75,6 +76,7 @@ INSERT INTO users(
 	:permanent_address,
 	:reference,
 	:remember_token,
+	:join_date,
 	:created_by,
 	:updated_by
 ) RETURNING
@@ -83,6 +85,9 @@ INSERT INTO users(
 
 func (s *Storage) RegisterUser(con context.Context, des storage.Users) (string, error) {
 	logger.Info("create users db")
+	fmt.Println("#############")
+	fmt.Printf("%+v", des)
+	fmt.Println("#############")
 	stmt, err := s.db.PrepareNamed(insertusr)
 	if err != nil {
 		logger.Error(ewpq + err.Error())

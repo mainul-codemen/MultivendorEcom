@@ -3,7 +3,7 @@
 SELECT 'up SQL query';
 -- +goose StatementEnd
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE TABLE IF NOT EXISTS user_role
+CREATE TABLE IF NOT EXISTS grade
 (
     id               varchar(100) PRIMARY KEY DEFAULT uuid_generate_v4(),
     name             varchar(100)    NOT NULL DEFAULT '',

@@ -94,7 +94,7 @@ type (
 		HubPhone2    string         `db:"hub_phone_2"`
 		HubEmail     string         `db:"hub_email"`
 		HubAddress   string         `db:"hub_address"`
-		Status       int16          `db:"status"`
+		Status       int16          `db:"hub_status"`
 		Position     int32          `db:"position"`
 		CRUDTimeDate
 	}

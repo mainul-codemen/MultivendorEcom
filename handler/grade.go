@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"regexp"
@@ -34,10 +35,6 @@ func (s GradeForm) Validate(srv *Server, id string) error {
 			validation.Required.Error("The Position is required"),
 			validation.By(checkGradePosition(srv, s.Position, id)),
 		),
-		validation.Field(&s.Description,
-			validation.Required.Error("The Description is required"),
-			validation.Length(3, 100).Error("Please insert description between 3 to 100 character"),
-		),
 		validation.Field(&s.Status,
 			validation.Required.Error("The status is required"),
 			validation.Min(1).Error("Status is Invalid"),
@@ -65,6 +62,7 @@ func (s *Server) submitGrade(w http.ResponseWriter, r *http.Request) {
 		if e, ok := err.(validation.Errors); ok {
 			if len(e) > 0 {
 				for key, value := range e {
+					fmt.Println(value)
 					vErrs[key] = value.Error()
 				}
 			}

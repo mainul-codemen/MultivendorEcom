@@ -20,7 +20,8 @@
                                 </div>
                                 <!-- /.card-header -->
                                 <!-- form start -->
-                                <form>
+                                <form method="post">
+                                    {{.CSRFField}}
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-4">
@@ -84,11 +85,23 @@
                                                         placeholder="Enter Last Name" name="LastName">
                                                 </div>
                                             </div>
+
                                             <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>User name</label>
-                                                    <input type="text" class="form-control" id="username"
-                                                        placeholder="Enter Username" name="UserName">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>User name</label>
+                                                            <input type="text" class="form-control" id="username"
+                                                                placeholder="Enter Username" name="UserName">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Password</label>
+                                                            <input type="password" class="form-control" id="password"
+                                                                placeholder="Enter Username" name="Password">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -97,7 +110,7 @@
                                                 <div class="form-group">
                                                     <label>Email</label>
                                                     <input type="email" class="form-control" id="email"
-                                                        placeholder="Enter email">
+                                                        placeholder="Enter email" name="Email">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -141,9 +154,14 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>Facebook URL</label>
-                                                    <input type="text" class="form-control" id="fbid" name="FBID"
-                                                        placeholder="Enter Facebook URL">
+                                                    <label>Country</label>
+                                                    <select class="custom-select" name="CountryID" id="countryid">
+                                                        <option value="">-- Select Country --</option>
+                                                        {{range .CountryData}}
+                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        {{end}}
+                                                    </select>
+                                                    <p style="color: red;" id="CountryID"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -155,6 +173,7 @@
                                                         <option value="2">Female</option>
                                                         <option value="3">Other</option>
                                                     </select>
+                                                    <p style="color: red;" id="Gender"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -162,23 +181,20 @@
                                                     <label>User Role</label>
                                                     <select class="custom-select" name="UserRole" id="userrole">
                                                         <option value="">-- Select User Role --</option>
-                                                        <option value="1">Developer</option>
-                                                        <option value="2">Super Admin</option>
-                                                        <option value="3">Employee</option>
+                                                        {{range .UserRoleData}}
+                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        {{end}}
                                                     </select>
+                                                    <p style="color: red;" id="UserRole"></p>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>Department</label>
-                                                    <select class="custom-select" name="DepartmentID" id="departmentid">
-                                                        <option value="">-- Select Department --</option>
-                                                        <option value="1">Developer</option>
-                                                        <option value="2">Super Admin</option>
-                                                        <option value="3">Employee</option>
-                                                    </select>
+                                                    <label>Facebook URL</label>
+                                                    <input type="text" class="form-control" id="fbid" name="FBID"
+                                                        placeholder="Enter Facebook URL">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -205,6 +221,7 @@
                                                         <option value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
+                                                    <p style="color: red;" id="CountryID"></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -218,6 +235,7 @@
                                                         <option value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
+                                                    <p style="color: red;" id="HubID"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -229,6 +247,7 @@
                                                         <option value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
+                                                    <p style="color: red;" id="StationID"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -236,10 +255,52 @@
                                                     <label>Employee Role</label>
                                                     <select class="custom-select" name="EmployeeRole" id="role">
                                                         <option value="">-- Select Employee Role --</option>
-                                                        <option value="1">Developer</option>
-                                                        <option value="2">Super Admin</option>
-                                                        <option value="3">Employee</option>
+                                                        {{range .UserRoleData}}
+                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        {{end}}
                                                     </select>
+                                                    <p style="color: red;" id="EmployeeRoleID"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Employee Grade</label>
+                                                    <select class="custom-select" name="EmployeeGradeID" id="grade">
+                                                        <option value="">-- Select Employee Grade --</option>
+                                                        {{range .GradeData}}
+                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        {{end}}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Employee Designation</label>
+                                                    <select class="custom-select" name="DesignationID" id="designation">
+                                                        <option value="">-- Select Employee Designation --</option>
+                                                        {{range .DesignationData}}
+                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        {{end}}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>CV (PDF)</label>
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input type="file" class="custom-file-input" id="cvfile"
+                                                                name="CVPDF">
+                                                            <label class="custom-file-label"
+                                                                for="exampleInputFile">Choose
+                                                                file</label>
+                                                        </div>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Upload</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -261,22 +322,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                                <div class="form-group">
-                                                    <label>CV (PDF)</label>
-                                                    <div class="input-group">
-                                                        <div class="custom-file">
-                                                            <input type="file" class="custom-file-input" id="cvfile"
-                                                                name="CVPDF">
-                                                            <label class="custom-file-label"
-                                                                for="exampleInputFile">Choose
-                                                                file</label>
-                                                        </div>
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">Upload</span>
-                                                        </div>
-                                            </div>
-                                        </div>
-
                                     </div>
                                     <div class="card-footer">
                                         <button type="submit" class="btn btn-primary">Submit</button>

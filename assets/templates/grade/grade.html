@@ -49,7 +49,6 @@
                                                 <th scope="col">AbsentPenalty</th>
                                                 <th scope="col">TotalSalary</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col">Created By</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </thead>
@@ -72,7 +71,6 @@
                                                     <a type="button" class="btn btn-info btn-sm"
                                                         href="/admin/grade/update/status/{{.ID}}">Inactive</a>
                                                     {{end}}
-                                                <td>{{.CreatedBy}}</td>
                                                 <td>
                                                     <a href="/admin/grade/update/{{.ID}}" type="button"
                                                         class="btn btn-success" data-toggle="modal"
@@ -106,7 +104,6 @@
                                                 <th scope="col">AbsentPenalty</th>
                                                 <th scope="col">TotalSalary</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col">Created By</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </tfoot>
@@ -123,7 +120,7 @@
                 <!-- /.container-fluid -->
                 <!--------------------------------------------------- Modal Add --------------------------------------------------->
                 <div class="modal fade" id="modal-add">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header" style="background-color:#0069D9;">
                                 <h4 class="modal-title" style="color: white;">Add Grade</h4>
@@ -176,7 +173,7 @@
                                             <input type="number" name="Transportation" class="form-control" id="totalSalary"
                                                 placeholder="Enter Transportation Name" value="{{.Form.Transportation}}">
                                             <p style="color: red;" id="Transportation"></p>
-                                        </div>Transportation
+                                        </div>
                                         <div class="form-group">
                                             <label>Status</label>
                                             <div class="form-group">
@@ -208,7 +205,7 @@
                 </div>
                 <!--------------------------------------------------- Modal Update --------------------------------------------------->
                 <div class="modal fade" id="modal-update">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header" style="background-color: #20ac3e;">
                                 <h4 class="modal-title" style="color: white;">Update Grade</h4>

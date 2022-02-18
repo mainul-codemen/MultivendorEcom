@@ -2,9 +2,9 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
-	"regexp"
 	"time"
 
 	"github.com/MultivendorEcom/serviceutil/logger"
@@ -23,24 +23,27 @@ type UsrTempData struct {
 	CountryData     []CountryForm
 	StationData     []StationForm
 	DesignationData []DesignationForm
+	DepartmentData  []DepartmentForm
+	UserRoleData    []UserRoleForm
 	HubData         []HubForm
+	GradeData       []GradeForm
 	FormAction      string
 }
 
 func (s UserForm) Validate(srv *Server, id string) error {
-	return validation.ValidateStruct(&s,
-		validation.Field(&s.UserName,
-			validation.Required.Error(nameReq),
-			validation.Length(3, 50).Error("Please insert name between 3 to 50"),
-			validation.By(checkDuplicateHub(srv, s.UpdatedBy, id)),
-		),
-		validation.Field(&s.Phone1,
-			validation.Required.Error("The User phone is required"),
-			validation.Length(3, 11).Error("Please insert phone between 3 to 11"),
-			validation.Match(regexp.MustCompile("^[0-9_ ]*$")).Error("Must be digit. No alphabet is allowed."),
-			validation.By(checkDuplicateHubPhone(srv, s.Phone1, id)),
-		),
-	)
+	return validation.ValidateStruct(&s)
+	// validation.Field(&s.UserName,
+	// 	validation.Required.Error(nameReq),
+	// 	validation.Length(3, 50).Error("Please insert name between 3 to 50"),
+	// 	validation.By(checkDuplicateHub(srv, s.UpdatedBy, id)),
+	// ),
+	// validation.Field(&s.Phone1,
+	// 	validation.Required.Error("The User phone is required"),
+	// 	validation.Length(3, 11).Error("Please insert phone between 3 to 11"),
+	// 	validation.Match(regexp.MustCompile("^[0-9_ ]*$")).Error("Must be digit. No alphabet is allowed."),
+	// 	validation.By(checkDuplicateHubPhone(srv, s.Phone1, id)),
+	// ),
+
 }
 
 func (s *Server) userListHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,17 +72,15 @@ func (s *Server) usrFormHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Error(ult)
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
-
-	cntrydata := s.countryList(r, w, true) // true = only active status
-	disdata := s.districtList(r, w, true)  // true = only active status
-	stndata := s.stationList(r, w, true)   // true = only active status
-	desdata := s.desList(r, w, true)       // true = only active status
 	data := UsrTempData{
 		CSRFField:       csrf.TemplateField(r),
-		CountryData:     cntrydata,
-		DistrictData:    disdata,
-		StationData:     stndata,
-		DesignationData: desdata,
+		CountryData:     s.countryList(r, w, true),  // true = only active status,
+		DistrictData:    s.districtList(r, w, true), // true = only active status,
+		StationData:     s.stationList(r, w, true),  // true = only active status,
+		DesignationData: s.desList(r, w, true),      // true = only active status,
+		UserRoleData:    s.usrRoleList(r, w, true),  // true = only active status,
+		GradeData:       s.grdList(r, w, true),      // true = only active status,
+		HubData:         s.hubList(r, w, true),
 	}
 	if err := tmpl.Execute(w, data); err != nil {
 		logger.Error(ewte + err.Error())
@@ -101,6 +102,8 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Error(err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
 	}
+
+	fmt.Println("############")
 	if err := form.Validate(s, ""); err != nil {
 		vErrs := map[string]string{}
 		if e, ok := err.(validation.Errors); ok {
@@ -117,6 +120,8 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(data)
 		return
 	}
+	fmt.Println(form.UserRole)
+	fmt.Println(form.EmployeeRole)
 	_, err = s.st.RegisterUser(r.Context(), storage.Users{
 		DesignationID:           form.DesignationID,
 		UserRole:                form.UserRole,
@@ -126,7 +131,7 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		CountryID:               form.CountryID,
 		DistrictID:              form.DistrictID,
 		StationID:               form.StationID,
-		Status:                  form.Status,
+		Status:                  1,
 		UserName:                trim(form.UserName),
 		FirstName:               trim(form.FirstName),
 		LastName:                trim(form.LastName),
@@ -137,7 +142,7 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		Phone2:                  trim(form.Phone2),
 		PhoneNumberVerifiedAt:   time.Now(),
 		PhoneNumberVerifiedCode: trim(form.PhoneNumberVerifiedCode),
-		DateOfBirth:             form.DateOfBirth,
+		DateOfBirth:             form.DateOfBirthT,
 		Gender:                  form.Gender,
 		FBID:                    trim(form.FBID),
 		Photo:                   trim(form.Photo),

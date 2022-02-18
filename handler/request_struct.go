@@ -8,8 +8,8 @@ import (
 type UserForm struct {
 	ID                      string
 	DesignationID           string
-	UserRole                int16
-	EmployeeRole            int16
+	UserRole                string
+	EmployeeRole            string
 	DepartmentID            int16
 	HubID                   int32
 	HubName                 string
@@ -32,8 +32,10 @@ type UserForm struct {
 	Phone2                  string
 	PhoneNumberVerifiedAt   time.Time
 	PhoneNumberVerifiedCode string
-	DateOfBirth             time.Time
-	JoinDate                time.Time
+	DateOfBirth             string
+	JoinDate                string
+	DateOfBirthT            time.Time
+	JoinDateT               time.Time
 	Gender                  int16
 	FBID                    string
 	Photo                   string
