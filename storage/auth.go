@@ -9,16 +9,20 @@ type Users struct {
 	ID                      string         `db:"id"`
 	DesignationID           string         `db:"designation_id"`
 	DesignationName         sql.NullString `db:"designation_name,omitempty"`
-	UserRole                int16          `db:"user_role"`
-	EmployeeRole            int16          `db:"employee_role"`
-	VerifiedBy              string         `db:"verified_by"`
-	JoinBy                  string         `db:"join_by"`
 	CountryID               string         `db:"country_id"`
 	CountryName             sql.NullString `db:"country_name,omitempty"`
+	HubID                   string         `db:"hub_id"`
+	HubName                 string         `db:"hub_name"`
+	DepartmentID            string         `db:"department_id"`
+	DepartmentName          string         `db:"department_name"`
 	DistrictID              string         `db:"district_id"`
 	DistrictName            sql.NullString `db:"district_name,omitempty"`
 	StationID               string         `db:"station_id"`
 	StationName             sql.NullString `db:"station_name,omitempty"`
+	JoinBy                  string         `db:"join_by"`
+	EmployeeRole            string         `db:"employee_role"`
+	UserRole                string         `db:"user_role"`
+	VerifiedBy              string         `db:"verified_by"`
 	Status                  int16          `db:"status"`
 	UserName                string         `db:"user_name"`
 	FirstName               string         `db:"first_name"`
@@ -30,6 +34,7 @@ type Users struct {
 	Phone2                  string         `db:"phone_2"`
 	PhoneNumberVerifiedAt   time.Time      `db:"phone_number_verified_at"`
 	PhoneNumberVerifiedCode string         `db:"phone_number_verified_code"`
+	JoinDate                time.Time      `db:"join_date"`
 	DateOfBirth             time.Time      `db:"date_of_birth"`
 	Gender                  int16          `db:"gender"`
 	FBID                    string         `db:"fb_id"`

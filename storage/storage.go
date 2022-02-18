@@ -40,7 +40,20 @@ type (
 		Position    int32  `db:"position"`
 		CRUDTimeDate
 	}
-
+	Grade struct {
+		ID             string  `db:"id"`
+		Name           string  `db:"name"`
+		Description    string  `db:"description"`
+		BasicSalary    float64 `db:"basic_salary"`
+		LunchAllowance float64 `db:"lunch_allowance"`
+		Transportation float64 `db:"transportation"`
+		RentAllowance  float64 `db:"rent_allowance"`
+		AbsentPenalty  float64 `db:"absent_penalty"`
+		TotalSalary    float64 `db:"total_salary"`
+		Status         int32   `db:"status"`
+		Position       int32   `db:"position"`
+		CRUDTimeDate
+	}
 	Country struct {
 		ID          string `db:"id"`
 		Name        string `db:"name"`
@@ -81,7 +94,7 @@ type (
 		HubPhone2    string         `db:"hub_phone_2"`
 		HubEmail     string         `db:"hub_email"`
 		HubAddress   string         `db:"hub_address"`
-		Status       int16          `db:"status"`
+		Status       int16          `db:"hub_status"`
 		Position     int32          `db:"position"`
 		CRUDTimeDate
 	}

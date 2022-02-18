@@ -110,7 +110,6 @@ func (s *Server) hubList(r *http.Request, w http.ResponseWriter, sts bool) []Hub
 			HubPhone2:    item.HubPhone2,
 			HubEmail:     item.HubEmail,
 			HubAddress:   item.HubAddress,
-			Status:       item.Status,
 			Position:     item.Position,
 			CreatedAt:    item.CreatedAt,
 			CreatedBy:    item.CreatedBy,
@@ -154,7 +153,7 @@ func (s *Server) usrList(r *http.Request, w http.ResponseWriter, sts bool) []Use
 			Phone2:                  item.Phone2,
 			PhoneNumberVerifiedAt:   item.PhoneNumberVerifiedAt,
 			PhoneNumberVerifiedCode: item.PhoneNumberVerifiedCode,
-			DateOfBirth:             item.DateOfBirth,
+			DateOfBirthT:             item.DateOfBirth,
 			Gender:                  item.Gender,
 			FBID:                    item.FBID,
 			Photo:                   item.Photo,
@@ -242,6 +241,35 @@ func (s *Server) usrRoleList(r *http.Request, w http.ResponseWriter, sts bool) [
 			CreatedBy:   item.CreatedBy,
 			UpdatedAt:   item.UpdatedAt,
 			UpdatedBy:   item.UpdatedBy,
+		}
+		desListForm = append(desListForm, desData)
+	}
+	return desListForm
+}
+func (s *Server) grdList(r *http.Request, w http.ResponseWriter, sts bool) []GradeForm {
+	desList, err := s.st.GetGrade(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get designation : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+	desListForm := make([]GradeForm, 0)
+	for _, item := range desList {
+		desData := GradeForm{
+			ID:             item.ID,
+			Name:           item.Name,
+			Description:    item.Description,
+			BasicSalary:    item.BasicSalary,
+			LunchAllowance: item.LunchAllowance,
+			RentAllowance:  item.RentAllowance,
+			AbsentPenalty:  item.AbsentPenalty,
+			TotalSalary:    item.TotalSalary,
+			Transportation: item.Transportation,
+			Status:         item.Status,
+			Position:       item.Position,
+			CreatedAt:      item.CreatedAt,
+			CreatedBy:      item.CreatedBy,
+			UpdatedAt:      item.UpdatedAt,
+			UpdatedBy:      item.UpdatedBy,
 		}
 		desListForm = append(desListForm, desData)
 	}

@@ -11,7 +11,7 @@ import (
 const inserthub = `
 INSERT INTO hub(
 	hub_name, 
-	status,
+	hub_status,
 	hub_phone_1,
 	hub_phone_2,
 	hub_email,
@@ -24,7 +24,7 @@ INSERT INTO hub(
 	updated_by
 ) VALUES (
 	:hub_name, 
-	:status,
+	:hub_status,
 	:hub_phone_1,
 	:hub_phone_2,
 	:hub_email,
@@ -70,7 +70,7 @@ SELECT
   district.name AS district_name,
   station.id as station_id,
   station.name AS station_name,
-  hub.status,
+  hub.hub_status,
   hub.created_at,
   hub.created_by,
   hub.updated_at,
@@ -85,7 +85,7 @@ WHERE hub.deleted_at IS NULL
 func (s *Storage) GetHubList(ctx context.Context, sts bool) ([]storage.Hub, error) {
 	logger.Info("get all hub")
 	if sts {
-		hublist = hublist + " AND status=1"
+		hublist = hublist + " AND hub.hub_status=1"
 	}
 	hub := make([]storage.Hub, 0)
 	if err := s.db.Select(&hub, hublist); err != nil {
@@ -110,7 +110,7 @@ SELECT
 	country.name AS country_name,
 	district.name AS district_name,
 	station.name AS station_name,
-	hub.status,
+	hub.hub_status,
 	hub.created_at,
 	hub.created_by,
 	hub.updated_at,
@@ -142,7 +142,7 @@ SELECT
 	country_id, 
 	district_id, 
 	station_id, 
-	status,
+	hub_status,
 	position,
 	created_at,
 	created_by,
@@ -164,7 +164,7 @@ func (s *Storage) GetHubByPosition(ctx context.Context, pos int32) (*storage.Hub
 const updateHub = `
 UPDATE hub SET
 	hub_name = :hub_name,
-	status = :status,
+	hub_status = :hub_status,
 	hub_phone_1 = :hub_phone_1,
 	hub_phone_2 = :hub_phone_2,
 	hub_email = :hub_email,
@@ -198,7 +198,7 @@ const updateHubStatus = `
 	UPDATE 
 		hub 
 	SET
-		status = :status,
+		hub_status = :hub_status,
 		updated_at = now(),
 		updated_by = :updated_by
 	WHERE 

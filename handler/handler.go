@@ -64,6 +64,13 @@ const (
 	viewCountryPath         = "/country/view/{id}"
 	updateCountryStatusPath = "/country/update/status/{id}"
 	deleteCountryPath       = "/country/delete/{id}"
+	// country
+	gradeListPath         = "/grade"
+	createGradePath       = "/grade/create"
+	updateGradePath       = "/grade/update/{id}"
+	viewGradePath         = "/grade/view/{id}"
+	updateGradeStatusPath = "/grade/update/status/{id}"
+	deleteGradePath       = "/grade/delete/{id}"
 	// district
 	districtListPath         = "/district"
 	createDistrictPath       = "/district/create"
@@ -150,6 +157,13 @@ func New(
 	ar.HandleFunc(viewUserPath, s.viewUserHandler).Methods("GET")
 	ar.HandleFunc(updateUserStatusPath, s.updateUserStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteUserPath, s.deleteUserHandler).Methods("GET")
+	// department
+	ar.HandleFunc(createGradePath, s.submitGrade).Methods("POST")
+	ar.HandleFunc(updateGradePath, s.updateGrade).Methods("POST")
+	ar.HandleFunc(deleteGradePath, s.deleteGrade).Methods("GET")
+	ar.HandleFunc(gradeListPath, s.gradeList).Methods("GET")
+	ar.HandleFunc(viewGradePath, s.viewGrade).Methods("GET")
+	ar.HandleFunc(updateGradeStatusPath, s.updateGradeStatus).Methods("GET")
 	// department
 	ar.HandleFunc(departmentCreate, s.submitDepartment).Methods("POST")
 	ar.HandleFunc(updateDepartmentPath, s.updateDepartment).Methods("POST")
