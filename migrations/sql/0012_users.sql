@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users
 (
   id                          VARCHAR(100)     PRIMARY KEY DEFAULT uuid_generate_v4(),
   designation_id              VARCHAR(100)     NOT NULL DEFAULT '',
+  grade_id                    VARCHAR(100)     NOT NULL DEFAULT '',
   user_role                   VARCHAR(100)     NOT NULL DEFAULT '',        --   COMMENT '1=>Employee. 2=>Developer. 3=>SuperAdmin',
   employee_role               VARCHAR(100)     NOT NULL DEFAULT '',        --   COMMENT '1=>Employee. 2=>Developer. 3=>SuperAdmin',
   verified_by                 VARCHAR(100)     NOT NULL DEFAULT '',

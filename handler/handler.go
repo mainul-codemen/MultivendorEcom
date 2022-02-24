@@ -154,7 +154,8 @@ func New(
 	ar.HandleFunc(updateUserRoleStatusPath, s.updateUserRoleStatus).Methods("GET")
 	// ar.HandleFunc(updateUserPath, s.updateUserFormHandler).Methods("GET")
 	ar.HandleFunc(updateUserPath, s.updateUserHandler).Methods("POST")
-	ar.HandleFunc(viewUserPath, s.viewUserHandler).Methods("GET")
+	ar.HandleFunc(viewUserPath, s.viewVerificationForm).Methods("GET")
+	ar.HandleFunc(viewUserPath, s.submitVerificationCode).Methods("POST")
 	ar.HandleFunc(updateUserStatusPath, s.updateUserStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteUserPath, s.deleteUserHandler).Methods("GET")
 	// department
@@ -230,7 +231,6 @@ func New(
 	ar.HandleFunc(viewDeliveryCompanyPath, s.viewDeliveryCompanyHandler).Methods("GET")
 	ar.HandleFunc(updateDeliveryCompanyStatusPath, s.updateDeliveryCompanyStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteDeliveryCompanyPath, s.deleteDeliveryCompanyHandler).Methods("GET")
-
 	// deliveryCharge
 	ar.HandleFunc(deliveryChargeListPath, s.deliveryChargeListHandler).Methods("GET")
 	ar.HandleFunc(createDeliveryChargePath, s.deliveryChargeFormHandler).Methods("GET")

@@ -132,6 +132,7 @@ func (s *Server) usrList(r *http.Request, w http.ResponseWriter, sts bool) []Use
 		usApnd := UserForm{
 			ID:                      item.ID,
 			DesignationID:           item.DesignationID,
+			DesignationName:         item.DesignationName.String,
 			UserRole:                item.UserRole,
 			EmployeeRole:            item.EmployeeRole,
 			VerifiedBy:              item.VerifiedBy,
@@ -153,7 +154,7 @@ func (s *Server) usrList(r *http.Request, w http.ResponseWriter, sts bool) []Use
 			Phone2:                  item.Phone2,
 			PhoneNumberVerifiedAt:   item.PhoneNumberVerifiedAt,
 			PhoneNumberVerifiedCode: item.PhoneNumberVerifiedCode,
-			DateOfBirthT:             item.DateOfBirth,
+			DateOfBirthT:            item.DateOfBirth,
 			Gender:                  item.Gender,
 			FBID:                    item.FBID,
 			Photo:                   item.Photo,

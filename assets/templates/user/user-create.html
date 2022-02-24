@@ -75,14 +75,22 @@
                                                 <div class="form-group">
                                                     <label>First Name</label>
                                                     <input type="text" class="form-control" id="firstname"
-                                                        placeholder="Enter First Name" name="FirstName">
+                                                        placeholder="Enter First Name" name="FirstName"
+                                                        value="{{.Form.FirstName}}">
+                                                    {{with .FormErrors.FirstName}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Last Name</label>
                                                     <input type="text" class="form-control" id="lastname"
-                                                        placeholder="Enter Last Name" name="LastName">
+                                                        value="{{.Form.LastName}}" placeholder="Enter Last Name"
+                                                        name="LastName">
+                                                    {{with .FormErrors.LastName}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
 
@@ -92,14 +100,22 @@
                                                         <div class="form-group">
                                                             <label>User name</label>
                                                             <input type="text" class="form-control" id="username"
-                                                                placeholder="Enter Username" name="UserName">
+                                                                value="{{.Form.UserName}}" placeholder="Enter Username"
+                                                                name="UserName">
+                                                            {{with .FormErrors.UserName}}
+                                                            <p style="color: red;">{{.}}</p>
+                                                            {{end}}
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label>Password</label>
                                                             <input type="password" class="form-control" id="password"
-                                                                placeholder="Enter Username" name="Password">
+                                                                value="{{.Form.Password}}" placeholder="Enter Username"
+                                                                name="Password">
+                                                            {{with .FormErrors.Password}}
+                                                            <p style="color: red;">{{.}}</p>
+                                                            {{end}}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -110,21 +126,29 @@
                                                 <div class="form-group">
                                                     <label>Email</label>
                                                     <input type="email" class="form-control" id="email"
-                                                        placeholder="Enter email" name="Email">
+                                                        value="{{.Form.Email}}" placeholder="Enter email" name="Email">
+                                                    {{with .FormErrors.Email}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Phone 1</label>
                                                     <input type="text" class="form-control" id="phone1"
-                                                        placeholder="Enter Phone" name="Phone1">
+                                                        value="{{.Form.Phone1}}" placeholder="Enter Phone"
+                                                        name="Phone1">
+                                                    {{with .FormErrors.Phone1}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Phone 2</label>
                                                     <input type="text" class="form-control" id="phone2"
-                                                        placeholder="Enter Phone" name="Phone2">
+                                                        value="{{.Form.Phone2}}" placeholder="Enter Phone"
+                                                        name="Phone2">
                                                 </div>
                                             </div>
                                         </div>
@@ -133,59 +157,67 @@
                                                 <div class="form-group">
                                                     <label>Date Of Birth</label>
                                                     <input type="date" class="form-control" id="dob"
-                                                        placeholder="Enter Date of Birth" name="DateOfBirth">
+                                                        value="{{.Form.DateOfBirth}}" placeholder="Enter Date of Birth"
+                                                        name="DateOfBirth">
+                                                    {{with .FormErrors.DateOfBirth}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Join Date</label>
                                                     <input type="date" class="form-control" id="joindate"
-                                                        placeholder="Enter Join Date" name="JoinDate">
+                                                        value="{{.Form.JoinDate}}" placeholder="Enter Join Date"
+                                                        name="JoinDate">
+                                                    {{with .FormErrors.JoinDate}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>NID Number</label>
                                                     <input type="number" class="form-control" id="nid"
-                                                        placeholder="Enter National ID" name="NIDNumber">
+                                                        value="{{.Form.NIDNumber}}" placeholder="Enter National ID"
+                                                        name="NIDNumber">
+                                                    {{with .FormErrors.NIDNumber}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Country</label>
-                                                    <select class="custom-select" name="CountryID" id="countryid">
-                                                        <option value="">-- Select Country --</option>
-                                                        {{range .CountryData}}
-                                                        <option value={{.ID}}>{{.Name}}</option>
-                                                        {{end}}
-                                                    </select>
-                                                    <p style="color: red;" id="CountryID"></p>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Gender</label>
                                                     <select class="custom-select" name="Gender" id="genderid">
                                                         <option value="">-- Select Gender --</option>
-                                                        <option value="1">Male</option>
-                                                        <option value="2">Female</option>
-                                                        <option value="3">Other</option>
+                                                        <option {{ if eq $.Form.Gender 1 }} selected {{end}} value="1">
+                                                            Male</option>
+                                                        <option {{ if eq $.Form.Gender 2 }} selected {{end}} value="2">
+                                                            Female</option>
+                                                        <option {{ if eq $.Form.Gender 3 }} selected {{end}} value="3">
+                                                            Other</option>
                                                     </select>
-                                                    <p style="color: red;" id="Gender"></p>
+                                                    {{with .FormErrors.Gender}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>User Role</label>
                                                     <select class="custom-select" name="UserRole" id="userrole">
                                                         <option value="">-- Select User Role --</option>
                                                         {{range .UserRoleData}}
-                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        <option {{ if eq $.Form.UserRole .ID }} selected {{end}}
+                                                            value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
-                                                    <p style="color: red;" id="UserRole"></p>
+                                                    {{with .FormErrors.UserRole}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                         </div>
@@ -194,7 +226,7 @@
                                                 <div class="form-group">
                                                     <label>Facebook URL</label>
                                                     <input type="text" class="form-control" id="fbid" name="FBID"
-                                                        placeholder="Enter Facebook URL">
+                                                        value="{{.Form.FBID}}" placeholder="Enter Facebook URL">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -205,10 +237,13 @@
                                                             id="departmentid">
                                                             <option value="">-- Select District --</option>
                                                             {{range .DistrictData}}
-                                                            <option value={{.ID}}>{{.Name}}</option>
+                                                            <option {{ if eq $.Form.DistrictID .ID }} selected {{end}}
+                                                                value={{.ID}}>{{.Name}}</option>
                                                             {{end}}
                                                         </select>
-                                                        <p style="color: red;" id="DepartmentID"></p>
+                                                        {{with .FormErrors.DistrictID}}
+                                                        <p style="color: red;">{{.}}</p>
+                                                        {{end}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -218,10 +253,13 @@
                                                     <select class="custom-select" name="CountryID" id="countryid">
                                                         <option value="">-- Select Country --</option>
                                                         {{range .CountryData}}
-                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        <option {{ if eq $.Form.CountryID .ID }} selected {{end}}
+                                                            value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
-                                                    <p style="color: red;" id="CountryID"></p>
+                                                    {{with .FormErrors.CountryID}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                         </div>
@@ -232,10 +270,13 @@
                                                     <select class="custom-select" name="HubID" id="hubid">
                                                         <option value="">-- Select Hub --</option>
                                                         {{range .HubData}}
-                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        <option {{ if eq $.Form.HubID .ID }} selected {{end}}
+                                                            value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
-                                                    <p style="color: red;" id="HubID"></p>
+                                                    {{with .FormErrors.HubID}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -244,10 +285,13 @@
                                                     <select class="custom-select" name="StationID" id="stationid">
                                                         <option value="">-- Select Station --</option>
                                                         {{range .StationData}}
-                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        <option {{ if eq $.Form.StationID .ID }} selected {{end}}
+                                                            value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
-                                                    <p style="color: red;" id="StationID"></p>
+                                                    {{with .FormErrors.StationID}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -256,34 +300,45 @@
                                                     <select class="custom-select" name="EmployeeRole" id="role">
                                                         <option value="">-- Select Employee Role --</option>
                                                         {{range .UserRoleData}}
-                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                        <option {{ if eq $.Form.UserRole .ID }} selected {{end}}
+                                                            value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
-                                                    <p style="color: red;" id="EmployeeRoleID"></p>
+                                                    {{with .FormErrors.EmployeeRole}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>Employee Grade</label>
-                                                    <select class="custom-select" name="EmployeeGradeID" id="grade">
-                                                        <option value="">-- Select Employee Grade --</option>
-                                                        {{range .GradeData}}
-                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                    <label>Designation</label>
+                                                    <select class="custom-select" name="DesignationID" id="countryid">
+                                                        <option value="">-- Select Designation --</option>
+                                                        {{range .DesignationData}}
+                                                        <option {{ if eq $.Form.DesignationID .ID }} selected {{end}}
+                                                            value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
+                                                    {{with .FormErrors.DesignationID}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>Employee Designation</label>
-                                                    <select class="custom-select" name="DesignationID" id="designation">
-                                                        <option value="">-- Select Employee Designation --</option>
-                                                        {{range .DesignationData}}
-                                                        <option value={{.ID}}>{{.Name}}</option>
+                                                    <label>Employee Grade</label>
+                                                    <select class="custom-select" name="GradeID" id="grade">
+                                                        <option value="">-- Select Employee Grade --</option>
+                                                        {{range .GradeData}}
+                                                        <option {{ if eq $.Form.GradeID .ID }} selected {{end}}
+                                                            value={{.ID}}>{{.Name}}</option>
                                                         {{end}}
                                                     </select>
+                                                    {{with .FormErrors.GradeID}}
+                                                    <p style="color: red;">{{.}}</p>
+                                                    {{end}}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -309,7 +364,7 @@
                                                 <div class="form-group">
                                                     <label>Present Address</label>
                                                     <textarea class="form-control" rows="3" placeholder="Enter ..."
-                                                        name="PresentAddress"></textarea>
+                                                        name="PresentAddress">{{.Form.PresentAddress}}</textarea>
                                                     <p style="color: red;" id="PresentAddress"></p>
                                                 </div>
                                             </div>
@@ -317,14 +372,23 @@
                                                 <div class="form-group">
                                                     <label>Permanent Address</label>
                                                     <textarea class="form-control" rows="3" placeholder="Enter ..."
-                                                        name="PermanentAddress"></textarea>
+                                                        name="PermanentAddress">{{.Form.PermanentAddress}}</textarea>
                                                     <p style="color: red;" id="PermanentAddress"></p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-footer">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <button type="submit"
+                                                    class="btn btn-danger btn-lg btn-block">Cancel</button>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button type="submit"
+                                                    class="btn btn-primary btn-lg btn-block">Submit</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </form>
                             </div>

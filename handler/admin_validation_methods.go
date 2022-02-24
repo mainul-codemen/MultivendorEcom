@@ -117,6 +117,17 @@ func checkDuplicateHubPhone(s *Server, phone string, id string) validation.RuleF
 	}
 }
 
+func checkDuplicateUserPhone(s *Server, phone string, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetUserInfoBy(context.Background(), phone)
+		if resp == nil || resp.ID == id {
+			return nil
+		}
+		return fmt.Errorf(PhnEx, phone)
+	}
+}
+
+
 func checkDuplicateDeliveryCompanyPhone(s *Server, phone string, id string) validation.RuleFunc {
 	return func(value interface{}) error {
 		resp, _ := s.st.GetDeliveryCompanyBy(context.Background(), phone)

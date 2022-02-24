@@ -14,6 +14,7 @@ type Users struct {
 	HubID                   string         `db:"hub_id"`
 	HubName                 string         `db:"hub_name"`
 	DepartmentID            string         `db:"department_id"`
+	GradeID                 string         `db:"grade_id"`
 	DepartmentName          string         `db:"department_name"`
 	DistrictID              string         `db:"district_id"`
 	DistrictName            sql.NullString `db:"district_name,omitempty"`

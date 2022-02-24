@@ -55,7 +55,7 @@ func (s *Server) stationListHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
 
-	stnListForm := s.stationList(r, w,false)
+	stnListForm := s.stationList(r, w, false)
 	data := StationTempData{
 		Data: stnListForm,
 	}
@@ -90,9 +90,6 @@ func (s *Server) submitStationHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Error(err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
 	}
-	fmt.Println("###### FORM DATA########")
-	fmt.Printf("\n%+v\n\n", form)
-	fmt.Println("###### FORM DATA########")
 	if err := form.Validate(s, ""); err != nil {
 		vErrs := map[string]string{}
 		if e, ok := err.(validation.Errors); ok {

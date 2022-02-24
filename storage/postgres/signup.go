@@ -85,9 +85,6 @@ INSERT INTO users(
 
 func (s *Storage) RegisterUser(con context.Context, des storage.Users) (string, error) {
 	logger.Info("create users db")
-	fmt.Println("#############")
-	fmt.Printf("%+v", des)
-	fmt.Println("#############")
 	stmt, err := s.db.PrepareNamed(insertusr)
 	if err != nil {
 		logger.Error(ewpq + err.Error())
@@ -104,6 +101,7 @@ func (s *Storage) RegisterUser(con context.Context, des storage.Users) (string, 
 
 const usrLisQry = `
 SELECT 
+	u.id,
 	designation.name AS designation_name,
 	u.user_role,
 	u.employee_role,
@@ -156,7 +154,8 @@ func (s *Storage) GetUserList(ctx context.Context, sts bool) ([]storage.Users, e
 }
 
 const gusrq = `
-SELECT 
+SELECT
+	u.id,
 	designation.name AS designation_name,
 	u.user_role,
 	u.employee_role,
@@ -193,8 +192,9 @@ SELECT
 FROM users AS u
 LEFT JOIN country ON country.id = country_id
 LEFT JOIN district ON district.id = district_id
+LEFT JOIN designation ON designation.id = designation_id
 LEFT JOIN station ON station.id = station_id
-WHERE (u.id = $1 OR u.user_name=$1 OR u.email=$1 OR u.phone_1=$1 OR u.phone_2=$1) AND  dc.deleted_at IS NULL
+WHERE (u.id = $1 OR u.user_name=$1 OR u.email=$1 OR u.phone_1=$1 OR u.phone_2=$1) AND  u.deleted_at IS NULL
 `
 
 func (s *Storage) GetUserInfoBy(ctx context.Context, idname string) (*storage.Users, error) {
@@ -269,9 +269,7 @@ const upUsts = `
 		updated_by = :updated_by
 	WHERE 
 		id = :id
-	RETURNING *
-
-`
+	RETURNING *`
 
 func (s *Storage) UpdateUserStatus(ctx context.Context, usr storage.Users) (*storage.Users, error) {
 	stmt, err := s.db.PrepareNamedContext(ctx, upUsts)
@@ -306,4 +304,32 @@ func (s *Storage) DeleteUsers(ctx context.Context, userid string, duid string) e
 		return err
 	}
 	return nil
+}
+
+const upVS = `
+	UPDATE 
+		users 
+	SET
+		phone_number_verified_code = :phone_number_verified_code,
+		phone_number_verified_at = now(),
+		updated_at = now(),
+		updated_by = :updated_by
+	WHERE 
+		id = :id
+	RETURNING *
+
+`
+
+func (s *Storage) VerifyPhoneNumber(ctx context.Context, usr storage.Users) (*storage.Users, error) {
+	stmt, err := s.db.PrepareNamedContext(ctx, upVS)
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+	if err := stmt.Get(&usr, usr); err != nil {
+		return nil, fmt.Errorf("executing users phone verification: %w", err)
+	}
+
+	return &usr, nil
 }
