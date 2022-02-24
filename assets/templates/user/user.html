@@ -30,11 +30,6 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <button type="button" class="btn btn-primary" href="/admin/user/create">Add
-                                        User
-                                    </button>
-                                </div>
                                 <!-- /.card-header -->
                                 <div class="card-body ">
                                     <table id="example1" class="table table-bordered table-striped table-responsive-lg">
@@ -47,6 +42,7 @@
                                                 <th scope="col">Station Name</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
+                                                <th scope="col">Phone Verification</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -65,7 +61,6 @@
                                                     <a type="button" class="btn btn-info btn-sm"
                                                         href="/admin/user/update/status/{{.ID}}">Inactive</a>
                                                     {{end}}
-                                                <td>{{.CreatedBy}}</td>
                                                 <td>
                                                     <a href="/admin/user/update/{{.ID}}" type="button"
                                                         class="btn btn-success" data-toggle="modal"
@@ -85,6 +80,16 @@
                                                         Delete
                                                     </a>
                                                 </td>
+                                                <td>
+                                                    {{if eq .PhoneNumberVerifiedCode ""}}
+                                                    <a type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                                        id="{{.ID}}" data-target="#modal-add"
+                                                        onclick="viewVerification(this.id)">Unverified</a>
+                                                    {{else}}
+                                                    <a type="button" class="btn btn-success btn-sm">verified</a>
+                                                    {{end}}
+                                                </td>
+
                                             </tr>
                                             {{end}}
                                         </tbody>
@@ -97,6 +102,7 @@
                                                 <th scope="col">Station Name</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
+                                                <th scope="col">Phone Verification</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -111,6 +117,44 @@
                 </div>
                 <!-- /.container-fluid -->
                 <!--------------------------------------------------- Modal Add --------------------------------------------------->
+                <!--------------------------------------------------- Modal Add --------------------------------------------------->
+                <div class="modal fade" id="modal-add">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#0069D9;">
+                                <h4 class="modal-title" style="color: white;">Verified Phone Number</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post" id="saveForm" class="tagForm">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Phone Number</label>
+                                            <input type="text" name="Phone1" class="form-control" id="VPhoneNumber1"
+                                                disabled />
+                                            <p style="color: red;" id="Phone1"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Code</label>
+                                            <input type="text" name="PhoneNumberVerifiedCode"
+                                                id="PhoneNumberVerifiedCode" class="form-control" />
+                                            <p style="color: red;" id="PhoneErr"></p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
                 <!--------------------------------------------------- Modal Update --------------------------------------------------->
                 <!--------------------------------------------------- Modal View --------------------------------------------------->
                 <!--------------------------------------------------- Modal Delete --------------------------------------------------->
@@ -204,6 +248,56 @@
     <script src="/static/js/custom-js/admin-panel-custom-js/common-functions.js"></script>
 
     <script>
+        function viewVerification(id) {
+            $.ajax({
+                url: "/admin/user/view/" + id,
+                method: 'get',
+                success: function (data) {
+                    var obj = jQuery.parseJSON(data);
+                    $("#VPhoneNumber1").empty().val(obj.Form.Phone1);
+                }
+            });
+        }
+        // Submit: Verification Code
+        $(document).ready(function () {
+            $('#saveForm').submit(function (e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
+                });
+                var id = jQuery('#ID').val();
+                $.ajax({
+                    url: "/admin/user/view/" + id,
+                    method: 'post',
+                    data: $('form.tagUpForm').serialize(),
+                    success: function (data) {
+                        var obj = jQuery.parseJSON(data)
+                        var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        if (obj.Status) {
+                            $('saveForm').trigger("reset");
+                            Toast.fire({
+                                icon: 'success',
+                                title: obj.Message
+                            })
+                        } else {
+                            $("#PhoneErr").empty().append(obj.FormErrors.Name);
+
+                            Toast.fire({
+                                icon: 'error',
+                                title: "Please Insert All Data Carefully."
+                            })
+                        }
+                    }
+
+
+                });
+            });
+        })
         // Data Tables for this table
         $(function () {
             $("#example1").DataTable({
