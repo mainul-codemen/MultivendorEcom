@@ -147,6 +147,7 @@ func New(
 	ar.HandleFunc("/login", s.loginForm).Methods("GET")
 	ar.HandleFunc("/login", s.submitLogin).Methods("POST")
 	ar.HandleFunc("/register", s.registrationForm).Methods("GET")
+	ar.HandleFunc("/register", s.submitRegistration).Methods("POST")
 	ar.HandleFunc("/recovery-password", s.passwordRecoverForm).Methods("GET")
 	// User
 	ar.HandleFunc(userListPath, s.userListHandler).Methods("GET")
