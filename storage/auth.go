@@ -35,6 +35,9 @@ type Users struct {
 	Phone2                  string         `db:"phone_2"`
 	PhoneNumberVerifiedAt   time.Time      `db:"phone_number_verified_at"`
 	PhoneNumberVerifiedCode string         `db:"phone_number_verified_code"`
+	ISOTPVerified           bool           `db:"is_otp_verified"`
+	ISEmailVerified         bool           `db:"is_email_verified"`
+	EmailVerifiedCode       string         `db:"email_verified_code"`
 	JoinDate                time.Time      `db:"join_date"`
 	DateOfBirth             time.Time      `db:"date_of_birth"`
 	Gender                  int16          `db:"gender"`

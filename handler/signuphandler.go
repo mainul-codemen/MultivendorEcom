@@ -4,10 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/MultivendorEcom/serviceutil/logger"
+	lutil "github.com/MultivendorEcom/serviceutil/loginUtils"
+	mail "github.com/MultivendorEcom/serviceutil/mail"
+	"github.com/MultivendorEcom/serviceutil/otp"
 	"github.com/MultivendorEcom/storage"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gorilla/csrf"
@@ -35,7 +40,7 @@ func (s UserForm) Validate(srv *Server, id string) error {
 		validation.Field(&s.UserName,
 			validation.Required.Error(nameReq),
 			validation.Length(3, 50).Error("Please insert name between 3 to 50"),
-			validation.By(checkDuplicateHub(srv, s.UpdatedBy, id)),
+			validation.By(checkDuplicateUserName(srv, s.UserName)),
 		),
 		validation.Field(&s.Phone1,
 			validation.Required.Error("The User phone is required"),
@@ -45,6 +50,7 @@ func (s UserForm) Validate(srv *Server, id string) error {
 		),
 		validation.Field(&s.Password,
 			validation.Required.Error("Password is Required"),
+			validation.By(validatePassword(srv, s.Password)),
 		),
 		validation.Field(&s.CountryID,
 			validation.Required.Error("Country Name is Required"),
@@ -66,6 +72,7 @@ func (s UserForm) Validate(srv *Server, id string) error {
 		),
 		validation.Field(&s.Email,
 			validation.Required.Error("Email is Required"),
+			validation.By(checkDuplicateUserEmail(srv, s.Email)),
 		),
 		validation.Field(&s.Gender,
 			validation.Required.Error("Gender is Required"),
@@ -94,8 +101,10 @@ func (s UserForm) Validate(srv *Server, id string) error {
 		validation.Field(&s.GradeID,
 			validation.Required.Error("Grade is Required"),
 		),
+		validation.Field(&s.GradeID,
+			validation.Required.Error("Grade is Required"),
+		),
 	)
-
 }
 
 func (s *Server) userListHandler(w http.ResponseWriter, r *http.Request) {
@@ -160,7 +169,6 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		if e, ok := err.(validation.Errors); ok {
 			if len(e) > 0 {
 				for key, value := range e {
-					fmt.Println(value)
 					vErrs[key] = value.Error()
 				}
 			}
@@ -188,39 +196,55 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	hp, err := lutil.HashPassword(trim(form.Password))
+	if err != nil {
+		log.Fatalln("Unable to hashed password")
+	}
+	// send mail
+	emailCode := otp.SendEmailVerificationCode(form.Email)
+	err = mail.SendingMail(trim(form.Email), emailCode)
+	if err != nil {
+		fmt.Println("User Data saved. But Email is not send for some reason.")
+		emailCode = ""
+	}
 	_, err = s.st.RegisterUser(r.Context(), storage.Users{
-		DesignationID:    form.DesignationID,
-		CountryID:        form.CountryID,
-		HubID:            form.HubID,
-		DistrictID:       form.DistrictID,
-		StationID:        form.StationID,
-		JoinBy:           "124",
-		EmployeeRole:     form.EmployeeRole,
-		UserRole:         form.UserRole,
-		VerifiedBy:       "123",
-		Status:           1,
-		GradeID:          form.GradeID,
-		UserName:         trim(form.UserName),
-		FirstName:        trim(form.FirstName),
-		LastName:         trim(form.LastName),
-		Email:            trim(form.Email),
-		Password:         trim(form.Password),
-		Phone1:           trim(form.Phone1),
-		Phone2:           trim(form.Phone2),
-		JoinDate:         form.JoinDateT,
-		DateOfBirth:      form.DateOfBirthT,
-		Gender:           form.Gender,
-		FBID:             trim(form.FBID),
-		Photo:            trim(form.Photo),
-		NIDFrontPhoto:    trim(form.NIDFrontPhoto),
-		NIDBackPhoto:     trim(form.NIDBackPhoto),
-		NIDNumber:        trim(form.NIDNumber),
-		CVPDF:            trim(form.CVPDF),
-		PresentAddress:   trim(form.PresentAddress),
-		PermanentAddress: trim(form.PermanentAddress),
-		Reference:        trim(form.Reference),
-		RememberToken:    trim(form.RememberToken),
-		CRUDTimeDate:     storage.CRUDTimeDate{CreatedBy: "123", UpdatedBy: "123"},
+		DesignationID:           form.DesignationID,
+		CountryID:               form.CountryID,
+		HubID:                   form.HubID,
+		DistrictID:              form.DistrictID,
+		StationID:               form.StationID,
+		JoinBy:                  "124",
+		EmployeeRole:            form.EmployeeRole,
+		UserRole:                form.UserRole,
+		VerifiedBy:              "123",
+		Status:                  1,
+		GradeID:                 form.GradeID,
+		UserName:                trim(form.UserName),
+		FirstName:               trim(form.FirstName),
+		LastName:                trim(form.LastName),
+		Email:                   trim(form.Email),
+		Password:                hp,
+		Phone1:                  trim(form.Phone1),
+		Phone2:                  trim(form.Phone2),
+		PhoneNumberVerifiedCode: otp.SendVerificationCode(form.Phone1),
+		PhoneNumberVerifiedAt:   time.Now().Add(time.Minute * 5),
+		EmailVerifiedCode:       emailCode,
+		EmailVerifiedAt:         time.Now().Add(time.Minute * 30),
+		ISOTPVerified:           false,
+		JoinDate:                form.JoinDateT,
+		DateOfBirth:             form.DateOfBirthT,
+		Gender:                  form.Gender,
+		FBID:                    trim(form.FBID),
+		Photo:                   trim(form.Photo),
+		NIDFrontPhoto:           trim(form.NIDFrontPhoto),
+		NIDBackPhoto:            trim(form.NIDBackPhoto),
+		NIDNumber:               trim(form.NIDNumber),
+		CVPDF:                   trim(form.CVPDF),
+		PresentAddress:          trim(form.PresentAddress),
+		PermanentAddress:        trim(form.PermanentAddress),
+		Reference:               trim(form.Reference),
+		RememberToken:           trim(form.RememberToken),
+		CRUDTimeDate:            storage.CRUDTimeDate{CreatedBy: "123", UpdatedBy: "123"},
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -230,63 +254,8 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin"+userListPath, http.StatusSeeOther)
 }
 
-func (s *Server) updateUserHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Info("update hub")
-	params := mux.Vars(r)
-	id := params["id"]
-	if err := r.ParseForm(); err != nil {
-		logger.Error(errMsg + err.Error())
-		http.Error(w, errMsg, http.StatusBadRequest)
-		return
-	}
-
-	var form HubForm
-	if err := s.decoder.Decode(&form, r.PostForm); err != nil {
-		logger.Error(deErr + err.Error())
-		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
-		return
-	}
-	if err := form.Validate(s, id); err != nil {
-		vErrs := map[string]string{}
-		if e, ok := err.(validation.Errors); ok {
-			if len(e) > 0 {
-				for key, value := range e {
-					vErrs[key] = value.Error()
-				}
-			}
-		}
-		data := UsrTempData{
-			CSRFField:  csrf.TemplateField(r),
-			FormErrors: vErrs,
-		}
-		json.NewEncoder(w).Encode(data)
-		return
-	}
-	dbdata := storage.Hub{
-		ID:         id,
-		HubName:    trim(form.Name),
-		CountryID:  form.CountryID,
-		DistrictID: form.DistrictID,
-		StationID:  form.StationID,
-		HubPhone1:  trim(form.HubPhone1),
-		HubPhone2:  trim(form.HubPhone2),
-		HubEmail:   trim(form.HubEmail),
-		HubAddress: trim(form.HubAddress),
-		Status:     form.Status,
-		Position:   form.Position,
-		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: "123",
-		},
-	}
-	_, err := s.st.UpdateHub(r.Context(), dbdata)
-	if err != nil {
-		logger.Error("error while update hub data ." + err.Error())
-	}
-	json.NewEncoder(w).Encode(msg)
-}
-
 func (s *Server) viewVerificationForm(w http.ResponseWriter, r *http.Request) {
-	logger.Info("view hub form")
+	logger.Info("view verification form")
 	params := mux.Vars(r)
 	id := params["id"]
 	vf := s.strgToFormUserVC(r, id, w)
@@ -305,18 +274,84 @@ func (s *Server) submitVerificationCode(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
+	vc := s.strgToFormUserVC(r, id, w)
 	var form UserForm
+	err := s.decoder.Decode(&form, r.PostForm)
+	if err != nil {
+		logger.Error(err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
+	}
+	// check valid otp
+	vErrs := map[string]string{}
+	if vc.PhoneNumberVerifiedCode != form.PhoneNumberVerifiedCode || form.PhoneNumberVerifiedCode == "" {
+		vErrs["OTPErr"] = "OTP is Not valid"
+		data := UsrTempData{
+			CSRFField:  csrf.TemplateField(r),
+			Form:       vc,
+			FormErrors: vErrs,
+		}
+		json.NewEncoder(w).Encode(data)
+		return
+	}
+
 	data := storage.Users{
 		ID:                      id,
-		PhoneNumberVerifiedCode: form.PhoneNumberVerifiedCode,
+		PhoneNumberVerifiedCode: "",
+		ISOTPVerified:           true,
 		CRUDTimeDate: storage.CRUDTimeDate{
 			UpdatedBy: "1234",
 		},
 	}
-	_, err := s.st.VerifyPhoneNumber(r.Context(), data)
+	_, err = s.st.VerifyPhoneNumber(r.Context(), data)
 	if err != nil {
-		logger.Error("error while update station data ." + err.Error())
+		logger.Error("error while verify phone ." + err.Error())
 	}
+
+	json.NewEncoder(w).Encode(msg)
+}
+
+func (s *Server) submitEmailVerificationCode(w http.ResponseWriter, r *http.Request) {
+	logger.Info("submit email verification code")
+	params := mux.Vars(r)
+	id := params["id"]
+	if err := r.ParseForm(); err != nil {
+		logger.Error(errMsg + err.Error())
+		http.Error(w, errMsg, http.StatusBadRequest)
+		return
+	}
+	vc := s.strgToFormUserVC(r, id, w)
+	var form UserForm
+	err := s.decoder.Decode(&form, r.PostForm)
+	if err != nil {
+		logger.Error(err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
+	}
+	// check valid code
+	vErrs := map[string]string{}
+	if vc.EmailVerifiedCode != form.EmailVerifiedCode || form.EmailVerifiedCode == "" {
+		vErrs["EmailErr"] = "Verification Code is Not valid"
+		data := UsrTempData{
+			CSRFField:  csrf.TemplateField(r),
+			Form:       vc,
+			FormErrors: vErrs,
+		}
+		json.NewEncoder(w).Encode(data)
+		return
+	}
+
+	data := storage.Users{
+		ID:                id,
+		EmailVerifiedCode: "",
+		ISEmailVerified:   true,
+		CRUDTimeDate: storage.CRUDTimeDate{
+			UpdatedBy: "1234",
+		},
+	}
+	_, err = s.st.VerifyEmail(r.Context(), data)
+	if err != nil {
+		logger.Error("error while verify phone ." + err.Error())
+	}
+
 	json.NewEncoder(w).Encode(msg)
 }
 
@@ -385,8 +420,13 @@ func (s *Server) strgToFormUserVC(r *http.Request, id string, w http.ResponseWri
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
 	Form := UserForm{
-		ID:     res.ID,
-		Phone1: res.Phone1,
+		ID:                      res.ID,
+		Phone1:                  res.Phone1,
+		PhoneNumberVerifiedCode: res.PhoneNumberVerifiedCode,
+		Email:                   res.Email,
+		EmailVerifiedCode:       res.EmailVerifiedCode,
+		PhoneNumberVerifiedAt:   res.PhoneNumberVerifiedAt,
+		EmailVerifiedAt:         res.EmailVerifiedAt,
 	}
 	return Form
 }

@@ -33,6 +33,9 @@ type UserForm struct {
 	Phone2                  string
 	PhoneNumberVerifiedAt   time.Time
 	PhoneNumberVerifiedCode string
+	EmailVerifiedCode       string
+	ISOTPVerified           bool
+	ISEmailVerified         bool
 	DateOfBirth             string
 	JoinDate                string
 	DateOfBirthT            time.Time

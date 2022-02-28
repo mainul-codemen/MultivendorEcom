@@ -34,6 +34,10 @@ https://www.sqlines.com/postgresql/how-to/datediff
 
 https://www.postgresqltutorial.com/postgresql-joins/
 
+### Send Email :
+
+https://www.loginradius.com/blog/async/sending-emails-with-golang/
+
 # Install Postgres Docker images
 
 1. Pull image

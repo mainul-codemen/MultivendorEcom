@@ -35,6 +35,7 @@ const (
 	updateUserPath       = "/user/update/{id}"
 	updateUserStatusPath = "/user/update/status/{id}"
 	viewUserPath         = "/user/view/{id}"
+	emailVerifyPath      = "/user/view/email/{id}"
 	deleteUserPath       = "/user/delete/{id}"
 	// user role
 	userRoleListPath         = "/user-role"
@@ -141,6 +142,12 @@ func New(
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./assets/"))))
 	ar := r.PathPrefix("/admin").Subrouter()
 	ar.HandleFunc("/index", s.adminindex).Methods("GET")
+	// login
+	ar.HandleFunc("/screen-lock", s.screenLockForm).Methods("GET")
+	ar.HandleFunc("/login", s.loginForm).Methods("GET")
+	ar.HandleFunc("/login", s.submitLogin).Methods("POST")
+	ar.HandleFunc("/register", s.registrationForm).Methods("GET")
+	ar.HandleFunc("/recovery-password", s.passwordRecoverForm).Methods("GET")
 	// User
 	ar.HandleFunc(userListPath, s.userListHandler).Methods("GET")
 	ar.HandleFunc(createUserPath, s.usrFormHandler).Methods("GET")
@@ -153,9 +160,10 @@ func New(
 	ar.HandleFunc(viewUserRolePath, s.viewUserRole).Methods("GET")
 	ar.HandleFunc(updateUserRoleStatusPath, s.updateUserRoleStatus).Methods("GET")
 	// ar.HandleFunc(updateUserPath, s.updateUserFormHandler).Methods("GET")
-	ar.HandleFunc(updateUserPath, s.updateUserHandler).Methods("POST")
+	// ar.HandleFunc(updateUserPath, s.updateUserHandler).Methods("POST")
 	ar.HandleFunc(viewUserPath, s.viewVerificationForm).Methods("GET")
 	ar.HandleFunc(viewUserPath, s.submitVerificationCode).Methods("POST")
+	ar.HandleFunc(emailVerifyPath, s.submitEmailVerificationCode).Methods("POST")
 	ar.HandleFunc(updateUserStatusPath, s.updateUserStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteUserPath, s.deleteUserHandler).Methods("GET")
 	// department
