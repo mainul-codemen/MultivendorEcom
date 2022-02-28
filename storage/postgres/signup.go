@@ -29,6 +29,8 @@ INSERT INTO users(
 	phone_2,
 	phone_number_verified_at,
 	phone_number_verified_code,
+	email_verified_code,
+	is_otp_verified,
 	date_of_birth,
 	gender,
 	fb_id,
@@ -64,6 +66,8 @@ INSERT INTO users(
 	:phone_2,
 	:phone_number_verified_at,
 	:phone_number_verified_code,
+	:email_verified_code,
+	:is_otp_verified,
 	:date_of_birth,
 	:gender,
 	:fb_id,
@@ -84,6 +88,8 @@ INSERT INTO users(
 `
 
 func (s *Storage) RegisterUser(con context.Context, des storage.Users) (string, error) {
+	fmt.Println(des.PhoneNumberVerifiedAt)
+	fmt.Println(des.EmailVerifiedAt)
 	logger.Info("create users db")
 	stmt, err := s.db.PrepareNamed(insertusr)
 	if err != nil {
@@ -105,7 +111,6 @@ SELECT
 	designation.name AS designation_name,
 	u.user_role,
 	u.employee_role,
-	u.verified_by,
 	u.join_by,
 	country.name AS country_name,
 	district.name AS district_name,
@@ -121,6 +126,10 @@ SELECT
 	u.phone_2,
 	u.phone_number_verified_at,
 	u.phone_number_verified_code,
+	u.email_verified_code,
+	u.is_otp_verified,
+	u.is_email_verified,
+	u.verified_by,
 	u.date_of_birth,
 	u.gender,
 	u.fb_id,
@@ -175,6 +184,7 @@ SELECT
 	u.phone_2,
 	u.phone_number_verified_at,
 	u.phone_number_verified_code,
+	u.email_verified_code,
 	u.date_of_birth,
 	u.gender,
 	u.fb_id,
@@ -312,6 +322,7 @@ const upVS = `
 	SET
 		phone_number_verified_code = :phone_number_verified_code,
 		phone_number_verified_at = now(),
+		is_otp_verified = :is_otp_verified,
 		updated_at = now(),
 		updated_by = :updated_by
 	WHERE 
@@ -322,6 +333,34 @@ const upVS = `
 
 func (s *Storage) VerifyPhoneNumber(ctx context.Context, usr storage.Users) (*storage.Users, error) {
 	stmt, err := s.db.PrepareNamedContext(ctx, upVS)
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+	if err := stmt.Get(&usr, usr); err != nil {
+		return nil, fmt.Errorf("executing users phone verification: %w", err)
+	}
+
+	return &usr, nil
+}
+
+const upEVQ = `
+	UPDATE 
+		users 
+	SET
+		email_verified_code = :email_verified_code,
+		email_verified_at = now(),
+		is_email_verified = :is_email_verified,
+		updated_at = now(),
+		updated_by = :updated_by
+	WHERE 
+		id = :id
+	RETURNING *
+`
+
+func (s *Storage) VerifyEmail(ctx context.Context, usr storage.Users) (*storage.Users, error) {
+	stmt, err := s.db.PrepareNamedContext(ctx, upEVQ)
 	if err != nil {
 		return nil, err
 	}

@@ -126,7 +126,15 @@ func checkDuplicateUserPhone(s *Server, phone string, id string) validation.Rule
 		return fmt.Errorf(PhnEx, phone)
 	}
 }
-
+func checkDuplicateUserEmail(s *Server, email string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetUserInfoBy(context.Background(), email)
+		if resp == nil {
+			return nil
+		}
+		return fmt.Errorf(" This email already exists")
+	}
+}
 
 func checkDuplicateDeliveryCompanyPhone(s *Server, phone string, id string) validation.RuleFunc {
 	return func(value interface{}) error {
@@ -318,5 +326,24 @@ func checkGradePosition(s *Server, position int32, id string) validation.RuleFun
 			return nil
 		}
 		return fmt.Errorf(PosEx, position)
+	}
+}
+
+func validatePassword(s *Server, pass string) validation.RuleFunc {
+	return func(value interface{}) error {
+		if len(pass) < 6 {
+			return fmt.Errorf(" Please enter minimum 6 character")
+		}
+		return nil
+	}
+}
+
+func checkDuplicateUserName(s *Server, usrname string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetUserInfoBy(context.Background(), usrname)
+		if resp == nil {
+			return nil
+		}
+		return fmt.Errorf("Username already exists. Please enter another one")
 	}
 }

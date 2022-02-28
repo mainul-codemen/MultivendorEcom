@@ -24,13 +24,11 @@
                     </div>
                 </div><!-- /.container-fluid -->
             </section>
-            <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <!-- /.card-header -->
                                 <div class="card-body ">
                                     <table id="example1" class="table table-bordered table-striped table-responsive-lg">
                                         <thead>
@@ -42,13 +40,16 @@
                                                 <th scope="col">Station Name</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
-                                                <th scope="col">Phone Verification</th>
+                                                <th scope="col">OTP</th>
+                                                <th scope="col">Email Code</th>
+                                                <th scope="col">Phone Verified</th>
+                                                <th scope="col">Email Verified</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {{range .Data}}
                                             <tr>
-                                                <td>{{.FirstName}}</td>
+                                                <td>{{.FirstName}} {{.LastName}}</td>
                                                 <td>{{.CountryName}}</td>
                                                 <td>{{.DesignationName}}</td>
                                                 <td>{{.DistrictName}}</td>
@@ -80,16 +81,26 @@
                                                         Delete
                                                     </a>
                                                 </td>
+                                                <td>{{.PhoneNumberVerifiedCode}}</td>
+                                                <td>{{.EmailVerifiedCode}}</td>
                                                 <td>
-                                                    {{if eq .PhoneNumberVerifiedCode ""}}
+                                                    {{if not .ISOTPVerified }}
                                                     <a type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                                                        id="{{.ID}}" data-target="#modal-add"
+                                                        id="{{.ID}}" data-target="#modal-update-vc"
                                                         onclick="viewVerification(this.id)">Unverified</a>
                                                     {{else}}
-                                                    <a type="button" class="btn btn-success btn-sm">verified</a>
+                                                    <a type="button" class="btn btn-success btn-sm">Verified</a>
                                                     {{end}}
                                                 </td>
-
+                                                <td>
+                                                    {{if not .ISEmailVerified }}
+                                                    <a type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                                        id="{{.ID}}" data-target="#modal-update-ev"
+                                                        onclick="viewEmailVerification(this.id)">Unverified</a>
+                                                    {{else}}
+                                                    <a type="button" class="btn btn-success btn-sm">Verified</a>
+                                                    {{end}}
+                                                </td>
                                             </tr>
                                             {{end}}
                                         </tbody>
@@ -102,60 +113,93 @@
                                                 <th scope="col">Station Name</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
+                                                <th scope="col">OTP</th>
+                                                <th scope="col">Email code</th>
                                                 <th scope="col">Phone Verification</th>
+                                                <th scope="col">Email Verified</th>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
-                                <!-- /.card-body -->
                             </div>
-                            <!-- /.card -->
                         </div>
-                        <!-- /.col -->
                     </div>
-                    <!-- /.row -->
                 </div>
-                <!-- /.container-fluid -->
                 <!--------------------------------------------------- Modal Add --------------------------------------------------->
-                <!--------------------------------------------------- Modal Add --------------------------------------------------->
-                <div class="modal fade" id="modal-add">
+                <div class="modal fade" id="modal-update-vc">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header" style="background-color:#0069D9;">
-                                <h4 class="modal-title" style="color: white;">Verified Phone Number</h4>
+                            <div class="modal-header" style="background-color: #20ac3e;">
+                                <h4 class="modal-title" style="color: white;">Verification Code </h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="" method="post" id="saveForm" class="tagForm">
+                                <form action="" method="post" id="updateVCForm" class="tagUpForm">
+                                    {{.CSRFField}}
+                                    <input type="hidden" name="ID" id="ID">
                                     <div class="card-body">
                                         <div class="form-group">
                                             <label>Phone Number</label>
-                                            <input type="text" name="Phone1" class="form-control" id="VPhoneNumber1"
-                                                disabled />
-                                            <p style="color: red;" id="Phone1"></p>
+                                            <input type="text" name="Phone1" class="form-control" disabled
+                                                id="UdPhone1" />
                                         </div>
                                         <div class="form-group">
                                             <label>Code</label>
-                                            <input type="text" name="PhoneNumberVerifiedCode"
-                                                id="PhoneNumberVerifiedCode" class="form-control" />
-                                            <p style="color: red;" id="PhoneErr"></p>
+                                            <input type="text" name="PhoneNumberVerifiedCode" class="form-control"
+                                                id="PhoneNumberVerifiedCode">
+                                            <p style="color: red;" id="OTPErr"></p>
                                         </div>
                                     </div>
                                     <div class="modal-footer justify-content-between">
                                         <button type="button" class="btn btn-default"
                                             data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="submit" class="btn btn-success">Save</button>
                                     </div>
                                 </form>
                             </div>
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
+                        </div> <!-- /.modal-content -->
+                    </div> <!-- /.modal-dialog -->
                 </div>
-                <!--------------------------------------------------- Modal Update --------------------------------------------------->
+
+                 <!--------------------------------------------------- Modal Email Verification --------------------------------------------------->
+                 <div class="modal fade" id="modal-update-ev">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #20ac3e;">
+                                <h4 class="modal-title" style="color: white;">Verification Code </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post" id="updateEVForm" class="tagUpForm">
+                                    {{.CSRFField}}
+                                    <input type="hidden" name="ID" id="ID">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="text" name="Email" class="form-control" disabled
+                                                id="UdEmail" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Code</label>
+                                            <input type="text" name="EmailVerifiedCode" class="form-control"
+                                                id="EmailVerifiedCode">
+                                            <p style="color: red;" id="EmailErr"></p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> <!-- /.modal-content -->
+                    </div> <!-- /.modal-dialog -->
+                </div>
                 <!--------------------------------------------------- Modal View --------------------------------------------------->
                 <!--------------------------------------------------- Modal Delete --------------------------------------------------->
                 <div class="modal fade" id="modal-delete">
@@ -254,13 +298,18 @@
                 method: 'get',
                 success: function (data) {
                     var obj = jQuery.parseJSON(data);
-                    $("#VPhoneNumber1").empty().val(obj.Form.Phone1);
+                    $("#ID").empty().val(obj.Form.ID);
+                    $("#UdPhone1").empty().val(obj.Form.Phone1);
                 }
+            });
+            // reset all form data after close modal
+            $('#modal-update-vc').on('hidden.bs.modal', function () {
+                $(this).find('form').trigger('reset');
             });
         }
         // Submit: Verification Code
         $(document).ready(function () {
-            $('#saveForm').submit(function (e) {
+            $('#updateVCForm').submit(function (e) {
                 e.preventDefault();
                 $.ajaxSetup({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
@@ -271,7 +320,7 @@
                     method: 'post',
                     data: $('form.tagUpForm').serialize(),
                     success: function (data) {
-                        var obj = jQuery.parseJSON(data)
+                        var obj = jQuery.parseJSON(data);
                         var Toast = Swal.mixin({
                             toast: true,
                             position: 'top-end',
@@ -279,25 +328,92 @@
                             timer: 3000
                         });
                         if (obj.Status) {
-                            $('saveForm').trigger("reset");
+                            $('updateForm').trigger("reset");
                             Toast.fire({
                                 icon: 'success',
                                 title: obj.Message
                             })
+                            setTimeout(function () { window.location.reload(true); }, 1000);
+                            $('#modal-update-vc').modal('hide');
                         } else {
-                            $("#PhoneErr").empty().append(obj.FormErrors.Name);
-
+                            console.log("data")
+                            $("#OTPErr").empty().append(obj.FormErrors.OTPErr);
                             Toast.fire({
                                 icon: 'error',
                                 title: "Please Insert All Data Carefully."
-                            })
+                            });
                         }
                     }
-
-
+                });
+                // reset all data after closing the form
+                $('#modal-update-vc').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                    $("#OTPErr").empty();
                 });
             });
-        })
+        });
+
+        function viewEmailVerification(id) {
+            $.ajax({
+                url: "/admin/user/view/" + id,
+                method: 'get',
+                success: function (data) {
+                    var obj = jQuery.parseJSON(data);
+                    $("#ID").empty().val(obj.Form.ID);
+                    $("#UdEmail").empty().val(obj.Form.Email);
+                }
+            });
+            // reset all form data after close modal
+            $('#modal-update-ev').on('hidden.bs.modal', function () {
+                $(this).find('form').trigger('reset');
+            });
+        }
+       // Submit: Verification Code
+       $(document).ready(function () {
+            $('#updateEVForm').submit(function (e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
+                });
+                var id = jQuery('#ID').val();
+                $.ajax({
+                    url: "/admin/user/view/email/" + id,
+                    method: 'post',
+                    data: $('form.tagUpForm').serialize(),
+                    success: function (data) {
+                        var obj = jQuery.parseJSON(data);
+                        var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        if (obj.Status) {
+                            $('updateForm').trigger("reset");
+                            Toast.fire({
+                                icon: 'success',
+                                title: obj.Message
+                            })
+                            setTimeout(function () { window.location.reload(true); }, 1000);
+                            $('#modal-update-ev').modal('hide');
+                        } else {
+                            console.log("data")
+                            $("#EmailErr").empty().append(obj.FormErrors.EmailErr);
+                            Toast.fire({
+                                icon: 'error',
+                                title: "Please Insert All Data Carefully."
+                            });
+                        }
+                    }
+                });
+                // reset all data after closing the form
+                $('#modal-update-ev').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                    $("#EmailErr").empty();
+                });
+            });
+        });
+
         // Data Tables for this table
         $(function () {
             $("#example1").DataTable({
