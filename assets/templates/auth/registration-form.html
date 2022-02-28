@@ -21,44 +21,83 @@
     <div class="register-box">
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <a href="../../index2.html" class="h1"><b>Admin</b> Panel</a>
+                <a href="/admin/register" class="h1"><b>Admin</b> Panel</a>
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Register a new membership</p>
 
-                <form action="../../index.html" method="post">
+                <form action="/admin/register" method="post">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Full name">
+                        <input type="text" class="form-control" placeholder="User Name" name="UserName"
+                            value="{{.UserName}}">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
                             </div>
                         </div>
                     </div>
+                    {{with .FormErrors.UserName}}
+                    <p style="color: red;">{{.}}</p>
+                    {{end}}
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email">
+                        <input type="text" class="form-control" placeholder="First Name" name="FirstName"
+                            value="{{.FirstName}}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    {{with .FormErrors.FirstName}}
+                    <p style="color: red;">{{.}}</p>
+                    {{end}}
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Last Name" name="LastName"
+                            value="{{.LastName}}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    {{with .FormErrors.LastName}}
+                    <p style="color: red;">{{.}}</p>
+                    {{end}}
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Email" name="Email" value="{{.Email}}">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
                     </div>
+                    {{with .FormErrors.Email}}
+                    <p style="color: red;">{{.}}</p>
+                    {{end}}
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input type="password" class="form-control" placeholder="Password" name="Password"
+                            value="{{.Password}}">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
                             </div>
                         </div>
                     </div>
+                    {{with .FormErrors.Password}}
+                    <p style="color: red;">{{.}}</p>
+                    {{end}}
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Retype password">
+                        <input type="password" class="form-control" placeholder="Retype password" name="Password"
+                            value="{{.Password}}">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
                             </div>
                         </div>
                     </div>
+                    {{with .FormErrors.Password}}
+                    <p style="color: red;">{{.}}</p>
+                    {{end}}
                     <div class="row">
                         <div class="col-8">
                             <div class="icheck-primary">
