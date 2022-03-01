@@ -25,8 +25,8 @@
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Register a new membership</p>
-
                 <form action="/admin/register" method="post">
+                    {{.CSRFField}}
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="User Name" name="UserName"
                             value="{{.UserName}}">

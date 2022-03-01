@@ -38,6 +38,10 @@ https://www.postgresqltutorial.com/postgresql-joins/
 
 https://www.loginradius.com/blog/async/sending-emails-with-golang/
 
+### session-cookie-authentication:
+
+https://www.sohamkamani.com/golang/session-cookie-authentication/
+
 # Install Postgres Docker images
 
 1. Pull image
