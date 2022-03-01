@@ -145,6 +145,8 @@ func New(
 	// login
 	ar.HandleFunc("/screen-lock", s.screenLockForm).Methods("GET")
 	ar.HandleFunc("/login", s.loginForm).Methods("GET")
+	ar.HandleFunc("/logout", s.logout).Methods("GET")
+	ar.HandleFunc("/refresh", s.refresh).Methods("GET")
 	ar.HandleFunc("/login", s.submitLogin).Methods("POST")
 	ar.HandleFunc("/register", s.registrationForm).Methods("GET")
 	ar.HandleFunc("/register", s.submitRegistration).Methods("POST")
