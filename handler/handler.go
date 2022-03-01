@@ -9,6 +9,7 @@ import (
 	"github.com/benbjohnson/hashfs"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
+	"github.com/gorilla/sessions"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -22,6 +23,7 @@ type Server struct {
 	assets    fs.FS
 	assetFS   *hashfs.FS
 	st        *postgres.Storage
+	session   *sessions.CookieStore
 }
 type TemplateData struct {
 	Env       string
@@ -125,6 +127,7 @@ func New(
 	decoder *schema.Decoder,
 	assets fs.FS,
 	st *postgres.Storage,
+	session *sessions.CookieStore,
 ) (*mux.Router, error) {
 	s := &Server{
 		env:     env,
@@ -133,6 +136,7 @@ func New(
 		config:  config,
 		assets:  assets,
 		st:      st,
+		session: session,
 	}
 	r := mux.NewRouter()
 	if err := s.parseTemplates(); err != nil {
@@ -145,6 +149,7 @@ func New(
 	// login
 	ar.HandleFunc("/screen-lock", s.screenLockForm).Methods("GET")
 	ar.HandleFunc("/login", s.loginForm).Methods("GET")
+	ar.HandleFunc("/logout", s.logout).Methods("GET")
 	ar.HandleFunc("/login", s.submitLogin).Methods("POST")
 	ar.HandleFunc("/register", s.registrationForm).Methods("GET")
 	ar.HandleFunc("/register", s.submitRegistration).Methods("POST")

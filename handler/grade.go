@@ -86,7 +86,7 @@ func (s *Server) submitGrade(w http.ResponseWriter, r *http.Request) {
 		TotalSalary:    form.TotalSalary,
 		Status:         form.Status,
 		Position:       form.Position,
-		CRUDTimeDate:   storage.CRUDTimeDate{CreatedBy: "123", UpdatedBy: "123"},
+		CRUDTimeDate:   storage.CRUDTimeDate{CreatedBy: s.GetSetSessionValue(r), UpdatedBy: "123"},
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -233,7 +233,7 @@ func (s *Server) updateGradeStatus(w http.ResponseWriter, r *http.Request) {
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {
@@ -244,7 +244,7 @@ func (s *Server) updateGradeStatus(w http.ResponseWriter, r *http.Request) {
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {

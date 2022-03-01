@@ -149,8 +149,8 @@ func (s *Server) submitDeliveryCompanyHandler(w http.ResponseWriter, r *http.Req
 		CompanyStatus:  form.CompanyStatus,
 		Position:       form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: "123",
-			UpdatedBy: "123",
+			CreatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	})
 	if err != nil {
@@ -222,7 +222,7 @@ func (s *Server) updateDeliveryCompanyHandler(w http.ResponseWriter, r *http.Req
 		CompanyStatus:  form.CompanyStatus,
 		Position:       form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: "123",
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	}
 	_, err := s.st.UpdateDeliveryCompany(r.Context(), dbdata)
@@ -262,7 +262,7 @@ func (s *Server) updateDeliveryCompanyStatusHandler(w http.ResponseWriter, r *ht
 			ID:            id,
 			CompanyStatus: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {
@@ -273,7 +273,7 @@ func (s *Server) updateDeliveryCompanyStatusHandler(w http.ResponseWriter, r *ht
 			ID:            id,
 			CompanyStatus: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {

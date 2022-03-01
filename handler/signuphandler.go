@@ -216,7 +216,7 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		JoinBy:                  "124",
 		EmployeeRole:            form.EmployeeRole,
 		UserRole:                form.UserRole,
-		VerifiedBy:              "123",
+		VerifiedBy:              s.GetSetSessionValue(r),
 		Status:                  1,
 		GradeID:                 form.GradeID,
 		UserName:                trim(form.UserName),
@@ -244,7 +244,7 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		PermanentAddress:        trim(form.PermanentAddress),
 		Reference:               trim(form.Reference),
 		RememberToken:           trim(form.RememberToken),
-		CRUDTimeDate:            storage.CRUDTimeDate{CreatedBy: "123", UpdatedBy: "123"},
+		CRUDTimeDate:            storage.CRUDTimeDate{CreatedBy: s.GetSetSessionValue(r), UpdatedBy: "123"},
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -374,7 +374,7 @@ func (s *Server) updateUserStatusHandler(w http.ResponseWriter, r *http.Request)
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {
@@ -385,7 +385,7 @@ func (s *Server) updateUserStatusHandler(w http.ResponseWriter, r *http.Request)
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {

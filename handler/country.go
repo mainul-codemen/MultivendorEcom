@@ -74,8 +74,8 @@ func (s *Server) submitCountry(w http.ResponseWriter, r *http.Request) {
 		Status:   form.Status,
 		Position: form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: "123",
-			UpdatedBy: "123",
+			CreatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	})
 	if err != nil {
@@ -141,7 +141,7 @@ func (s *Server) updateCountryHadler(w http.ResponseWriter, r *http.Request) {
 		Status:   form.Status,
 		Position: form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: "123",
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	})
 	if err != nil {
@@ -193,7 +193,7 @@ func (s *Server) updateCountryStatusHandler(w http.ResponseWriter, r *http.Reque
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {
@@ -204,7 +204,7 @@ func (s *Server) updateCountryStatusHandler(w http.ResponseWriter, r *http.Reque
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {

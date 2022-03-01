@@ -11,6 +11,7 @@ import (
 	"github.com/MultivendorEcom/serviceutil/logger"
 	"github.com/MultivendorEcom/storage/postgres"
 	"github.com/gorilla/schema"
+	"github.com/gorilla/sessions"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -50,7 +51,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	r, err := handler.New(env, config, logger, decoder, asst, st)
+	r, err := handler.New(env, config, logger, decoder, asst, st, sessions.NewCookieStore([]byte("1234")))
 	if err != nil {
 		log.Fatalf("error in connecting Server : %v", err)
 	}

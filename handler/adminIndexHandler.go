@@ -1,24 +1,16 @@
 package handler
 
 import (
-	"context"
-	"fmt"
+	"html/template"
 	"net/http"
 
 	"github.com/MultivendorEcom/serviceutil/logger"
 	"github.com/MultivendorEcom/storage"
 	validation "github.com/go-ozzo/ozzo-validation"
-	"golang.org/x/crypto/bcrypt"
 )
 
-type LoginForm struct {
-	UserName   string
-	Email      string
-	Password   string
-	FormErrors map[string]string
-}
-
 type RegistrationForm struct {
+	CSRFField  template.HTML
 	ID         string
 	UserName   string
 	FirstName  string
@@ -26,18 +18,6 @@ type RegistrationForm struct {
 	Email      string
 	Password   string
 	FormErrors map[string]string
-}
-
-func (s LoginForm) Validate(srv *Server) error {
-	return validation.ValidateStruct(&s,
-		validation.Field(&s.Email,
-			validation.Required.Error("Email is Required"),
-		),
-		validation.Field(&s.Password,
-			validation.Required.Error("Password is Required"),
-			validation.By(checkLogin(srv, s.Email, s.Password)),
-		),
-	)
 }
 
 func (s RegistrationForm) Validate(srv *Server) error {
@@ -64,55 +44,8 @@ func (s RegistrationForm) Validate(srv *Server) error {
 }
 
 func (s *Server) adminindex(w http.ResponseWriter, r *http.Request) {
+	logger.Info("index handler")
 	formTemplate(s, w, r, "index.html")
-}
-
-func (s *Server) loginForm(w http.ResponseWriter, r *http.Request) {
-	formTemplate(s, w, r, "login.html")
-}
-
-func (s *Server) submitLogin(w http.ResponseWriter, r *http.Request) {
-	logger.Info("submit login handler")
-	if err := r.ParseForm(); err != nil {
-		logger.Error(errMsg + err.Error())
-		http.Error(w, errMsg, http.StatusBadRequest)
-		return
-	}
-
-	var form LoginForm
-	err := s.decoder.Decode(&form, r.PostForm)
-	if err != nil {
-		logger.Error(err.Error())
-		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
-	}
-	if err := form.Validate(s); err != nil {
-		vErrs := map[string]string{}
-		if e, ok := err.(validation.Errors); ok {
-			if len(e) > 0 {
-				for key, value := range e {
-					vErrs[key] = value.Error()
-				}
-			}
-		}
-		data := RegistrationForm{
-			UserName: form.UserName,
-			Email:    form.Email,
-			Password: form.Password,
-		}
-		tmpl := s.lookupTemplate("login.html")
-		if tmpl == nil {
-			logger.Error(ult)
-			http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
-		}
-		if err := tmpl.Execute(w, data); err != nil {
-			logger.Error(ewte + err.Error())
-			http.Redirect(w, r, "/admin/login", http.StatusSeeOther)
-		}
-		return
-	}
-
-	http.Redirect(w, r, "/admin/index", http.StatusSeeOther)
-
 }
 
 func (s *Server) registrationForm(w http.ResponseWriter, r *http.Request) {
@@ -139,7 +72,6 @@ func (s *Server) submitRegistration(w http.ResponseWriter, r *http.Request) {
 		if e, ok := err.(validation.Errors); ok {
 			if len(e) > 0 {
 				for key, value := range e {
-					fmt.Println(value)
 					vErrs[key] = value.Error()
 				}
 			}
@@ -198,19 +130,4 @@ func formTemplate(s *Server, w http.ResponseWriter, r *http.Request, tmp string)
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
 
-}
-
-func checkLogin(s *Server, email string, pass string) validation.RuleFunc {
-	return func(value interface{}) error {
-		resp, _ := s.st.GetUserInfoBy(context.Background(), email)
-		if resp != nil {
-			err := bcrypt.CompareHashAndPassword([]byte(resp.Password), []byte(pass))
-			if err != nil {
-				return fmt.Errorf(" Password doesn't match")
-			}
-		} else {
-			return fmt.Errorf(" Please Enter valid credential")
-		}
-		return nil
-	}
 }
