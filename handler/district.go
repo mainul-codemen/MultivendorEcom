@@ -115,8 +115,8 @@ func (s *Server) submitDistrictHandler(w http.ResponseWriter, r *http.Request) {
 		Position:  form.Position,
 		CountryID: form.CountryID,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: "123",
-			UpdatedBy: "123",
+			CreatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	})
 	if err != nil {
@@ -179,7 +179,7 @@ func (s *Server) updateDistrictHandler(w http.ResponseWriter, r *http.Request) {
 		CountryID: form.CountryID,
 		Position:  form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: "123",
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	}
 	_, err := s.st.UpdateDistrict(r.Context(), dbdata)
@@ -219,7 +219,7 @@ func (s *Server) updateDistrictStatusHandler(w http.ResponseWriter, r *http.Requ
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {
@@ -230,7 +230,7 @@ func (s *Server) updateDistrictStatusHandler(w http.ResponseWriter, r *http.Requ
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {

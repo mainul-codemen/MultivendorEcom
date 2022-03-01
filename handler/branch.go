@@ -145,8 +145,8 @@ func (s *Server) submitBranchHandler(w http.ResponseWriter, r *http.Request) {
 		BranchStatus:  form.BranchStatus,
 		Position:      form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: "123",
-			UpdatedBy: "123",
+			CreatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	})
 	if err != nil {
@@ -218,7 +218,7 @@ func (s *Server) updateBranchHandler(w http.ResponseWriter, r *http.Request) {
 		BranchStatus:  form.BranchStatus,
 		Position:      form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: "123",
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	}
 	_, err := s.st.UpdateBranch(r.Context(), dbdata)
@@ -258,7 +258,7 @@ func (s *Server) updateBranchStatusHandler(w http.ResponseWriter, r *http.Reques
 			ID:           id,
 			BranchStatus: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {
@@ -269,7 +269,7 @@ func (s *Server) updateBranchStatusHandler(w http.ResponseWriter, r *http.Reques
 			ID:           id,
 			BranchStatus: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {

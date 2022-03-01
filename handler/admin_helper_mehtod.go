@@ -1,9 +1,13 @@
 package handler
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/MultivendorEcom/serviceutil/logger"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const AlrEx = " already exists"
@@ -278,4 +282,19 @@ func (s *Server) grdList(r *http.Request, w http.ResponseWriter, sts bool) []Gra
 		desListForm = append(desListForm, desData)
 	}
 	return desListForm
+}
+
+func checkLogin(s *Server, emailorUsername string, pass string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetUserInfoBy(context.Background(), emailorUsername)
+		if resp != nil {
+			err := bcrypt.CompareHashAndPassword([]byte(resp.Password), []byte(pass))
+			if err != nil {
+				return fmt.Errorf(" Password doesn't match")
+			}
+		} else {
+			return fmt.Errorf(" Please Enter valid credential")
+		}
+		return nil
+	}
 }

@@ -83,8 +83,8 @@ func (s *Server) submitDesignation(w http.ResponseWriter, r *http.Request) {
 		Status:      form.Status,
 		Position:    form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: "123",
-			UpdatedBy: "123",
+			CreatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	})
 	if err != nil {
@@ -168,7 +168,7 @@ func (s *Server) updateDesignation(w http.ResponseWriter, r *http.Request) {
 		Status:      form.Status,
 		Position:    form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: "123",
+			UpdatedBy: s.GetSetSessionValue(r),
 		},
 	}
 	_, err := s.st.UpdateDesignation(r.Context(), dbdata)
@@ -222,7 +222,7 @@ func (s *Server) updateDesignationStatus(w http.ResponseWriter, r *http.Request)
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {
@@ -233,7 +233,7 @@ func (s *Server) updateDesignationStatus(w http.ResponseWriter, r *http.Request)
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: "123",
+				UpdatedBy: s.GetSetSessionValue(r),
 			},
 		})
 		if err != nil {
