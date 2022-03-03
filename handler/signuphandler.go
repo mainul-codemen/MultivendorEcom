@@ -152,6 +152,7 @@ func (s *Server) usrFormHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("user submit handler")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -216,7 +217,7 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		JoinBy:                  "124",
 		EmployeeRole:            form.EmployeeRole,
 		UserRole:                form.UserRole,
-		VerifiedBy:              s.GetSetSessionValue(r),
+		VerifiedBy:              uid,
 		Status:                  1,
 		GradeID:                 form.GradeID,
 		UserName:                trim(form.UserName),
@@ -244,7 +245,10 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		PermanentAddress:        trim(form.PermanentAddress),
 		Reference:               trim(form.Reference),
 		RememberToken:           trim(form.RememberToken),
-		CRUDTimeDate:            storage.CRUDTimeDate{CreatedBy: s.GetSetSessionValue(r), UpdatedBy: "123"},
+		CRUDTimeDate: storage.CRUDTimeDate{
+			CreatedBy: uid,
+			UpdatedBy: uid,
+		},
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -265,8 +269,10 @@ func (s *Server) viewVerificationForm(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(data)
 }
+
 func (s *Server) submitVerificationCode(w http.ResponseWriter, r *http.Request) {
 	logger.Info("submit verification code")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -299,7 +305,7 @@ func (s *Server) submitVerificationCode(w http.ResponseWriter, r *http.Request) 
 		PhoneNumberVerifiedCode: "",
 		ISOTPVerified:           true,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: "1234",
+			UpdatedBy: uid,
 		},
 	}
 	_, err = s.st.VerifyPhoneNumber(r.Context(), data)
@@ -312,6 +318,7 @@ func (s *Server) submitVerificationCode(w http.ResponseWriter, r *http.Request) 
 
 func (s *Server) submitEmailVerificationCode(w http.ResponseWriter, r *http.Request) {
 	logger.Info("submit email verification code")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -344,7 +351,7 @@ func (s *Server) submitEmailVerificationCode(w http.ResponseWriter, r *http.Requ
 		EmailVerifiedCode: "",
 		ISEmailVerified:   true,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: "1234",
+			UpdatedBy: uid,
 		},
 	}
 	_, err = s.st.VerifyEmail(r.Context(), data)
@@ -357,6 +364,7 @@ func (s *Server) submitEmailVerificationCode(w http.ResponseWriter, r *http.Requ
 
 func (s *Server) updateUserStatusHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("Update hub status")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -374,7 +382,7 @@ func (s *Server) updateUserStatusHandler(w http.ResponseWriter, r *http.Request)
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -385,7 +393,7 @@ func (s *Server) updateUserStatusHandler(w http.ResponseWriter, r *http.Request)
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {

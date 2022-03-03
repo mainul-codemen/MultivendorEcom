@@ -48,6 +48,7 @@ func (s DepartmentForm) Validate(srv *Server, id string) error {
 
 func (s *Server) submitDepartment(w http.ResponseWriter, r *http.Request) {
 	logger.Info("submit department")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -83,8 +84,8 @@ func (s *Server) submitDepartment(w http.ResponseWriter, r *http.Request) {
 		Status:      form.Status,
 		Position:    form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: s.GetSetSessionValue(r),
-			UpdatedBy: s.GetSetSessionValue(r),
+			CreatedBy: uid,
+			UpdatedBy: uid,
 		},
 	})
 	if err != nil {
@@ -131,6 +132,7 @@ func (s *Server) deleteDepartment(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateDepartment(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update department")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -168,7 +170,7 @@ func (s *Server) updateDepartment(w http.ResponseWriter, r *http.Request) {
 		Status:      form.Status,
 		Position:    form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: uid,
 		},
 	}
 	_, err := s.st.UpdateDepartment(r.Context(), dbdata)
@@ -205,6 +207,7 @@ func (s *Server) viewDepartment(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateDepartmentStatus(w http.ResponseWriter, r *http.Request) {
 	logger.Info("Update department status")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -222,7 +225,7 @@ func (s *Server) updateDepartmentStatus(w http.ResponseWriter, r *http.Request) 
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -233,7 +236,7 @@ func (s *Server) updateDepartmentStatus(w http.ResponseWriter, r *http.Request) 
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {

@@ -69,13 +69,14 @@ func (s *Server) submitCountry(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(data)
 		return
 	}
+	uid, _ := s.GetSetSessionValue(r, w)
 	_, err := s.st.CreateCountry(r.Context(), storage.Country{
 		Name:     trim(form.Name),
 		Status:   form.Status,
 		Position: form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: s.GetSetSessionValue(r),
-			UpdatedBy: s.GetSetSessionValue(r),
+			CreatedBy: uid,
+			UpdatedBy: uid,
 		},
 	})
 	if err != nil {
@@ -105,6 +106,7 @@ func (s *Server) countryListHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateCountryHadler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update country")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -141,7 +143,7 @@ func (s *Server) updateCountryHadler(w http.ResponseWriter, r *http.Request) {
 		Status:   form.Status,
 		Position: form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: uid,
 		},
 	})
 	if err != nil {
@@ -183,7 +185,7 @@ func (s *Server) updateCountryStatusHandler(w http.ResponseWriter, r *http.Reque
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
-
+	uid, _ := s.GetSetSessionValue(r, w)
 	res, err := s.st.GetCountryBy(r.Context(), id)
 	if err != nil {
 		logger.Error("unable to get country info " + err.Error())
@@ -193,7 +195,7 @@ func (s *Server) updateCountryStatusHandler(w http.ResponseWriter, r *http.Reque
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -204,7 +206,7 @@ func (s *Server) updateCountryStatusHandler(w http.ResponseWriter, r *http.Reque
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {

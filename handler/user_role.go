@@ -48,6 +48,7 @@ func (s UserRoleForm) Validate(srv *Server, id string) error {
 
 func (s *Server) submitUserRole(w http.ResponseWriter, r *http.Request) {
 	logger.Info("submit userRole")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -83,8 +84,8 @@ func (s *Server) submitUserRole(w http.ResponseWriter, r *http.Request) {
 		Status:      form.Status,
 		Position:    form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: s.GetSetSessionValue(r),
-			UpdatedBy: s.GetSetSessionValue(r),
+			CreatedBy: uid,
+			UpdatedBy: uid,
 		},
 	})
 	if err != nil {
@@ -113,6 +114,7 @@ func (s *Server) userRoleList(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) deleteUserRole(w http.ResponseWriter, r *http.Request) {
 	logger.Info("delete userRole")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -121,7 +123,7 @@ func (s *Server) deleteUserRole(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	id := params["id"]
-	err := s.st.DeleteUserRole(r.Context(), id, "1")
+	err := s.st.DeleteUserRole(r.Context(), id, uid)
 	if err != nil {
 		logger.Error("error while delete userRole" + err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
@@ -131,6 +133,7 @@ func (s *Server) deleteUserRole(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateUserRole(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update userRole")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -168,7 +171,7 @@ func (s *Server) updateUserRole(w http.ResponseWriter, r *http.Request) {
 		Status:      form.Status,
 		Position:    form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: uid,
 		},
 	}
 	_, err := s.st.UpdateUserRole(r.Context(), dbdata)
@@ -205,6 +208,7 @@ func (s *Server) viewUserRole(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateUserRoleStatus(w http.ResponseWriter, r *http.Request) {
 	logger.Info("Update userRole status")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -222,7 +226,7 @@ func (s *Server) updateUserRoleStatus(w http.ResponseWriter, r *http.Request) {
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -233,7 +237,7 @@ func (s *Server) updateUserRoleStatus(w http.ResponseWriter, r *http.Request) {
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {

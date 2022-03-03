@@ -42,6 +42,8 @@ https://www.loginradius.com/blog/async/sending-emails-with-golang/
 
 https://www.sohamkamani.com/golang/session-cookie-authentication/
 
+
+### Use gorill session for login and logout session management
 # Install Postgres Docker images
 
 1. Pull image

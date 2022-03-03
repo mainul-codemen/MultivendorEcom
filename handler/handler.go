@@ -144,16 +144,24 @@ func New(
 		return nil, err
 	}
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./assets/"))))
+	/*---------------------------------------------------------------------------------------------------------------*/
+	/*------------------------------------------------ PUBLIC ROUTES ------------------------------------------------*/
+	/*---------------------------------------------------------------------------------------------------------------*/
+	pub := r.PathPrefix("/public").Subrouter()
+	pub.HandleFunc("/screen-lock", s.screenLockForm).Methods("GET")
+	pub.HandleFunc("/login", s.loginForm).Methods("GET")
+	pub.HandleFunc("/logout", s.logout).Methods("GET")
+	pub.HandleFunc("/login", s.submitLogin).Methods("POST")
+	pub.HandleFunc("/register", s.registrationForm).Methods("GET")
+	pub.HandleFunc("/register", s.submitRegistration).Methods("POST")
+	pub.HandleFunc("/recovery-password", s.passwordRecoverForm).Methods("GET")
+	/*--------------------------------------------------------------------------------------------------------------*/
+	/*------------------------------------------------ ADMIN ROUTES ------------------------------------------------*/
+	/*--------------------------------------------------------------------------------------------------------------*/
 	ar := r.PathPrefix("/admin").Subrouter()
+	ar.Use(s.adminAuthMiddleWare)
 	ar.HandleFunc("/index", s.adminindex).Methods("GET")
-	// login
-	ar.HandleFunc("/screen-lock", s.screenLockForm).Methods("GET")
-	ar.HandleFunc("/login", s.loginForm).Methods("GET")
-	ar.HandleFunc("/logout", s.logout).Methods("GET")
-	ar.HandleFunc("/login", s.submitLogin).Methods("POST")
-	ar.HandleFunc("/register", s.registrationForm).Methods("GET")
-	ar.HandleFunc("/register", s.submitRegistration).Methods("POST")
-	ar.HandleFunc("/recovery-password", s.passwordRecoverForm).Methods("GET")
+
 	// User
 	ar.HandleFunc(userListPath, s.userListHandler).Methods("GET")
 	ar.HandleFunc(createUserPath, s.usrFormHandler).Methods("GET")
@@ -254,7 +262,25 @@ func New(
 	ar.HandleFunc(viewDeliveryChargePath, s.viewDeliveryChargeHandler).Methods("GET")
 	ar.HandleFunc(updateDeliveryChargeStatusPath, s.updateDeliveryChargeStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteDeliveryChargePath, s.deleteDeliveryChargeHandler).Methods("GET")
+	ar.HandleFunc("/forbidden", s.forbidden).Methods("GET")
 	r.NotFoundHandler = s.getErrorHandler()
 	return r, nil
+}
 
+/*------------------------------------------------ADMIN AUTHENTICATION MIDDLEWARE-----------------------------------*/
+
+func (s *Server) adminAuthMiddleWare(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		s.SessionCheckAndRedirect(r, next, w, "admin")
+	})
+}
+
+/*------------------------------------------------Session Information Checker ----------------------------------*/
+func (s *Server) SessionCheckAndRedirect(r *http.Request, next http.Handler, w http.ResponseWriter, user string) {
+	uid, user_type := s.GetSetSessionValue(r, w)
+	if uid != "" && user_type == user {
+		next.ServeHTTP(w, r)
+	} else {
+		http.Redirect(w, r, "/forbidden", http.StatusSeeOther)
+	}
 }

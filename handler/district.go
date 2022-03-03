@@ -82,6 +82,7 @@ func (s *Server) districtFormHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) submitDistrictHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("district submit")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -115,8 +116,8 @@ func (s *Server) submitDistrictHandler(w http.ResponseWriter, r *http.Request) {
 		Position:  form.Position,
 		CountryID: form.CountryID,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: s.GetSetSessionValue(r),
-			UpdatedBy: s.GetSetSessionValue(r),
+			CreatedBy: uid,
+			UpdatedBy: uid,
 		},
 	})
 	if err != nil {
@@ -142,6 +143,7 @@ func (s *Server) updateDistrictFormHandler(w http.ResponseWriter, r *http.Reques
 
 func (s *Server) updateDistrictHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update district")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -179,7 +181,7 @@ func (s *Server) updateDistrictHandler(w http.ResponseWriter, r *http.Request) {
 		CountryID: form.CountryID,
 		Position:  form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: uid,
 		},
 	}
 	_, err := s.st.UpdateDistrict(r.Context(), dbdata)
@@ -202,6 +204,7 @@ func (s *Server) viewDistrictHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateDistrictStatusHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("Update district status")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -219,7 +222,7 @@ func (s *Server) updateDistrictStatusHandler(w http.ResponseWriter, r *http.Requ
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -230,7 +233,7 @@ func (s *Server) updateDistrictStatusHandler(w http.ResponseWriter, r *http.Requ
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {

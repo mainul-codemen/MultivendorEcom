@@ -77,6 +77,7 @@ func (s *Server) submitLogin(w http.ResponseWriter, r *http.Request) {
 	resp, _ := s.st.GetUserInfoBy(context.Background(), form.EmailOrUserName)
 	sesn, _ := s.session.Get(r, "mvec-prod")
 	sesn.Values["user_id"] = resp.ID
+	sesn.Values["user_role"] = resp.UserRole
 	if err := sesn.Save(r, w); err != nil {
 		logger.Error("Error while saving Session information" + err.Error())
 	}
@@ -87,11 +88,19 @@ func (s *Server) logout(w http.ResponseWriter, r *http.Request) {
 	session, _ := s.session.Get(r, "mvec-prod")
 	session.Values["user_id"] = ""
 	session.Save(r, w)
-	http.Redirect(w, r, "/admin/login", http.StatusSeeOther)
+	http.Redirect(w, r, "/public/login", http.StatusSeeOther)
 }
 
-func (s *Server) GetSetSessionValue(r *http.Request) string {
+func (s *Server) GetSetSessionValue(r *http.Request, w http.ResponseWriter) (string, string) {
 	session, _ := s.session.Get(r, "mvec-prod")
 	uid := session.Values["user_id"]
-	return uid.(string)
+	user_role := session.Values["user_role"]
+	if uid == nil || user_role == nil {
+		http.Redirect(w, r, "/forbiden", http.StatusSeeOther)
+	} else {
+		usr, _ := s.st.GetUserRoleBy(context.Background(), user_role.(string))
+		logger.Info("Logged in user = " + usr.Name)
+		return uid.(string), usr.Name
+	}
+	return "", ""
 }
