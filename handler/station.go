@@ -79,6 +79,7 @@ func (s *Server) stationFormHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) submitStationHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("station submit")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -112,8 +113,8 @@ func (s *Server) submitStationHandler(w http.ResponseWriter, r *http.Request) {
 		Position:   form.Position,
 		DistrictID: form.DistrictID,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: s.GetSetSessionValue(r),
-			UpdatedBy: s.GetSetSessionValue(r),
+			CreatedBy: uid,
+			UpdatedBy: uid,
 		},
 	})
 	if err != nil {
@@ -138,6 +139,7 @@ func (s *Server) updateStationFormHandler(w http.ResponseWriter, r *http.Request
 
 func (s *Server) updateStationHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update station")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -175,7 +177,7 @@ func (s *Server) updateStationHandler(w http.ResponseWriter, r *http.Request) {
 		DistrictID: form.DistrictID,
 		Position:   form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: uid,
 		},
 	}
 	_, err := s.st.UpdateStation(r.Context(), dbdata)
@@ -198,6 +200,7 @@ func (s *Server) viewStationHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateStationStatusHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("Update station status")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -215,7 +218,7 @@ func (s *Server) updateStationStatusHandler(w http.ResponseWriter, r *http.Reque
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -226,7 +229,7 @@ func (s *Server) updateStationStatusHandler(w http.ResponseWriter, r *http.Reque
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -238,6 +241,7 @@ func (s *Server) updateStationStatusHandler(w http.ResponseWriter, r *http.Reque
 
 func (s *Server) deleteStationHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("delete station")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -246,7 +250,7 @@ func (s *Server) deleteStationHandler(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	id := params["id"]
-	err := s.st.DeleteStation(r.Context(), id, "1")
+	err := s.st.DeleteStation(r.Context(), id, uid)
 	if err != nil {
 		logger.Error("error while delete station" + err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)

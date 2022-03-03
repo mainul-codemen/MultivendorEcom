@@ -105,6 +105,7 @@ func (s *Server) hubFormHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) submitHubHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("hub submit handler")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -144,8 +145,8 @@ func (s *Server) submitHubHandler(w http.ResponseWriter, r *http.Request) {
 		Status:     form.Status,
 		Position:   form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: s.GetSetSessionValue(r),
-			UpdatedBy: s.GetSetSessionValue(r),
+			CreatedBy: uid,
+			UpdatedBy: uid,
 		},
 	})
 	if err != nil {
@@ -175,6 +176,7 @@ func (s *Server) updateHubFormHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateHubHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update hub")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -218,7 +220,7 @@ func (s *Server) updateHubHandler(w http.ResponseWriter, r *http.Request) {
 		Status:     form.Status,
 		Position:   form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: uid,
 		},
 	}
 	_, err := s.st.UpdateHub(r.Context(), dbdata)
@@ -241,6 +243,7 @@ func (s *Server) viewHubHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateHubStatusHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("Update hub status")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -258,7 +261,7 @@ func (s *Server) updateHubStatusHandler(w http.ResponseWriter, r *http.Request) 
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -269,7 +272,7 @@ func (s *Server) updateHubStatusHandler(w http.ResponseWriter, r *http.Request) 
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {

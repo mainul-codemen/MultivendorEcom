@@ -109,6 +109,7 @@ func (s *Server) deliveryCompanyFormHandler(w http.ResponseWriter, r *http.Reque
 
 func (s *Server) submitDeliveryCompanyHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("deliveryCompany submit")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -149,8 +150,8 @@ func (s *Server) submitDeliveryCompanyHandler(w http.ResponseWriter, r *http.Req
 		CompanyStatus:  form.CompanyStatus,
 		Position:       form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: s.GetSetSessionValue(r),
-			UpdatedBy: s.GetSetSessionValue(r),
+			CreatedBy: uid,
+			UpdatedBy: uid,
 		},
 	})
 	if err != nil {
@@ -180,6 +181,7 @@ func (s *Server) updateDeliveryCompanyFormHandler(w http.ResponseWriter, r *http
 
 func (s *Server) updateDeliveryCompanyHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update deliveryCompany")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -222,7 +224,7 @@ func (s *Server) updateDeliveryCompanyHandler(w http.ResponseWriter, r *http.Req
 		CompanyStatus:  form.CompanyStatus,
 		Position:       form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: uid,
 		},
 	}
 	_, err := s.st.UpdateDeliveryCompany(r.Context(), dbdata)
@@ -245,6 +247,7 @@ func (s *Server) viewDeliveryCompanyHandler(w http.ResponseWriter, r *http.Reque
 
 func (s *Server) updateDeliveryCompanyStatusHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("Update deliveryCompany status")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -262,7 +265,7 @@ func (s *Server) updateDeliveryCompanyStatusHandler(w http.ResponseWriter, r *ht
 			ID:            id,
 			CompanyStatus: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -273,7 +276,7 @@ func (s *Server) updateDeliveryCompanyStatusHandler(w http.ResponseWriter, r *ht
 			ID:            id,
 			CompanyStatus: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {

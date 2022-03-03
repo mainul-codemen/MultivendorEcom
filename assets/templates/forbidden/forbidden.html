@@ -37,17 +37,21 @@
             <img class="animation__shake" src="/static/admin-img/AdminLTELogo.png" alt="Logo" height="60" width="60">
         </div>
         <!-- Content Wrapper. Contains page content -->
+        <div>
 
-        <!-- Main content -->
-        <div style="height: 90vh; display: flex;align-items: center;justify-content: center;">
+
+            <!-- Main content -->
             <section class="content">
                 <div class="error-page">
                     <h2 class="headline text-danger">401</h2>
+
                     <div class="error-content">
                         <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! Your are not Authorized</h3>
+
                         <p>
-                            Please Login in first from this <a href="public/login">login</a> url.
+                            Please Login in first from this <a href="/public/login">login</a> url.
                         </p>
+
                         <form class="search-form">
                             <div class="input-group">
                                 <input type="text" name="search" class="form-control" placeholder="Search">
@@ -62,9 +66,11 @@
                         </form>
                     </div>
                 </div>
+                <!-- /.error-page -->
             </section>
+            <!-- /.content -->
+            {{ template "footer"}}
         </div>
-        {{ template "footer"}}
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->

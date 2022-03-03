@@ -45,6 +45,7 @@ func (s GradeForm) Validate(srv *Server, id string) error {
 
 func (s *Server) submitGrade(w http.ResponseWriter, r *http.Request) {
 	logger.Info("submit grade")
+	uid, _ := s.GetSetSessionValue(r, w)
 	if err := r.ParseForm(); err != nil {
 		logger.Error(errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
@@ -86,7 +87,10 @@ func (s *Server) submitGrade(w http.ResponseWriter, r *http.Request) {
 		TotalSalary:    form.TotalSalary,
 		Status:         form.Status,
 		Position:       form.Position,
-		CRUDTimeDate:   storage.CRUDTimeDate{CreatedBy: s.GetSetSessionValue(r), UpdatedBy: "123"},
+		CRUDTimeDate: storage.CRUDTimeDate{
+			CreatedBy: uid,
+			UpdatedBy: uid,
+		},
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -132,6 +136,7 @@ func (s *Server) deleteGrade(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateGrade(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update grade")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -174,7 +179,9 @@ func (s *Server) updateGrade(w http.ResponseWriter, r *http.Request) {
 		TotalSalary:    form.TotalSalary,
 		Status:         form.Status,
 		Position:       form.Position,
-		CRUDTimeDate:   storage.CRUDTimeDate{UpdatedBy: "123"},
+		CRUDTimeDate: storage.CRUDTimeDate{
+			UpdatedBy: uid,
+		},
 	}
 	_, err := s.st.UpdateGrade(r.Context(), dbdata)
 	if err != nil {
@@ -216,6 +223,7 @@ func (s *Server) viewGrade(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) updateGradeStatus(w http.ResponseWriter, r *http.Request) {
 	logger.Info("Update grade status")
+	uid, _ := s.GetSetSessionValue(r, w)
 	params := mux.Vars(r)
 	id := params["id"]
 	if err := r.ParseForm(); err != nil {
@@ -233,7 +241,7 @@ func (s *Server) updateGradeStatus(w http.ResponseWriter, r *http.Request) {
 			ID:     id,
 			Status: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -244,7 +252,7 @@ func (s *Server) updateGradeStatus(w http.ResponseWriter, r *http.Request) {
 			ID:     id,
 			Status: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {

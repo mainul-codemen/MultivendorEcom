@@ -133,6 +133,7 @@ func (s *Server) submitBranchHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(data)
 		return
 	}
+	uid, _ := s.GetSetSessionValue(r, w)
 	_, err = s.st.CreateBranch(r.Context(), storage.Branch{
 		BranchName:    trim(form.Name),
 		CountryID:     form.CountryID,
@@ -145,8 +146,8 @@ func (s *Server) submitBranchHandler(w http.ResponseWriter, r *http.Request) {
 		BranchStatus:  form.BranchStatus,
 		Position:      form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			CreatedBy: s.GetSetSessionValue(r),
-			UpdatedBy: s.GetSetSessionValue(r),
+			CreatedBy: uid,
+			UpdatedBy: uid,
 		},
 	})
 	if err != nil {
@@ -205,6 +206,7 @@ func (s *Server) updateBranchHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(data)
 		return
 	}
+	uid, _ := s.GetSetSessionValue(r, w)
 	dbdata := storage.Branch{
 		ID:            id,
 		BranchName:    trim(form.Name),
@@ -218,7 +220,7 @@ func (s *Server) updateBranchHandler(w http.ResponseWriter, r *http.Request) {
 		BranchStatus:  form.BranchStatus,
 		Position:      form.Position,
 		CRUDTimeDate: storage.CRUDTimeDate{
-			UpdatedBy: s.GetSetSessionValue(r),
+			UpdatedBy: uid,
 		},
 	}
 	_, err := s.st.UpdateBranch(r.Context(), dbdata)
@@ -248,7 +250,7 @@ func (s *Server) updateBranchStatusHandler(w http.ResponseWriter, r *http.Reques
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
-
+	uid, _ := s.GetSetSessionValue(r, w)
 	res, err := s.st.GetBranchBy(r.Context(), id)
 	if err != nil {
 		logger.Error("unable to get branch info " + err.Error())
@@ -258,7 +260,7 @@ func (s *Server) updateBranchStatusHandler(w http.ResponseWriter, r *http.Reques
 			ID:           id,
 			BranchStatus: 2,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {
@@ -269,7 +271,7 @@ func (s *Server) updateBranchStatusHandler(w http.ResponseWriter, r *http.Reques
 			ID:           id,
 			BranchStatus: 1,
 			CRUDTimeDate: storage.CRUDTimeDate{
-				UpdatedBy: s.GetSetSessionValue(r),
+				UpdatedBy: uid,
 			},
 		})
 		if err != nil {

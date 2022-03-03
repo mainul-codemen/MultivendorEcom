@@ -22,12 +22,12 @@
         <!-- /.login-logo -->
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <a href="/admin/login" class="h1"><b>Admin</b> Panel</a>
+                <a href="/public/login" class="h1"><b>Admin</b> Panel</a>
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form action="/admin/login" method="post">
+                <form action="/public/login" method="post">
                     {{.CSRFField}}
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="Email or UserName" name="EmailOrUserName" value="{{.EmailOrUserName}}">
@@ -82,10 +82,10 @@
                 <!-- /.social-auth-links -->
 
                 <p class="mb-1">
-                    <a href="/admin/recovery-password">I forgot my password</a>
+                    <a href="/public/recovery-password">I forgot my password</a>
                 </p>
                 <p class="mb-0">
-                    <a href="/admin/register" class="text-center">Register a new membership</a>
+                    <a href="/public/register" class="text-center">Register a new membership</a>
                 </p>
             </div>
             <!-- /.card-body -->
