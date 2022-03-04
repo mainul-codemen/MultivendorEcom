@@ -116,6 +116,13 @@ const (
 	updateDeliveryChargeStatusPath = "/delivery-charge/update/status/{id}"
 	viewDeliveryChargePath         = "/delivery-charge/view/{id}"
 	deleteDeliveryChargePath       = "/delivery-charge/delete/{id}"
+	// accounts
+	accountsListPath         = "/accounts"
+	createAccountsPath       = "/accounts/create"
+	updateAccountsPath       = "/accounts/update/{id}"
+	updateAccountsStatusPath = "/accounts/update/status/{id}"
+	viewAccountsPath         = "/accounts/view/{id}"
+	deleteAccountsPath       = "/accounts/delete/{id}"
 
 	ErrorPath = "/error"
 )
@@ -155,6 +162,9 @@ func New(
 	pub.HandleFunc("/register", s.registrationForm).Methods("GET")
 	pub.HandleFunc("/register", s.submitRegistration).Methods("POST")
 	pub.HandleFunc("/recovery-password", s.passwordRecoverForm).Methods("GET")
+	pub.HandleFunc("/recovery-password", s.submitpasswordRecover).Methods("POST")
+	pub.HandleFunc("/recovery-password-2", s.savePasswordResetForm).Methods("GET")
+	pub.HandleFunc("/recovery-password-2", s.savePasswordReset).Methods("POST")
 	/*--------------------------------------------------------------------------------------------------------------*/
 	/*------------------------------------------------ ADMIN ROUTES ------------------------------------------------*/
 	/*--------------------------------------------------------------------------------------------------------------*/
@@ -262,7 +272,15 @@ func New(
 	ar.HandleFunc(viewDeliveryChargePath, s.viewDeliveryChargeHandler).Methods("GET")
 	ar.HandleFunc(updateDeliveryChargeStatusPath, s.updateDeliveryChargeStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteDeliveryChargePath, s.deleteDeliveryChargeHandler).Methods("GET")
+	// accounts
+	ar.HandleFunc(accountsListPath, s.accountsListHandler).Methods("GET")
+	ar.HandleFunc(createAccountsPath, s.submitAccountsHandler).Methods("POST")
+	ar.HandleFunc(updateAccountsPath, s.updateAccountsHandler).Methods("POST")
+	ar.HandleFunc(viewAccountsPath, s.viewAccountsHandler).Methods("GET")
+	ar.HandleFunc(updateAccountsStatusPath, s.updateAccountsStatusHandler).Methods("GET")
+	ar.HandleFunc(deleteAccountsPath, s.deleteAccountsHandler).Methods("GET")
 	ar.HandleFunc("/forbidden", s.forbidden).Methods("GET")
+
 	r.NotFoundHandler = s.getErrorHandler()
 	return r, nil
 }

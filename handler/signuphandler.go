@@ -35,6 +35,8 @@ type UsrTempData struct {
 	FormAction      string
 }
 
+const optmsg = "This is is your OTP.Please Verify with this OTP."
+
 func (s UserForm) Validate(srv *Server, id string) error {
 	return validation.ValidateStruct(&s,
 		validation.Field(&s.UserName,
@@ -202,8 +204,8 @@ func (s *Server) submitUserHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalln("Unable to hashed password")
 	}
 	// send mail
-	emailCode := otp.SendEmailVerificationCode(form.Email)
-	err = mail.SendingMail(trim(form.Email), emailCode)
+	emailCode := otp.GenerateEmailVerificationCode()
+	err = mail.SendingMail(trim(form.Email), mail.MailStruct{OTP: emailCode, Message: optmsg})
 	if err != nil {
 		fmt.Println("User Data saved. But Email is not send for some reason.")
 		emailCode = ""

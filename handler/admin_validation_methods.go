@@ -107,6 +107,7 @@ func checkStationExists(s *Server, sid string) validation.RuleFunc {
 
 	}
 }
+
 func checkDuplicateHubPhone(s *Server, phone string, id string) validation.RuleFunc {
 	return func(value interface{}) error {
 		resp, _ := s.st.GetHubBy(context.Background(), phone)
@@ -126,6 +127,7 @@ func checkDuplicateUserPhone(s *Server, phone string, id string) validation.Rule
 		return fmt.Errorf(PhnEx, phone)
 	}
 }
+
 func checkDuplicateUserEmail(s *Server, email string) validation.RuleFunc {
 	return func(value interface{}) error {
 		resp, _ := s.st.GetUserInfoBy(context.Background(), email)
@@ -344,6 +346,16 @@ func checkDuplicateUserName(s *Server, usrname string) validation.RuleFunc {
 		if resp == nil {
 			return nil
 		}
-		return fmt.Errorf("Username already exists. Please enter another one")
+		return fmt.Errorf(" Username already exists. Please enter another one")
+	}
+}
+
+func checkDuplicateAccount(s *Server, name, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetAccountsBy(context.Background(), trim(name))
+		if resp == nil || resp.ID == id {
+			return nil
+		}
+		return errors.New(name + AlrEx)
 	}
 }

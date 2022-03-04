@@ -15,6 +15,15 @@ type (
 		Message string
 	}
 
+	Accounts struct {
+		ID                   string  `db:"id"`
+		AccountVisualization string  `db:"account_visualization"`
+		AccountName          string  `db:"account_name"`
+		AccountNumber        string  `db:"account_number"`
+		Amount               float64 `db:"amount"`
+		Status               int32   `db:"status"`
+		CRUDTimeDate
+	}
 	Designation struct {
 		ID          string `db:"id"`
 		Name        string `db:"name"`
@@ -145,6 +154,13 @@ type (
 		CompanyStatus  int16          `db:"company_status"`
 		Position       int32          `db:"position"`
 		CRUDTimeDate
+	}
+	PassResRequest struct {
+		ID                string    `db:"id"`
+		UserID            string    `db:"user_id"`
+		Password          string    `db:"password"`
+		Token             string    `db:"password_reset_token"`
+		PasswordResetTime time.Time `db:"pass_reset_time"`
 	}
 
 	CRUDTimeDate struct {

@@ -298,3 +298,38 @@ func checkLogin(s *Server, emailorUsername string, pass string) validation.RuleF
 		return nil
 	}
 }
+
+func formTemplate(s *Server, w http.ResponseWriter, r *http.Request, tmp string) {
+	tmpl := s.lookupTemplate(tmp)
+	if tmpl == nil {
+		logger.Error(ult)
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+	if err := tmpl.Execute(w, nil); err != nil {
+		logger.Error(ewte + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+
+}
+
+func (s *Server) accountsList(r *http.Request, w http.ResponseWriter, sts bool) []AccountsForm {
+	actList, err := s.st.GetAccounts(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get accounts : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+
+	actListForm := make([]AccountsForm, 0)
+	for _, item := range actList {
+		actData := AccountsForm{
+			ID:                   item.ID,
+			AccountVisualization: item.AccountVisualization,
+			AccountNumber:        item.AccountNumber,
+			AccountName:          item.AccountName,
+			Amount:               item.Amount,
+			Status:               item.Status,
+		}
+		actListForm = append(actListForm, actData)
+	}
+	return actListForm
+}
