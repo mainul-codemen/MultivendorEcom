@@ -20,17 +20,7 @@ import (
 var assets embed.FS
 
 func main() {
-	config := viper.NewWithOptions(
-		viper.EnvKeyReplacer(
-			strings.NewReplacer(".", "_"),
-		),
-	)
-	config.SetConfigFile("env/config")
-	config.SetConfigType("ini")
-	config.AutomaticEnv()
-	if err := config.ReadInConfig(); err != nil {
-		log.Fatalf("error loading configuration: %v", err)
-	}
+	config := ConfigRead()
 	logger.Info("starting the application")
 	env := config.GetString("runtime.environment")
 	logger, err := zap.NewProduction(zap.AddCallerSkip(1))
@@ -59,4 +49,19 @@ func main() {
 	if err := http.ListenAndServe(serverPort, r); err != nil {
 		log.Fatalf("error in listen server. %v", err)
 	}
+}
+
+func ConfigRead() *viper.Viper {
+	config := viper.NewWithOptions(
+		viper.EnvKeyReplacer(
+			strings.NewReplacer(".", "_"),
+		),
+	)
+	config.SetConfigFile("env/config")
+	config.SetConfigType("ini")
+	config.AutomaticEnv()
+	if err := config.ReadInConfig(); err != nil {
+		log.Fatalf("error loading configuration: %v", err)
+	}
+	return config
 }

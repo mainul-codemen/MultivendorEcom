@@ -112,10 +112,6 @@ func (s *Server) submitRegistration(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (s *Server) passwordRecoverForm(w http.ResponseWriter, r *http.Request) {
-	formTemplate(s, w, r, "forgot-password.html")
-}
-
 func (s *Server) screenLockForm(w http.ResponseWriter, r *http.Request) {
 	formTemplate(s, w, r, "screen-lock.html")
 }
@@ -124,15 +120,3 @@ func (s *Server) forbidden(w http.ResponseWriter, r *http.Request) {
 	formTemplate(s, w, r, "forbidden.html")
 }
 
-func formTemplate(s *Server, w http.ResponseWriter, r *http.Request, tmp string) {
-	tmpl := s.lookupTemplate(tmp)
-	if tmpl == nil {
-		logger.Error(ult)
-		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
-	}
-	if err := tmpl.Execute(w, nil); err != nil {
-		logger.Error(ewte + err.Error())
-		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
-	}
-
-}

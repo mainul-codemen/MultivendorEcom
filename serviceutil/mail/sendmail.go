@@ -1,39 +1,52 @@
 package mail
 
 import (
+	"bytes"
 	"fmt"
+	"html/template"
 	"net/smtp"
-
-	"github.com/MultivendorEcom/serviceutil/logger"
+	"os"
 )
 
-func SendingMail(mail string, otp string) error {
+type MailStruct struct {
+	From               string
+	To                 []string
+	Message            string
+	Token              string
+	OTP                string
+	ResetPasswordLinks string
+	Subject            string
+	UserID             string
+}
 
-	// Sender data.
+var tn = "mailtemp.html"
+
+func SendingMail(mail string, ms MailStruct) error {
 	from := "testtune4@gmail.com"
 	password := "greenbd1"
-
-	// Receiver email address.
 	to := []string{mail}
-
-	// smtp server configuration.
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
-
-	// Message.
-	msg := fmt.Sprintf("This is Email Verification For User. Your OTP is %s", otp)
-	message := []byte(msg)
-
-	// Authentication.
 	auth := smtp.PlainAuth("", from, password, smtpHost)
+	gwd, _ := os.Getwd()
+	dir := fmt.Sprintf("%s/serviceutil/mail/%s", gwd, tn)
+	t, _ := template.ParseFiles(dir)
+	var body bytes.Buffer
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body.Write([]byte(fmt.Sprintf("Subject:%s\n%s\n\n", ms.Subject, mimeHeaders)))
+	t.Execute(&body, MailStruct{
+		Message:            ms.Message,
+		Token:              tn,
+		OTP:                ms.OTP,
+		ResetPasswordLinks: ms.ResetPasswordLinks,
+		UserID:             ms.UserID,
+	})
 
-	// Sending email.
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, body.Bytes())
 	if err != nil {
-		msg := fmt.Sprintf("error while sending Email to %s", mail)
-		logger.Error(msg)
 		return err
+
 	}
-	logger.Info("Email Sent Successfully!")
+	fmt.Println("Email Sent!")
 	return nil
 }

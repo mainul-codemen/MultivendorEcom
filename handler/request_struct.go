@@ -240,3 +240,16 @@ type CountryForm struct {
 	UpdatedBy   string
 	DeletedAt   sql.NullTime
 }
+type AccountsForm struct {
+	ID                   string
+	AccountVisualization string
+	AccountName          string
+	AccountNumber        string
+	Amount               float64
+	Status               int32
+	CreatedAt            time.Time
+	CreatedBy            string
+	UpdatedAt            time.Time
+	UpdatedBy            string
+	DeletedAt            sql.NullTime
+}
