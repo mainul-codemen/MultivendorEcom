@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"net/http"
 	"regexp"
@@ -72,7 +71,6 @@ func (s *Server) stationFormHandler(w http.ResponseWriter, r *http.Request) {
 		CSRFField:    csrf.TemplateField(r),
 		DistrictData: disdata,
 	}
-	fmt.Println(disdata)
 	json.NewEncoder(w).Encode(data)
 
 }

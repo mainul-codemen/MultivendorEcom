@@ -118,11 +118,33 @@ const (
 	deleteDeliveryChargePath       = "/delivery-charge/delete/{id}"
 	// accounts
 	accountsListPath         = "/accounts"
+	addMoneyPath             = "/accounts/addmoney"
 	createAccountsPath       = "/accounts/create"
 	updateAccountsPath       = "/accounts/update/{id}"
 	updateAccountsStatusPath = "/accounts/update/status/{id}"
 	viewAccountsPath         = "/accounts/view/{id}"
 	deleteAccountsPath       = "/accounts/delete/{id}"
+	// transaction types
+	transactionTypesListPath         = "/transaction-types"
+	createTransactionTypesPath       = "/transaction-types/create"
+	updateTransactionTypesPath       = "/transaction-types/update/{id}"
+	updateTransactionTypesStatusPath = "/transaction-types/update/status/{id}"
+	viewTransactionTypesPath         = "/transaction-types/view/{id}"
+	deleteTransactionTypesPath       = "/transaction-types/delete/{id}"
+	// transaction source
+	transactionSourceListPath         = "/transaction-source"
+	createTransactionSourcePath       = "/transaction-source/create"
+	updateTransactionSourcePath       = "/transaction-source/update/{id}"
+	updateTransactionSourceStatusPath = "/transaction-source/update/status/{id}"
+	viewTransactionSourcePath         = "/transaction-source/view/{id}"
+	deleteTransactionSourcePath       = "/transaction-source/delete/{id}"
+	// accounts-transaction
+	accountsTransactionListPath         = "/accounts-transaction"
+	createAccountsTransactionPath       = "/accounts-transaction/create"
+	updateAccountsTransactionPath       = "/accounts-transaction/update/{id}"
+	updateAccountsTransactionStatusPath = "/accounts-transaction/update/status/{id}"
+	viewAccountsTransactionPath         = "/accounts-transaction/view/{id}"
+	deleteAccountsTransactionPath       = "/accounts-transaction/delete/{id}"
 
 	ErrorPath = "/error"
 )
@@ -274,11 +296,36 @@ func New(
 	ar.HandleFunc(deleteDeliveryChargePath, s.deleteDeliveryChargeHandler).Methods("GET")
 	// accounts
 	ar.HandleFunc(accountsListPath, s.accountsListHandler).Methods("GET")
+	ar.HandleFunc(addMoneyPath, s.addMoney).Methods("POST")
 	ar.HandleFunc(createAccountsPath, s.submitAccountsHandler).Methods("POST")
 	ar.HandleFunc(updateAccountsPath, s.updateAccountsHandler).Methods("POST")
 	ar.HandleFunc(viewAccountsPath, s.viewAccountsHandler).Methods("GET")
 	ar.HandleFunc(updateAccountsStatusPath, s.updateAccountsStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteAccountsPath, s.deleteAccountsHandler).Methods("GET")
+	// transactionTypes
+	ar.HandleFunc(transactionTypesListPath, s.transactionTypesListHandler).Methods("GET")
+	ar.HandleFunc(createTransactionTypesPath, s.submitTransactionTypesHandler).Methods("POST")
+	ar.HandleFunc(updateTransactionTypesPath, s.updateTransactionTypesHandler).Methods("POST")
+	ar.HandleFunc(viewTransactionTypesPath, s.viewTransactionTypesHandler).Methods("GET")
+	ar.HandleFunc(updateTransactionTypesStatusPath, s.updateTransactionTypesStatusHandler).Methods("GET")
+	ar.HandleFunc(deleteTransactionTypesPath, s.deleteTransactionTypesHandler).Methods("GET")
+	// transactionSource
+	ar.HandleFunc(transactionSourceListPath, s.transactionSourceListHandler).Methods("GET")
+	ar.HandleFunc(createTransactionSourcePath, s.submitTransactionSourceHandler).Methods("POST")
+	ar.HandleFunc(updateTransactionSourcePath, s.updateTransactionSourceHandler).Methods("POST")
+	ar.HandleFunc(viewTransactionSourcePath, s.viewTransactionSourceHandler).Methods("GET")
+	ar.HandleFunc(updateTransactionSourceStatusPath, s.updateTransactionSourceStatusHandler).Methods("GET")
+	ar.HandleFunc(deleteTransactionSourcePath, s.deleteTransactionSourceHandler).Methods("GET")
+	// transactionSource
+	ar.HandleFunc(accountsTransactionListPath, s.accountsTransactionListHandler).Methods("GET")
+	ar.HandleFunc(createAccountsTransactionPath, s.accountsTransactionFormHandler).Methods("GET")
+	ar.HandleFunc(createAccountsTransactionPath, s.submitAccountsTransactionHandler).Methods("POST")
+	ar.HandleFunc(updateAccountsTransactionPath, s.updateAccountTransactionFormHandler).Methods("GET")
+	ar.HandleFunc(updateAccountsTransactionPath, s.updateAccountsTransactionHandler).Methods("POST")
+	ar.HandleFunc(viewAccountsTransactionPath, s.viewAccountsTransactionHandler).Methods("GET")
+	ar.HandleFunc(updateAccountsTransactionStatusPath, s.updateAccountsTransactionStatusHandler).Methods("GET")
+	ar.HandleFunc(deleteAccountsTransactionPath, s.deleteAccountsTransactionHandler).Methods("GET")
+
 	ar.HandleFunc("/forbidden", s.forbidden).Methods("GET")
 
 	r.NotFoundHandler = s.getErrorHandler()
