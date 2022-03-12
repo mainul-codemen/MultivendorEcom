@@ -253,3 +253,52 @@ type AccountsForm struct {
 	UpdatedBy            string
 	DeletedAt            sql.NullTime
 }
+
+type AccountsTransactionForm struct {
+	ID                      string
+	FromAccountID           string
+	FromAccountName         string
+	ToAccountID             string
+	ToAccountName           string
+	UserID                  string
+	TransactionAmount       float64
+	FromAcntPreviousBalance float64
+	FromAcntCurrentBalance  float64
+	ToAcntPreviousBalance   float64
+	ToAcntCurrentBalance    float64
+	TransactionType         string
+	TransactionTypeName     string
+	TransactionSource       string
+	TransactionSourceName   string
+	Reference               string
+	Note                    string
+	Status                  int32
+	AcceptedAt              time.Time
+	AcceptedBy              string
+	CreatedAt               time.Time
+	CreatedBy               string
+	UpdatedAt               time.Time
+	UpdatedBy               string
+	DeletedAt               sql.NullTime
+}
+
+type TransactionTypesForm struct {
+	ID                   string
+	TransactionTypesName string
+	Status               int32
+	CreatedAt            time.Time
+	CreatedBy            string
+	UpdatedAt            time.Time
+	UpdatedBy            string
+	DeletedAt            sql.NullTime
+}
+type TransactionSourceForm struct {
+	ID                    string
+	TransactionSourceName string
+	Status                int32
+	CreatedAt             time.Time
+	CreatedBy             string
+	UpdatedAt             time.Time
+	UpdatedBy             string
+	DeletedAt             sql.NullTime
+}

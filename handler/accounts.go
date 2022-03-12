@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"regexp"
@@ -35,11 +36,6 @@ func (s AccountsForm) Validate(srv *Server, id string) error {
 		),
 		validation.Field(&s.Amount,
 			validation.Required.Error("The Amount is required"),
-		),
-		validation.Field(&s.Status,
-			validation.Required.Error("The status is required"),
-			validation.Min(1).Error("Status is Invalid"),
-			validation.Max(2).Error("Status is Invalid"),
 		),
 	)
 }
@@ -77,7 +73,7 @@ func (s *Server) submitAccountsHandler(w http.ResponseWriter, r *http.Request) {
 		AccountNumber:        trim(form.AccountNumber),
 		AccountVisualization: trim(form.AccountVisualization),
 		Amount:               form.Amount,
-		Status:               form.Status,
+		Status:               1,
 		CRUDTimeDate: storage.CRUDTimeDate{
 			CreatedBy: uid,
 			UpdatedBy: uid,
@@ -108,6 +104,51 @@ func (s *Server) accountsListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Server) addMoney(w http.ResponseWriter, r *http.Request) {
+	logger.Info("add money handler")
+	uid, _ := s.GetSetSessionValue(r, w)
+	var form AccountsForm
+
+	if err := s.decoder.Decode(&form, r.PostForm); err != nil {
+		logger.Error(errMsg + err.Error())
+		http.Error(w, errMsg, http.StatusBadRequest)
+		return
+	}
+	fmt.Println(r)
+	fmt.Printf("############### %+v", form)
+	validationAddMoney(form, r, w)
+	_, err := s.st.AddMoney(r.Context(), storage.Accounts{
+		AccountNumber: form.AccountNumber,
+		Amount:        form.Amount,
+		Status:        1,
+		CRUDTimeDate:  storage.CRUDTimeDate{UpdatedBy: uid},
+	})
+	if err != nil {
+		logger.Error("error while update accounts data ." + err.Error())
+	}
+
+	json.NewEncoder(w).Encode(msg)
+
+}
+
+func validationAddMoney(form AccountsForm, r *http.Request, w http.ResponseWriter) {
+	vErrs := map[string]string{}
+	if form.AccountNumber == "" {
+		vErrs["AccountNumber"] = "Account Number is Required"
+	}
+	if form.Amount == 0 {
+		vErrs["Amount"] = "Amount is required"
+	}
+	if len(vErrs) > 0 {
+		data := AccountsTempData{
+			CSRFField:  csrf.TemplateField(r),
+			FormErrors: vErrs,
+		}
+		json.NewEncoder(w).Encode(data)
+		return
+	}
+
+}
 func (s *Server) updateAccountsHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update accounts")
 	uid, _ := s.GetSetSessionValue(r, w)
@@ -147,7 +188,6 @@ func (s *Server) updateAccountsHandler(w http.ResponseWriter, r *http.Request) {
 		AccountNumber:        trim(form.AccountNumber),
 		AccountVisualization: trim(form.AccountVisualization),
 		Amount:               form.Amount,
-		Status:               form.Status,
 		CRUDTimeDate: storage.CRUDTimeDate{
 			UpdatedBy: uid,
 		},

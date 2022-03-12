@@ -359,3 +359,22 @@ func checkDuplicateAccount(s *Server, name, id string) validation.RuleFunc {
 		return errors.New(name + AlrEx)
 	}
 }
+func checkDuplicateTransactionTypes(s *Server, data, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetTransactionTypesBy(context.Background(), data)
+		if resp == nil {
+			return nil
+		}
+		return fmt.Errorf(" Transaction types is already exists. Please enter another one")
+	}
+}
+
+func checkDuplicateTransactionSource(s *Server, data, id string) validation.RuleFunc {
+	return func(value interface{}) error {
+		resp, _ := s.st.GetTransactionSourceBy(context.Background(), data)
+		if resp == nil {
+			return nil
+		}
+		return fmt.Errorf(" Transaction source is already exists. Please enter another one")
+	}
+}
