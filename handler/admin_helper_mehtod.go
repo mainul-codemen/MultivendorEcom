@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/MultivendorEcom/serviceutil/logger"
+	"github.com/MultivendorEcom/storage"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -332,4 +333,116 @@ func (s *Server) accountsList(r *http.Request, w http.ResponseWriter, sts bool) 
 		actListForm = append(actListForm, actData)
 	}
 	return actListForm
+}
+
+func (*Server) storageToTransForm(transactionTypesList []storage.TransactionTypes) []TransactionTypesForm {
+	transactionTypesListForm := make([]TransactionTypesForm, 0)
+	for _, item := range transactionTypesList {
+		transactionTypesData := TransactionTypesForm{
+			ID:                   item.ID,
+			TransactionTypesName: item.TransactionTypesName,
+			Status:               item.Status,
+			CreatedAt:            item.CreatedAt,
+			CreatedBy:            item.CreatedBy,
+			UpdatedAt:            item.UpdatedAt,
+			UpdatedBy:            item.UpdatedBy,
+		}
+		transactionTypesListForm = append(transactionTypesListForm, transactionTypesData)
+	}
+	return transactionTypesListForm
+}
+
+func (*Server) storageToTranSrcForm(transactionSourceList []storage.TransactionSource) []TransactionSourceForm {
+	transactionSourceListForm := make([]TransactionSourceForm, 0)
+	for _, item := range transactionSourceList {
+		transactionSourceData := TransactionSourceForm{
+			ID:                    item.ID,
+			TransactionSourceName: item.TransactionSourceName,
+			Status:                item.Status,
+			CreatedAt:             item.CreatedAt,
+			CreatedBy:             item.CreatedBy,
+			UpdatedAt:             item.UpdatedAt,
+			UpdatedBy:             item.UpdatedBy,
+		}
+		transactionSourceListForm = append(transactionSourceListForm, transactionSourceData)
+	}
+	return transactionSourceListForm
+}
+func (s *Server) accountsTransactionList(r *http.Request, w http.ResponseWriter, sts bool) []AccountsTransactionForm {
+	actList, err := s.st.GetAccountsTransaction(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get accounts : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+	actListForm := make([]AccountsTransactionForm, 0)
+	for _, item := range actList {
+		actData := AccountsTransactionForm{
+			ID:                      item.ID,
+			FromAccountID:           item.FromAccountID,
+			FromAccountName:         item.FromAccountName.String,
+			ToAccountID:             item.ToAccountID,
+			ToAccountName:           item.ToAccountName.String,
+			UserID:                  item.UserID,
+			TransactionAmount:       item.TransactionAmount,
+			TransactionType:         item.TransactionType,
+			TransactionTypeName:     item.TransactionTypeName.String,
+			TransactionSource:       item.TransactionSource,
+			TransactionSourceName:   item.TransactionSourceName.String,
+			Reference:               item.Reference,
+			Note:                    item.Note,
+			Status:                  item.Status,
+			FromAcntPreviousBalance: item.FromAcntPreviousBalance,
+			FromAcntCurrentBalance:  item.FromAcntCurrentBalance,
+			ToAcntPreviousBalance:   item.ToAcntPreviousBalance,
+			ToAcntCurrentBalance:    item.ToAcntCurrentBalance,
+			CreatedAt:               item.CreatedAt,
+			CreatedBy:               item.CreatedBy,
+			UpdatedAt:               item.UpdatedAt,
+			UpdatedBy:               item.UpdatedBy,
+		}
+		actListForm = append(actListForm, actData)
+	}
+	return actListForm
+}
+
+func (s *Server) transactionTypesList(r *http.Request, w http.ResponseWriter, sts bool) []TransactionTypesForm {
+	actList, err := s.st.GetTransactionTypes(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get transaction types : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+
+	ttListForm := make([]TransactionTypesForm, 0)
+	for _, item := range actList {
+		ttData := TransactionTypesForm{
+			ID:                   item.ID,
+			TransactionTypesName: item.TransactionTypesName,
+			Status:               item.Status,
+			CreatedAt:            item.CreatedAt,
+			CreatedBy:            item.CreatedBy,
+		}
+		ttListForm = append(ttListForm, ttData)
+	}
+	return ttListForm
+}
+
+func (s *Server) transactionSourceList(r *http.Request, w http.ResponseWriter, sts bool) []TransactionSourceForm {
+	actList, err := s.st.GetTransactionSource(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get transaction source : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+
+	ttListForm := make([]TransactionSourceForm, 0)
+	for _, item := range actList {
+		ttData := TransactionSourceForm{
+			ID:                    item.ID,
+			TransactionSourceName: item.TransactionSourceName,
+			Status:                item.Status,
+			CreatedAt:             item.CreatedAt,
+			CreatedBy:             item.CreatedBy,
+		}
+		ttListForm = append(ttListForm, ttData)
+	}
+	return ttListForm
 }

@@ -358,3 +358,4 @@ func (*Server) storageToDCForm(deliveryCompanyList []storage.DeliveryCompany) []
 	}
 	return deliveryCompanyListForm
 }
+

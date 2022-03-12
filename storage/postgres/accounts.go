@@ -162,3 +162,58 @@ func (s *Storage) UpdateAccountsStatus(ctx context.Context, act storage.Accounts
 
 	return &act, nil
 }
+
+const addMony = `
+	UPDATE 
+		accounts 
+	SET
+		amount = :amount,
+		updated_by = :updated_by
+	WHERE 
+		id = :id
+	RETURNING *
+
+`
+
+func (s *Storage) AddMoney(ctx context.Context, act storage.Accounts) (*storage.Accounts, error) {
+	logger.Info("add money accounts")
+	stmt, err := s.db.PrepareNamedContext(ctx, addMony)
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+	if err := stmt.Get(&act, act); err != nil {
+		return nil, fmt.Errorf("executing accounts add money: %w", err)
+	}
+
+	return &act, nil
+}
+
+const updateBlnc = `
+	UPDATE 
+		accounts 
+	SET
+		amount = :amount,
+		updated_at = now(),
+		updated_by = :updated_by
+	WHERE 
+		id = :id
+	RETURNING *
+
+`
+
+func (s *Storage) UpdateBalance(ctx context.Context, actnt storage.Accounts) (*storage.Accounts, error) {
+	logger.Info("update accounts balance")
+	stmt, err := s.db.PrepareNamedContext(ctx, updateBlnc)
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+	if err := stmt.Get(&actnt, actnt); err != nil {
+		return nil, fmt.Errorf("executing accounts upate balance: %w", err)
+	}
+
+	return &actnt, nil
+}

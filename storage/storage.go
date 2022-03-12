@@ -15,6 +15,29 @@ type (
 		Message string
 	}
 
+	AccountsTransaction struct {
+		ID                      string         `db:"id"`
+		FromAccountID           string         `db:"from_account_id"`
+		FromAccountName         sql.NullString `db:"from_account_name"`
+		ToAccountID             string         `db:"to_account_id"`
+		ToAccountName           sql.NullString `db:"to_account_name"`
+		UserID                  string         `db:"user_id"`
+		TransactionAmount       float64        `db:"transaction_amount,omitempty"`
+		FromAcntPreviousBalance float64        `db:"from_acnt_previous_balance,omitempty"`
+		FromAcntCurrentBalance  float64        `db:"from_acnt_current_balance,omitempty"`
+		ToAcntPreviousBalance   float64        `db:"to_acnt_previous_balance,omitempty"`
+		ToAcntCurrentBalance    float64        `db:"to_acnt_current_balance,omitempty"`
+		TransactionType         string         `db:"transaction_type_id,omitempty"`
+		TransactionTypeName     sql.NullString `db:"transaction_type_name,omitempty"`
+		TransactionSource       string         `db:"transaction_source_id,omitempty"`
+		TransactionSourceName   sql.NullString `db:"transaction_source_name,omitempty"`
+		Reference               string         `db:"reference"`
+		Note                    string         `db:"note"`
+		Status                  int32          `db:"status"`
+		AcceptedAt              time.Time      `db:"accepted_at,omitempty"`
+		AcceptedBy              string         `db:"accepted_by"`
+		CRUDTimeDate
+	}
 	Accounts struct {
 		ID                   string  `db:"id"`
 		AccountVisualization string  `db:"account_visualization"`
@@ -161,6 +184,18 @@ type (
 		Password          string    `db:"password"`
 		Token             string    `db:"password_reset_token"`
 		PasswordResetTime time.Time `db:"pass_reset_time"`
+	}
+	TransactionTypes struct {
+		ID                   string `db:"id"`
+		TransactionTypesName string `db:"transaction_type_name"`
+		Status               int32  `db:"status"`
+		CRUDTimeDate
+	}
+	TransactionSource struct {
+		ID                    string `db:"id"`
+		TransactionSourceName string `db:"transaction_source_name"`
+		Status                int32  `db:"status"`
+		CRUDTimeDate
 	}
 
 	CRUDTimeDate struct {
