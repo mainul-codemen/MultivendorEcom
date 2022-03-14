@@ -47,6 +47,28 @@ type (
 		Status               int32   `db:"status"`
 		CRUDTimeDate
 	}
+
+	IncomeTax struct {
+		ID               string    `db:"id"`
+		AccountID        string    `db:"account_id"`
+		TaxReceiptNumber string    `db:"tax_receipt_number"`
+		Status           int32     `db:"status"`
+		IncomeTaxDate    time.Time `db:"income_tax_date"`
+		TaxAmount        float64   `db:"tax_amount"`
+		CRUDTimeDate
+	}
+
+	Income struct {
+		ID               string  `db:"id"`
+		Title            string  `db:"title"`
+		TaxAmount        float64 `db:"tax_amount"`
+		AccountID        string  `db:"account_id"`
+		TaxReceiptNumber float64 `db:"tax_receipt_number"`
+		IncomeTaxDate    float64 `db:"income_tax_date"`
+		Status           int32   `db:"status"`
+		CRUDTimeDate
+	}
+
 	Designation struct {
 		ID          string `db:"id"`
 		Name        string `db:"name"`

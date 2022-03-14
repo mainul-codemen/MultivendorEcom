@@ -3,15 +3,15 @@
 SELECT 'up SQL query';
 -- +goose StatementEnd
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE TABLE IF NOT EXISTS income_tax
+CREATE TABLE IF NOT EXISTS income
 (
     id                     Varchar(100) PRIMARY KEY DEFAULT uuid_generate_v4(),
     title                  Varchar(100)     NOT NULL DEFAULT '',
-    tax_amount             double precision NOT NULL DEFAULT 0,
+    income_amount          double precision NOT NULL DEFAULT 0,
     account_id             Varchar(100)     NOT NULL DEFAULT '',
-    tax_receipt_number     Varchar(100)     NOT NULL DEFAULT '',
+    note                   Varchar(100)     NOT NULL DEFAULT '',
     status                 smallint         DEFAULT 0,
-    income_tax_date        DATE             NOT NULL,
+    income_date            DATE             NOT NULL,
     created_at             TIMESTAMP        DEFAULT current_timestamp,
     created_by             VARCHAR(100)     NOT NULL DEFAULT '',
     updated_at             TIMESTAMP        DEFAULT current_timestamp,
