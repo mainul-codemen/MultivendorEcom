@@ -51,11 +51,7 @@
                                             <tr class="table-secondary">
                                                 <th scope="col">From Account</th>
                                                 <th scope="col">Trans Amount</th>
-                                                <th scope="col">Previous Balance</th>
-                                                <th scope="col">Current Balance</th>
                                                 <th scope="col">To Account</th>
-                                                <th scope="col">Previous Balance</th>
-                                                <th scope="col">Current Balance</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
                                             </tr>
@@ -65,11 +61,7 @@
                                             <tr>
                                                 <td>{{.FromAccountName}}</td>
                                                 <td>{{.TransactionAmount}}</td>
-                                                <td>{{.FromAcntPreviousBalance}}</td>
-                                                <td>{{.FromAcntCurrentBalance}}</td>
                                                 <td>{{.ToAccountName}}</td>
-                                                <td>{{.ToAcntPreviousBalance}}</td>
-                                                <td>{{.ToAcntCurrentBalance}}</td>
                                                 <td style="text-align: center;">
                                                     {{if eq .Status 1}}
                                                     <a type="button" class="btn btn-primary btn-sm" disabled>Pending</a>
@@ -93,12 +85,6 @@
                                                         onclick="viewAccountsTransaction(this.id)">
                                                         view
                                                     </a>
-                                                    <a href="/admin/accounts-transaction/delete/{{.ID}}" type="button"
-                                                        class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#modal-delete" id="{{.ID}}"
-                                                        onclick="deleteAccountsTransactionData(this.id)">
-                                                        Delete
-                                                    </a>
                                                 </td>
                                             </tr>
                                             {{end}}
@@ -107,11 +93,7 @@
                                             <tr>
                                                 <th scope="col">From Account</th>
                                                 <th scope="col">Trans Amount</th>
-                                                <th scope="col">Previous Balance</th>
-                                                <th scope="col">Current Balance</th>
                                                 <th scope="col">To Account</th>
-                                                <th scope="col">Previous Balance</th>
-                                                <th scope="col">Current Balance</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
                                             </tr>

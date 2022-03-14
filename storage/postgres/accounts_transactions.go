@@ -19,10 +19,6 @@ INSERT INTO accounts_transactions(
 	reference,
 	note,
 	status,
-	from_acnt_previous_balance,
-	from_acnt_current_balance,
-	to_acnt_previous_balance,
-	to_acnt_current_balance,
 	created_by,
 	updated_by
 ) VALUES (
@@ -35,10 +31,6 @@ INSERT INTO accounts_transactions(
 	:reference,
 	:note,
 	:status,
-	:from_acnt_previous_balance,
-	:from_acnt_current_balance,
-	:to_acnt_previous_balance,
-	:to_acnt_current_balance,
 	:created_by,
 	:updated_by
 ) RETURNING
@@ -78,10 +70,6 @@ func (s *Storage) GetAccountsTransaction(ctx context.Context, sts bool) ([]stora
 	transaction_source_id,
 	reference,
 	note,
-	from_acnt_previous_balance,
-	from_acnt_current_balance,
-	to_acnt_previous_balance,
-	to_acnt_current_balance,
 	at.status,
 	at.created_at,
 	at.created_by,
