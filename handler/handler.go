@@ -145,6 +145,13 @@ const (
 	updateAccountsTransactionStatusPath = "/accounts-transaction/update/status/{id}"
 	viewAccountsTransactionPath         = "/accounts-transaction/view/{id}"
 	deleteAccountsTransactionPath       = "/accounts-transaction/delete/{id}"
+	// income
+	incomeListPath         = "/income"
+	createIncomePath       = "/income/create"
+	updateIncomePath       = "/income/update/{id}"
+	updateIncomeStatusPath = "/income/update/status/{id}"
+	viewIncomePath         = "/income/view/{id}"
+	deleteIncomePath       = "/income/delete/{id}"
 
 	ErrorPath = "/error"
 )
@@ -325,7 +332,15 @@ func New(
 	ar.HandleFunc(viewAccountsTransactionPath, s.viewAccountsTransactionHandler).Methods("GET")
 	ar.HandleFunc(updateAccountsTransactionStatusPath, s.updateAccountsTransactionStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteAccountsTransactionPath, s.deleteAccountsTransactionHandler).Methods("GET")
-
+	// income
+	ar.HandleFunc(createIncomePath, s.incomeFormHandler).Methods("GET")
+	ar.HandleFunc(incomeListPath, s.incomeListHandler).Methods("GET")
+	ar.HandleFunc(createIncomePath, s.submitIncomeHandler).Methods("POST")
+	ar.HandleFunc(updateIncomePath, s.updateIncomeHandler).Methods("POST")
+	ar.HandleFunc(viewIncomePath, s.viewIncomeHandler).Methods("GET")
+	ar.HandleFunc(updateIncomeStatusPath, s.updateIncomeStatusHandler).Methods("GET")
+	ar.HandleFunc(deleteIncomePath, s.deleteIncomeHandler).Methods("GET")
+	// transactionSource
 	ar.HandleFunc("/forbidden", s.forbidden).Methods("GET")
 
 	r.NotFoundHandler = s.getErrorHandler()

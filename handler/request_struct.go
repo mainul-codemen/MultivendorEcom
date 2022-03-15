@@ -302,3 +302,36 @@ type TransactionSourceForm struct {
 	UpdatedBy             string
 	DeletedAt             sql.NullTime
 }
+
+type IncomeTaxForm struct {
+	ID               string
+	AccountID        string
+	AccountNumber    sql.NullString
+	AccountName      sql.NullString
+	TaxReceiptNumber string
+	Status           int32
+	IncomeTaxDate    time.Time
+	TaxAmount        float64
+	CreatedAt        time.Time
+	CreatedBy        string
+	UpdatedAt        time.Time
+	UpdatedBy        string
+	DeletedAt        sql.NullTime
+}
+
+type IncomeForm struct {
+	ID            string
+	Title         string
+	AccountID     string
+	Note          string
+	AccountNumber sql.NullString
+	AccountName   sql.NullString
+	IncomeAmount  float64
+	IncomeDate    string
+	Status        int32
+	CreatedAt     time.Time
+	CreatedBy     string
+	UpdatedAt     time.Time
+	UpdatedBy     string
+	DeletedAt     sql.NullTime
+}
