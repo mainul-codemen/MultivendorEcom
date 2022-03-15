@@ -152,6 +152,13 @@ const (
 	updateIncomeStatusPath = "/income/update/status/{id}"
 	viewIncomePath         = "/income/view/{id}"
 	deleteIncomePath       = "/income/delete/{id}"
+	// income-tax
+	incomeTaxListPath         = "/income-tax"
+	createIncomeTaxPath       = "/income-tax/create"
+	updateIncomeTaxPath       = "/income-tax/update/{id}"
+	updateIncomeTaxStatusPath = "/income-tax/update/status/{id}"
+	viewIncomeTaxPath         = "/income-tax/view/{id}"
+	deleteIncomeTaxPath       = "/income-tax/delete/{id}"
 
 	ErrorPath = "/error"
 )
@@ -340,7 +347,14 @@ func New(
 	ar.HandleFunc(viewIncomePath, s.viewIncomeHandler).Methods("GET")
 	ar.HandleFunc(updateIncomeStatusPath, s.updateIncomeStatusHandler).Methods("GET")
 	ar.HandleFunc(deleteIncomePath, s.deleteIncomeHandler).Methods("GET")
-	// transactionSource
+	// incomeTax
+	ar.HandleFunc(createIncomeTaxPath, s.incomeTaxFormHandler).Methods("GET")
+	ar.HandleFunc(incomeTaxListPath, s.incomeTaxListHandler).Methods("GET")
+	ar.HandleFunc(createIncomeTaxPath, s.submitIncomeTaxHandler).Methods("POST")
+	ar.HandleFunc(updateIncomeTaxPath, s.updateIncomeTaxHandler).Methods("POST")
+	ar.HandleFunc(viewIncomeTaxPath, s.viewIncomeTaxHandler).Methods("GET")
+	ar.HandleFunc(updateIncomeTaxStatusPath, s.updateIncomeTaxStatusHandler).Methods("GET")
+	ar.HandleFunc(deleteIncomeTaxPath, s.deleteIncomeTaxHandler).Methods("GET")
 	ar.HandleFunc("/forbidden", s.forbidden).Methods("GET")
 
 	r.NotFoundHandler = s.getErrorHandler()
