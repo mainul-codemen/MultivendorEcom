@@ -92,6 +92,12 @@ func (s *Server) submitDepartment(w http.ResponseWriter, r *http.Request) {
 		logger.Error(err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
 	}
+	var msg = storage.Message{
+		Status:  true,
+		Message: "Successfully Save Data",
+	}
+
+	
 	json.NewEncoder(w).Encode(msg)
 }
 

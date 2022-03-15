@@ -49,7 +49,19 @@ func (s *Storage) CreateIncome(con context.Context, act storage.Income) (string,
 
 func (s *Storage) GetIncome(ctx context.Context, sts bool) ([]storage.Income, error) {
 	logger.Info("get all income")
-	actq := `SELECT * from income WHERE deleted_at IS NULL`
+	actq := `SELECT
+		income.id, 
+		title, 
+		income_amount, 
+		account_id,
+		accounts.account_name as account_name,
+		accounts.account_number as account_number,
+		note,
+		income.status,
+		income_date
+	FROM income 
+	LEFT JOIN accounts ON accounts.id = account_id
+	WHERE income.deleted_at IS NULL`
 	if sts {
 		actq = actq + " AND status=1"
 	}

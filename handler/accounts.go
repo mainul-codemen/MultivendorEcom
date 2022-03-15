@@ -115,7 +115,6 @@ func (s *Server) addMoney(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println(r)
-	fmt.Printf("############### %+v", form)
 	validationAddMoney(form, r, w)
 	_, err := s.st.AddMoney(r.Context(), storage.Accounts{
 		AccountNumber: form.AccountNumber,
@@ -147,8 +146,8 @@ func validationAddMoney(form AccountsForm, r *http.Request, w http.ResponseWrite
 		json.NewEncoder(w).Encode(data)
 		return
 	}
-
 }
+
 func (s *Server) updateAccountsHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("update accounts")
 	uid, _ := s.GetSetSessionValue(r, w)

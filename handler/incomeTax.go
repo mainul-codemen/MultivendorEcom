@@ -85,6 +85,10 @@ func (s *Server) submitIncomeTaxHandler(w http.ResponseWriter, r *http.Request) 
 		TaxAmount:        0,
 		CRUDTimeDate:     storage.CRUDTimeDate{CreatedBy: uid, UpdatedBy: uid},
 	})
+	if err != nil {
+		logger.Error(err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
+	}
 	ttdb, tdb := trnsTypesAndSource(s, r, w, "Cash Out", "Income Tax")
 	_, err = s.st.CreateAccountsTransaction(r.Context(), storage.AccountsTransaction{
 		FromAccountID:     form.AccountID,
@@ -111,14 +115,16 @@ func (s *Server) incomeTaxListHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Error(ult)
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
-	actdata := s.incomeTaxList(r, w, false)
+
 	data := IncomeTaxTempData{
-		Data: actdata,
+		Data:     s.incomeTaxList(r, w, false),
+		Accounts: s.accountsList(r, w, false),
 	}
 	if err := tmpl.Execute(w, data); err != nil {
 		logger.Error(ewte + err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
+
 }
 
 func (s *Server) updateIncomeTaxHandler(w http.ResponseWriter, r *http.Request) {

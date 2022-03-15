@@ -149,6 +149,9 @@ func checkDuplicateDeliveryCompanyPhone(s *Server, phone string, id string) vali
 }
 
 func checkDuplicateBranchPhone(s *Server, phone string, id string) validation.RuleFunc {
+
+
+	
 	return func(value interface{}) error {
 		resp, _ := s.st.GetBranchBy(context.Background(), phone)
 		if resp == nil || resp.ID == id {

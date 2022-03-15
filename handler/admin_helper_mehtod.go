@@ -454,14 +454,14 @@ func (s *Server) incomeList(r *http.Request, w http.ResponseWriter, sts bool) []
 	for _, item := range actList {
 		actData := IncomeForm{
 			ID:            item.ID,
-			AccountID:     item.AccountID,
-			AccountNumber: item.AccountNumber,
-			AccountName:   item.AccountName,
-			IncomeAmount:  item.IncomeAmount,
-			Status:        item.Status,
-			Note:          item.Note,
 			Title:         item.Title,
+			AccountID:     item.AccountID,
+			Note:          item.Note,
+			AccountNumber: item.AccountNumber.String,
+			AccountName:   item.AccountName.String,
+			IncomeAmount:  item.IncomeAmount,
 			IncomeDate:    item.IncomeDate.Format("02-01-2006"),
+			Status:        item.Status,
 		}
 		actListForm = append(actListForm, actData)
 	}

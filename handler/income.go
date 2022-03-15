@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"regexp"
@@ -70,6 +71,7 @@ func (s *Server) submitIncomeHandler(w http.ResponseWriter, r *http.Request) {
 			if len(e) > 0 {
 				for key, value := range e {
 					vErrs[key] = value.Error()
+					fmt.Println(value)
 				}
 			}
 		}
@@ -81,21 +83,8 @@ func (s *Server) submitIncomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	uid, _ := s.GetSetSessionValue(r, w)
-	_, err := s.st.CreateIncome(r.Context(), storage.Income{
-		Title:        trim(form.Title),
-		AccountID:    form.AccountID,
-		IncomeAmount: form.IncomeAmount,
-		Note:         trim(form.Note),
-		IncomeDate:   s.stringToDate(form.IncomeDate),
-		Status:       1,
-		CRUDTimeDate: storage.CRUDTimeDate{CreatedBy: uid, UpdatedBy: uid},
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
-	}
 	ttdb, tdb := trnsTypesAndSource(s, r, w, "Cash In", "Income")
-	_, err = s.st.CreateAccountsTransaction(r.Context(), storage.AccountsTransaction{
+	_, err := s.st.CreateAccountsTransaction(r.Context(), storage.AccountsTransaction{
 		ToAccountID:       form.AccountID,
 		TransactionAmount: form.IncomeAmount,
 		TransactionType:   ttdb.ID,
@@ -109,6 +98,20 @@ func (s *Server) submitIncomeHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Error(err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
 	}
+	_, err = s.st.CreateIncome(r.Context(), storage.Income{
+		Title:        trim(form.Title),
+		AccountID:    form.AccountID,
+		IncomeAmount: form.IncomeAmount,
+		Note:         trim(form.Note),
+		IncomeDate:   s.stringToDate(form.IncomeDate),
+		Status:       1,
+		CRUDTimeDate: storage.CRUDTimeDate{CreatedBy: uid, UpdatedBy: uid},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
+	}
+
 	json.NewEncoder(w).Encode(msg)
 
 }
@@ -120,14 +123,17 @@ func (s *Server) incomeListHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Error(ult)
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
-	actdata := s.incomeList(r, w, false)
+	icdata := s.incomeList(r, w, false)
+	actdata := s.accountsList(r, w, false)
 	data := IncomeTempData{
-		Data: actdata,
+		Data:     icdata,
+		Accounts: actdata,
 	}
 	if err := tmpl.Execute(w, data); err != nil {
 		logger.Error(ewte + err.Error())
 		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
 	}
+
 }
 
 func (s *Server) updateIncomeHandler(w http.ResponseWriter, r *http.Request) {
@@ -196,8 +202,8 @@ func (s *Server) viewIncomeHandler(w http.ResponseWriter, r *http.Request) {
 			Title:         res.Title,
 			AccountID:     res.AccountID,
 			Note:          res.Note,
-			AccountNumber: res.AccountNumber,
-			AccountName:   res.AccountName,
+			AccountNumber: res.AccountNumber.String,
+			AccountName:   res.AccountName.String,
 			IncomeAmount:  res.IncomeAmount,
 			IncomeDate:    id,
 			Status:        res.Status,
@@ -207,6 +213,7 @@ func (s *Server) viewIncomeHandler(w http.ResponseWriter, r *http.Request) {
 			UpdatedBy:     res.UpdatedBy,
 		},
 	}
+	fmt.Printf("%+v", data.Form)
 	json.NewEncoder(w).Encode(data)
 }
 

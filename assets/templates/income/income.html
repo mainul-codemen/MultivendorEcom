@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Admin | MVEC</title>
+{{ template "head"}}
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        {{ template "admin_navbar"}}
+        {{ template "side_nav"}}
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Income</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/admin/index">Home</a></li>
+                                <li class="breadcrumb-item active"><a href="/admin/income">Income</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#modal-add" onclick="viewIncomeForm()">Add
+                                        Income
+                                    </button>
+
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body ">
+                                    <table id="example1" class="table table-bordered table-striped table-responsive-lg">
+                                        <thead>
+                                            <tr class="table-secondary">
+                                                <th scope="col">Title</th>
+                                                <th scope="col">Account Number</th>
+                                                <th scope="col">Amount</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{range .Data}}
+                                            <tr>
+                                                <td>{{.Title}}</td>
+                                                <td>{{.AccountNumber}}-{{.AccountName}}</td>
+                                                <td>{{.IncomeAmount}}</td>
+                                                <td>{{.IncomeDate}}</td>
+                                                <td style="text-align: center;">
+                                                    {{if eq .Status 1}}
+                                                    <a type="button" class="btn btn-primary btn-sm" disabled>Pending</a>
+                                                    {{else if eq .Status 2}}
+                                                    <a type="button" class="btn btn-success btn-sm"
+                                                        disabled>Accepted</a>
+                                                    {{else }}
+                                                    <a type="button" class="btn btn-danger btn-sm" disabled>Rejected</a>
+                                                    {{end}}
+                                                </td>
+                                                <td>
+                                                    <a href="/admin/accounts/{{.ID}}" type="button"
+                                                        class="btn btn-success" data-toggle="modal"
+                                                        data-target="#modal-update" id="{{.ID}}"
+                                                        onclick="viewIncomeUpdateData(this.id)">
+                                                        Update
+                                                    </a>
+                                                    <a type="button" class="btn  btn-warning" data-toggle="modal"
+                                                        data-target="#modal-view" id="{{.ID}}" 
+                                                        onclick="viewIncome(this.id)">
+                                                        view
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {{end}}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Account Number</th>
+                                                <th scope="col">Amount</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+                <!--------------------------------------------------- Modal Add --------------------------------------------------->
+                <div class="modal fade" id="modal-add">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#0069D9;">
+                                <h4 class="modal-title" style="color: white;">Add Income</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post" id="saveForm" class="tagForm">
+                                    {{.CSRFField}}
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Title</label>
+                                            <input type="text" name="Title" class="form-control" id="title"
+                                                placeholder="Enter Income Title" />
+                                            <p style="color: red;" id="Title"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Account Number</label>
+                                            <select class="custom-select" name="AccountID" id="accountnumber">
+                                                <option value="">--Select Account--</option>
+                                                {{range .Accounts}}
+                                                <option value="{{.ID}}">{{.AccountNumber}}-{{.AccountName}}</option>
+                                                {{end}}
+                                            </select>
+                                            <p style="color: red;" id="AccountID"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Amount</label>
+                                            <input type="text" name="IncomeAmount" class="form-control"
+                                                id="incomeAmount" placeholder="Enter Income Amount" />
+                                            <p style="color: red;" id="IncomeAmount"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Note</label>
+                                            <input type="text" name="Note" class="form-control" id="note"
+                                                placeholder="Enter Note" />
+                                            <p style="color: red;" id="Note"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>IncomeDate</label>
+                                            <input type="date" name="IncomeDate" class="form-control" id="note"
+                                                placeholder="Enter IncomeDate" />
+                                            <p style="color: red;" id="IncomeDate"></p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!--------------------------------------------------- Modal Update --------------------------------------------------->
+                <div class="modal fade" id="modal-update">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #20ac3e;">
+                                <h4 class="modal-title" style="color: white;">Update Income</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post" id="updateForm" class="tagUpForm">
+                                    {{.CSRFField}}
+                                    <input type="hidden" name="ID" id="UdID">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Title</label>
+                                            <input type="text" name="Title" class="form-control" id="title"
+                                                placeholder="Enter Income Title" />
+                                            <p style="color: red;" id="TitleErr"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Account Number</label>
+                                            <select class="custom-select" name="AccountID" id="accountnumber">
+                                                <option value="">--Select Account--</option>
+                                                {{range .Accounts}}
+                                                <option value="{{.ID}}">{{.AccountNumber}}-{{.AccountName}}</option>
+                                                {{end}}
+                                            </select>
+                                            <p style="color: red;" id="AccountIDErr"></p>
+                                        </div>
+                                        <div class="form-group"> <label>Amount</label>
+                                            <input type="text" name="IncomeAmount" class="form-control"
+                                                id="incomeAmount" placeholder="Enter Income Amount" />
+                                            <p style="color: red;" id="IncomeAmountErr"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Note</label>
+                                            <input type="text" name="Note" class="form-control" id="note"
+                                                placeholder="Enter Note" />
+                                            <p style="color: red;" id="NoteErr"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>IncomeDate</label>
+                                            <input type="date" name="IncomeDate" class="form-control" id="note"
+                                                placeholder="Enter IncomeDate" />
+                                            <p style="color: red;" id="IncomeDateErr"></p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> <!-- /.modal-content -->
+                    </div> <!-- /.modal-dialog -->
+                </div>
+                <!--------------------------------------------------- Modal View --------------------------------------------------->
+                <div class="modal fade" id="modal-view">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#ffa600;">
+                                <h3 class="modal-title" style="color: white;">Income Details</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                            <div class="modal-body">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <tr>
+                                        <td>Name</td>
+                                        <td id="VTitle"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Account Number</td>
+                                        <td id="VAccountNumber"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Income Date</td>
+                                        <td id="VIncomeDate"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Amount</td>
+                                        <td id="VAmount"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Status</td>
+                                        <td id="VStatus"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div>
+                <!--------------------------------------------------- Modal Delete --------------------------------------------------->
+                <div class="modal fade" id="modal-delete">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #e42525;">
+                                <h4 class="modal-title" style="color: white;">Are you sure you want to delete
+                                    Income
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="deleteIncome" action="get">
+                                {{.CSRFField}}
+                                <input type="hidden" name="ID" id="dID" />
+                                <div class="modal-body">
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <tr>
+                                            <td>Name</td>
+                                            <td id="dAccountName"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Account Number</td>
+                                            <td id="dAccountNumber"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Account Visualization</td>
+                                            <td id="dAccountVisualization"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Amount</td>
+                                            <td id="dAmount"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Status</td>
+                                            <td id="dStatus"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </div>
+                            </form>
+                        </div> <!-- /.modal-content -->
+                    </div> <!-- /.modal-dialog -->
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        {{ template "footer"}}
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+
+    <!-- ./wrapper -->
+    <!-- jQuery -->
+    <script src="/static/js/admin-lte/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/static/js/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="/static/js/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/jszip/jszip.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="/static/js/admin-lte/pleugins/pdfmake/vfs_fonts.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="/static/js/admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="/static/js/admin-lte/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- Toastr -->
+    <script src="/static/js/admin-lte/plugins/toastr/toastr.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/static/js/admin-lte/dist/js/adminlte.min.js"></script>
+    <!-- Page specific script -->
+    <script src="/static/js/custom-js/admin-panel-custom-js/accounts.js"></script>
+    <script src="/static/js/custom-js/admin-panel-custom-js/common-functions.js"></script>
+    <script>
+
+        // view : Branch Form with Dropdown
+        function viewIncomeForm() {
+            $.ajax({
+                url: '/admin/income/create',
+                method: 'get',
+                success: function (data) {
+                    var obj = jQuery.parseJSON(data);
+                    incomeDropdown(obj)
+                }
+            });
+            resetData()
+        }
+
+        function incomeDropdown(obj) {
+            var stations = obj.Accounts
+            var stndd = $("#accountdd");
+            $("#stationdd").append('<option value="">--Select Station--</option>');
+            $(stations).each(function () {
+                var option = $("<option />");
+                option.html(this.Name);
+                option.val(this.ID);
+                stndd.append(option);
+            });
+        }
+
+        // create : Income
+        $(document).ready(function () {
+            $('#saveForm').submit(function (e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
+                });
+                $.ajax({
+                    url: "/admin/income/create",
+                    method: 'post',
+                    data: $('form.tagForm').serialize(),
+                    success: function (data) {
+                        var obj = jQuery.parseJSON(data);
+                        var Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        if (obj.Status) {
+                            $('#saveForm').trigger("reset");
+                            Toast.fire({
+                                icon: 'success',
+                                title: obj.Message
+                            })
+                            setTimeout(function () { window.location.reload(true); }, 1000);
+                            $('#modal-add').modal('hide');
+                        } else {
+                            $("#Title").empty().append(obj.FormErrors.Title);
+                            $("#AccountID").empty().append(obj.FormErrors.AccountID);
+                            $("#Note").empty().append(obj.FormErrors.Note);
+                            $("#IncomeAmount").empty().append(obj.FormErrors.IncomeAmount);
+                            $("#IncomeDate").empty().append(obj.FormErrors.IncomeDate);
+                            Toast.fire({
+                                icon: 'error',
+                                title: "Please Insert All Data Carefully."
+                            });
+                        }
+                    },
+                });
+                // reset all form data after close modal
+                $('#modal-add').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                    $("#Title").empty();
+                    $("#Note").empty();
+                    $("#IncomeAmount").empty();
+                    $("#IncomeDate").empty();
+                });
+            });
+        });
+        // view : Income
+        function viewIncome(id) {
+            console.log("33333333333",id)
+            $.ajax({
+                url: "/admin/income/view/" + id,
+                method: 'get',
+                success: function (data) {
+                    console.log("--",data)
+                    var obj = jQuery.parseJSON(data);
+                    $("#VTitle").empty().append(obj.Form.Title);
+                    $("#VAccountNumber").empty().append(obj.Form.AccountNumber);
+                    $("#VIncomeDate").empty().append(obj.Form.IncomeDate);
+                    $("#VAmount").empty().append(obj.Form.IncomeAmount);
+                    if (obj.Form.Status == 1) {
+                        $("#VStatus").empty().append("Pending");
+                    }
+                    else if (obj.Form.Status == 2) {
+                        $("#VStatus").empty().append("Accept");
+                    } else {
+                        $("#VStatus").empty().append("Reject");
+                    }
+                }
+            })
+        }
+        // Data Tables for this table
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+</body>
+
+</html>

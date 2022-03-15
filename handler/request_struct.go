@@ -324,8 +324,8 @@ type IncomeForm struct {
 	Title         string
 	AccountID     string
 	Note          string
-	AccountNumber sql.NullString
-	AccountName   sql.NullString
+	AccountNumber string
+	AccountName   string
 	IncomeAmount  float64
 	IncomeDate    string
 	Status        int32
