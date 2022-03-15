@@ -16,26 +16,22 @@ type (
 	}
 
 	AccountsTransaction struct {
-		ID                      string         `db:"id"`
-		FromAccountID           string         `db:"from_account_id"`
-		FromAccountName         sql.NullString `db:"from_account_name"`
-		ToAccountID             string         `db:"to_account_id"`
-		ToAccountName           sql.NullString `db:"to_account_name"`
-		UserID                  string         `db:"user_id"`
-		TransactionAmount       float64        `db:"transaction_amount,omitempty"`
-		FromAcntPreviousBalance float64        `db:"from_acnt_previous_balance,omitempty"`
-		FromAcntCurrentBalance  float64        `db:"from_acnt_current_balance,omitempty"`
-		ToAcntPreviousBalance   float64        `db:"to_acnt_previous_balance,omitempty"`
-		ToAcntCurrentBalance    float64        `db:"to_acnt_current_balance,omitempty"`
-		TransactionType         string         `db:"transaction_type_id,omitempty"`
-		TransactionTypeName     sql.NullString `db:"transaction_type_name,omitempty"`
-		TransactionSource       string         `db:"transaction_source_id,omitempty"`
-		TransactionSourceName   sql.NullString `db:"transaction_source_name,omitempty"`
-		Reference               string         `db:"reference"`
-		Note                    string         `db:"note"`
-		Status                  int32          `db:"status"`
-		AcceptedAt              time.Time      `db:"accepted_at,omitempty"`
-		AcceptedBy              string         `db:"accepted_by"`
+		ID                    string         `db:"id"`
+		FromAccountID         string         `db:"from_account_id"`
+		FromAccountName       sql.NullString `db:"from_account_name"`
+		ToAccountID           string         `db:"to_account_id"`
+		ToAccountName         sql.NullString `db:"to_account_name"`
+		UserID                string         `db:"user_id"`
+		TransactionAmount     float64        `db:"transaction_amount,omitempty"`
+		TransactionType       string         `db:"transaction_type_id,omitempty"`
+		TransactionTypeName   sql.NullString `db:"transaction_type_name,omitempty"`
+		TransactionSource     string         `db:"transaction_source_id,omitempty"`
+		TransactionSourceName sql.NullString `db:"transaction_source_name,omitempty"`
+		Reference             string         `db:"reference"`
+		Note                  string         `db:"note"`
+		Status                int32          `db:"status"`
+		AcceptedAt            time.Time      `db:"accepted_at,omitempty"`
+		AcceptedBy            string         `db:"accepted_by"`
 		CRUDTimeDate
 	}
 	Accounts struct {
@@ -49,12 +45,14 @@ type (
 	}
 
 	IncomeTax struct {
-		ID               string    `db:"id"`
-		AccountID        string    `db:"account_id"`
-		TaxReceiptNumber string    `db:"tax_receipt_number"`
-		Status           int32     `db:"status"`
-		IncomeTaxDate    time.Time `db:"income_tax_date"`
-		TaxAmount        float64   `db:"tax_amount"`
+		ID               string         `db:"id"`
+		AccountID        string         `db:"account_id"`
+		AccountNumber    sql.NullString `db:"account_number"`
+		AccountName      sql.NullString `db:"account_name"`
+		TaxReceiptNumber string         `db:"tax_receipt_number"`
+		Status           int32          `db:"status"`
+		IncomeTaxDate    time.Time      `db:"income_tax_date"`
+		TaxAmount        float64        `db:"tax_amount"`
 		CRUDTimeDate
 	}
 
