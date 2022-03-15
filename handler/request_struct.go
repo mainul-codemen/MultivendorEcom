@@ -310,7 +310,7 @@ type IncomeTaxForm struct {
 	AccountName      sql.NullString
 	TaxReceiptNumber string
 	Status           int32
-	IncomeTaxDate    time.Time
+	IncomeTaxDate    string
 	TaxAmount        float64
 	CreatedAt        time.Time
 	CreatedBy        string

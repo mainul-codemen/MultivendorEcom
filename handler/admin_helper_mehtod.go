@@ -377,28 +377,24 @@ func (s *Server) accountsTransactionList(r *http.Request, w http.ResponseWriter,
 	actListForm := make([]AccountsTransactionForm, 0)
 	for _, item := range actList {
 		actData := AccountsTransactionForm{
-			ID:                      item.ID,
-			FromAccountID:           item.FromAccountID,
-			FromAccountName:         item.FromAccountName.String,
-			ToAccountID:             item.ToAccountID,
-			ToAccountName:           item.ToAccountName.String,
-			UserID:                  item.UserID,
-			TransactionAmount:       item.TransactionAmount,
-			TransactionType:         item.TransactionType,
-			TransactionTypeName:     item.TransactionTypeName.String,
-			TransactionSource:       item.TransactionSource,
-			TransactionSourceName:   item.TransactionSourceName.String,
-			Reference:               item.Reference,
-			Note:                    item.Note,
-			Status:                  item.Status,
-			FromAcntPreviousBalance: item.FromAcntPreviousBalance,
-			FromAcntCurrentBalance:  item.FromAcntCurrentBalance,
-			ToAcntPreviousBalance:   item.ToAcntPreviousBalance,
-			ToAcntCurrentBalance:    item.ToAcntCurrentBalance,
-			CreatedAt:               item.CreatedAt,
-			CreatedBy:               item.CreatedBy,
-			UpdatedAt:               item.UpdatedAt,
-			UpdatedBy:               item.UpdatedBy,
+			ID:                    item.ID,
+			FromAccountID:         item.FromAccountID,
+			FromAccountName:       item.FromAccountName.String,
+			ToAccountID:           item.ToAccountID,
+			ToAccountName:         item.ToAccountName.String,
+			UserID:                item.UserID,
+			TransactionAmount:     item.TransactionAmount,
+			TransactionType:       item.TransactionType,
+			TransactionTypeName:   item.TransactionTypeName.String,
+			TransactionSource:     item.TransactionSource,
+			TransactionSourceName: item.TransactionSourceName.String,
+			Reference:             item.Reference,
+			Note:                  item.Note,
+			Status:                item.Status,
+			CreatedAt:             item.CreatedAt,
+			CreatedBy:             item.CreatedBy,
+			UpdatedAt:             item.UpdatedAt,
+			UpdatedBy:             item.UpdatedBy,
 		}
 		actListForm = append(actListForm, actData)
 	}
@@ -465,9 +461,48 @@ func (s *Server) incomeList(r *http.Request, w http.ResponseWriter, sts bool) []
 			Status:        item.Status,
 			Note:          item.Note,
 			Title:         item.Title,
-			IncomeDate:    item.IncomeDate.Format("02-001-2006"),
+			IncomeDate:    item.IncomeDate.Format("02-01-2006"),
 		}
 		actListForm = append(actListForm, actData)
 	}
 	return actListForm
+}
+
+func (s *Server) incomeTaxList(r *http.Request, w http.ResponseWriter, sts bool) []IncomeTaxForm {
+	actList, err := s.st.GetIncomeTax(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get Income tax: " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+
+	actListForm := make([]IncomeTaxForm, 0)
+	for _, item := range actList {
+		actData := IncomeTaxForm{
+			ID:               item.ID,
+			AccountID:        item.AccountID,
+			AccountNumber:    item.AccountNumber,
+			AccountName:      item.AccountName,
+			TaxReceiptNumber: item.TaxReceiptNumber,
+			Status:           item.Status,
+			IncomeTaxDate:    item.IncomeTaxDate.Format("02-01-2006"),
+			TaxAmount:        item.TaxAmount,
+			CreatedAt:        item.CreatedAt,
+			CreatedBy:        item.CreatedBy,
+		}
+		actListForm = append(actListForm, actData)
+	}
+	return actListForm
+}
+func trnsTypesAndSource(s *Server, r *http.Request, w http.ResponseWriter, typ string, source string) (*storage.TransactionTypes, *storage.TransactionSource) {
+	ttdb, err := s.st.GetTransactionTypesBy(r.Context(), typ)
+	if err != nil {
+		logger.Error(err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
+	}
+	tdb, err := s.st.GetTransactionSourceBy(r.Context(), source)
+	if err != nil {
+		logger.Error(err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusInternalServerError)
+	}
+	return ttdb, tdb
 }
