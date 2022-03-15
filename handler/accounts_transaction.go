@@ -129,19 +129,15 @@ func (s *Server) submitAccountsTransactionHandler(w http.ResponseWriter, r *http
 	}
 
 	_, err = s.st.CreateAccountsTransaction(r.Context(), storage.AccountsTransaction{
-		FromAccountID:           trim(form.FromAccountID),
-		ToAccountID:             trim(form.ToAccountID),
-		UserID:                  uid,
-		TransactionAmount:       form.TransactionAmount,
-		TransactionType:         form.TransactionType,
-		TransactionSource:       form.TransactionSource,
-		Reference:               form.Reference,
-		Note:                    form.Note,
-		Status:                  1,
-		FromAcntPreviousBalance: fromAcntpreviousAmount,
-		FromAcntCurrentBalance:  fromAcntCurrentAmount,
-		ToAcntPreviousBalance:   toAcntpreviousAmount,
-		ToAcntCurrentBalance:    toAcntCurrentBalance,
+		FromAccountID:     trim(form.FromAccountID),
+		ToAccountID:       trim(form.ToAccountID),
+		UserID:            uid,
+		TransactionAmount: form.TransactionAmount,
+		TransactionType:   form.TransactionType,
+		TransactionSource: form.TransactionSource,
+		Reference:         form.Reference,
+		Note:              form.Note,
+		Status:            1,
 		CRUDTimeDate: storage.CRUDTimeDate{
 			CreatedBy: uid,
 			UpdatedBy: uid,
