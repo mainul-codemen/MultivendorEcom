@@ -446,3 +446,28 @@ func (s *Server) transactionSourceList(r *http.Request, w http.ResponseWriter, s
 	}
 	return ttListForm
 }
+
+func (s *Server) incomeList(r *http.Request, w http.ResponseWriter, sts bool) []IncomeForm {
+	actList, err := s.st.GetIncome(r.Context(), sts)
+	if err != nil {
+		logger.Error("error while get Income : " + err.Error())
+		http.Redirect(w, r, ErrorPath, http.StatusSeeOther)
+	}
+
+	actListForm := make([]IncomeForm, 0)
+	for _, item := range actList {
+		actData := IncomeForm{
+			ID:            item.ID,
+			AccountID:     item.AccountID,
+			AccountNumber: item.AccountNumber,
+			AccountName:   item.AccountName,
+			IncomeAmount:  item.IncomeAmount,
+			Status:        item.Status,
+			Note:          item.Note,
+			Title:         item.Title,
+			IncomeDate:    item.IncomeDate.Format("02-001-2006"),
+		}
+		actListForm = append(actListForm, actData)
+	}
+	return actListForm
+}

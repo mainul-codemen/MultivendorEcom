@@ -59,13 +59,15 @@ type (
 	}
 
 	Income struct {
-		ID               string  `db:"id"`
-		Title            string  `db:"title"`
-		TaxAmount        float64 `db:"tax_amount"`
-		AccountID        string  `db:"account_id"`
-		TaxReceiptNumber float64 `db:"tax_receipt_number"`
-		IncomeTaxDate    float64 `db:"income_tax_date"`
-		Status           int32   `db:"status"`
+		ID            string         `db:"id"`
+		Title         string         `db:"title"`
+		AccountID     string         `db:"account_id"`
+		AccountNumber sql.NullString `db:"account_number"`
+		AccountName   sql.NullString `db:"account_name"`
+		IncomeAmount  float64        `db:"income_amount"`
+		Note          string         `db:"note"`
+		IncomeDate    time.Time      `db:"income_date"`
+		Status        int32          `db:"status"`
 		CRUDTimeDate
 	}
 
